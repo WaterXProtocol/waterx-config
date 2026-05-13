@@ -35,56 +35,60 @@
       "config": "0x3607ace703da413919d9aedcd4cad2f1b4897bb5740a8f91fb09a635b22b0041",
       "feeds": {
         "BTCUSD": {
-          "feed_id":           "0xf9c0172ba10dfa4d19088d94f5bf61d3b54d5bd7483a322a982e1373ee8ea31b",
+          "feed_id": "0xf9c0172ba10dfa4d19088d94f5bf61d3b54d5bd7483a322a982e1373ee8ea31b",
           "price_info_object": "0x72431a238277695d3f31e4425225a4462674ee6cceeea9d66447b210755fffba"
         },
         "ETHUSD": {
-          "feed_id":           "0xca80ba6dc32e08d06f1aa886011eed1d77c77be9eb761cc10d72b7d0a2fd57a6",
+          "feed_id": "0xca80ba6dc32e08d06f1aa886011eed1d77c77be9eb761cc10d72b7d0a2fd57a6",
           "price_info_object": "0x4fde30cb8a5dc3cfee1c1c358fc66dc308408827efb217247c7ba54d76ccbee9"
         },
         "SOLUSD": {
-          "feed_id":           "0xfe650f0367d4a7ef9815a593ea15d36593f0643aaaf0149bb04be67ab851decd",
+          "feed_id": "0xfe650f0367d4a7ef9815a593ea15d36593f0643aaaf0149bb04be67ab851decd",
           "price_info_object": "0x33fbce1cad5ca155f2f5051430b23a694bc6e5de6df43e0f8aefe29f4a84336d"
         },
         "SUIUSD": {
-          "feed_id":           "0x50c67b3fd225db8912a424dd4baed60ffdde625ed2feaaf283724f9608fea266",
+          "feed_id": "0x50c67b3fd225db8912a424dd4baed60ffdde625ed2feaaf283724f9608fea266",
           "price_info_object": "0x1ebb295c789cc42b3b2a1606482cd1c7124076a0f5676718501fda8c7fd075a0"
         },
         "DEEPUSD": {
-          "feed_id":           "0xe18bf5fa857d5ca8af1f6a458b26e853ecdc78fc2f3dc17f4821374ad94d8327",
+          "feed_id": "0xe18bf5fa857d5ca8af1f6a458b26e853ecdc78fc2f3dc17f4821374ad94d8327",
           "price_info_object": "0xa98cbb7a97b4ce306eafdbc52a602578dea25165e6578fe6603caeb002fe02aa"
         },
         "WALUSD": {
-          "feed_id":           "0xa6ba0195b5364be116059e401fb71484ed3400d4d9bfbdf46bd11eab4f9b7cea",
+          "feed_id": "0xa6ba0195b5364be116059e401fb71484ed3400d4d9bfbdf46bd11eab4f9b7cea",
           "price_info_object": "0x52e5fb291bd86ca8bdd3e6d89ef61d860ea02e009a64bcc287bc703907ff3e8a"
         },
         "AAPLXUSD": {
-          "feed_id":           "0x44070926d0c056ac8a0dbeeaffa4f9d280843e2b501d0989c5030e88662d62e2",
+          "feed_id": "0x44070926d0c056ac8a0dbeeaffa4f9d280843e2b501d0989c5030e88662d62e2",
           "price_info_object": "0x2d4821a62956e8f1b071494ca9dc08e28f6188973593c27dca7009c87690b24d"
         },
         "GOOGLXUSD": {
-          "feed_id":           "0xdb2cfe5ab1c383cc89a4056322f66af72579eeff3d4d240b7dd884f2bd479166",
+          "feed_id": "0xdb2cfe5ab1c383cc89a4056322f66af72579eeff3d4d240b7dd884f2bd479166",
           "price_info_object": "0x7b4d3cf9c76f362aec5966d5795714ab8c1b46f562557e0073a327b92676f818"
         },
         "METAXUSD": {
-          "feed_id":           "0x94d5f287020347f5cb3b9acf4bb21aff91c1ad728b185c1c7cdc7c11fa07fee3",
+          "feed_id": "0x94d5f287020347f5cb3b9acf4bb21aff91c1ad728b185c1c7cdc7c11fa07fee3",
           "price_info_object": "0x01bc231ce32545e288901387f86461bba5fde539ada370a82e1ba271a5caf60b"
         },
         "NVDAXUSD": {
-          "feed_id":           "0x2a8801c7d8b5c186fdb603c106b2f0030b95bd1ced87c96eac8f0e7b49a3674e",
+          "feed_id": "0x2a8801c7d8b5c186fdb603c106b2f0030b95bd1ced87c96eac8f0e7b49a3674e",
           "price_info_object": "0x93536866dc067411e3f033256e91c43a43fa11262d93d63fd8be7d5011ed4ac4"
         },
         "QQQXUSD": {
-          "feed_id":           "0xbe2ffdb65178deddc325db952c02195ab82d2c826af00f52564d9b718ab94563",
+          "feed_id": "0xbe2ffdb65178deddc325db952c02195ab82d2c826af00f52564d9b718ab94563",
           "price_info_object": "0x03fee32dd53462496dab3395b9fbaeb2b546bc53698e5e180da7f6a3ff4b3c13"
         },
         "SPYXUSD": {
-          "feed_id":           "0xec0a56d175d9317e22b59fc6cc6f157a57d232a64ab93d7212ebae63d97df51d",
+          "feed_id": "0xec0a56d175d9317e22b59fc6cc6f157a57d232a64ab93d7212ebae63d97df51d",
           "price_info_object": "0x808e71381a054caa1f4f4ec62ff9ea7e62a3c71ef55ac67a61d0ea59d849f4ac"
         },
         "TSLAXUSD": {
-          "feed_id":           "0xadf87c6e8a23f1fe7d8909c18da06abb1c9e6cbb32aac8818480c648e264845c",
+          "feed_id": "0xadf87c6e8a23f1fe7d8909c18da06abb1c9e6cbb32aac8818480c648e264845c",
           "price_info_object": "0x851a380d945fd69942eb321665bbf5f1d7990a2958708b346758737c546bbd01"
+        },
+        "USDCUSD": {
+          "feed_id": "0x41f3625971ca2ed2263e78573fe5ce23e13d2558ed3f2e47ab0f84fb9e7ae722",
+          "price_info_object": "0x9c4dd4008297ffa5e480684b8100ec21cc934405ed9a25d4e4d7b6259aad9c81"
         }
       }
     },
@@ -123,19 +127,20 @@
       "listing_cap": "0x462b633fb4dceb99d2a1c4baec9f9b48e9e8215226979ba23fdbe8cc5d969fa9",
       "oracle": "0x765d448f496d798dcf8b5488bb6452abe3ea820318f1ca4cbe803796cf5bcad7",
       "aggregators": {
-        "BTCUSD":    "0x9ad3e78a5f27e5c86497419ebba6e749fc68646da14adc1a7d2d48f5858b1347",
-        "ETHUSD":    "0x924034dee2b93741b6ef40721531045d97f4fa34e18d086333cc4ebf784ee27f",
-        "SOLUSD":    "0xf92a7a5ccf57110fd77dff217fa2c9b58eca11bae19a267a1bc3bdc53ec3d98f",
-        "SUIUSD":    "0x0c888c9563b789397dfad76bd8ea23634c4df1e9e5d6c41518e79cec63a03663",
-        "DEEPUSD":   "0x583c7fcb67a6ff31ef4d0ebbf47e2a107160724b971d5b7581cd28abf6596a58",
-        "WALUSD":    "0x9c8099bb88a758a2830bb3104da996afa68b4d03e7e7a2bb18ca9faba7599c55",
-        "AAPLXUSD":  "0x496757d36d0ca9fd31304afeb3dcae10226e5763a3107e254e8d2488821b2f7a",
+        "BTCUSD": "0x9ad3e78a5f27e5c86497419ebba6e749fc68646da14adc1a7d2d48f5858b1347",
+        "ETHUSD": "0x924034dee2b93741b6ef40721531045d97f4fa34e18d086333cc4ebf784ee27f",
+        "SOLUSD": "0xf92a7a5ccf57110fd77dff217fa2c9b58eca11bae19a267a1bc3bdc53ec3d98f",
+        "SUIUSD": "0x0c888c9563b789397dfad76bd8ea23634c4df1e9e5d6c41518e79cec63a03663",
+        "DEEPUSD": "0x583c7fcb67a6ff31ef4d0ebbf47e2a107160724b971d5b7581cd28abf6596a58",
+        "WALUSD": "0x9c8099bb88a758a2830bb3104da996afa68b4d03e7e7a2bb18ca9faba7599c55",
+        "AAPLXUSD": "0x496757d36d0ca9fd31304afeb3dcae10226e5763a3107e254e8d2488821b2f7a",
         "GOOGLXUSD": "0x6cbfe3ffb05745b78bef5df6ce96c807258b2d736e2ffeb2636ccf95ffb9b4b9",
-        "METAXUSD":  "0x8f4aacabc83f4bf113368b1d30b2a6c6587f96cd424bfb1b800bb2fcebaf8ac2",
-        "NVDAXUSD":  "0x43497c33e9d517f5821bbe360afb5590e8684eeee5747f104d3e982a60ae3538",
-        "QQQXUSD":   "0x87e7369f365cf5d9a5e2b5973131bfafafc657a60e755d96e5b6bc778b3a566f",
-        "SPYXUSD":   "0xbb6036f74324179f56b9be6ee5e6c645cecfe8e20594c724e59066d101f1cd7f",
-        "TSLAXUSD":  "0x798433467a82c5fa06c2d3242b7b1c226e48c1e874ec007df2b1d2e20a7d8e6d"
+        "METAXUSD": "0x8f4aacabc83f4bf113368b1d30b2a6c6587f96cd424bfb1b800bb2fcebaf8ac2",
+        "NVDAXUSD": "0x43497c33e9d517f5821bbe360afb5590e8684eeee5747f104d3e982a60ae3538",
+        "QQQXUSD": "0x87e7369f365cf5d9a5e2b5973131bfafafc657a60e755d96e5b6bc778b3a566f",
+        "SPYXUSD": "0xbb6036f74324179f56b9be6ee5e6c645cecfe8e20594c724e59066d101f1cd7f",
+        "TSLAXUSD": "0x798433467a82c5fa06c2d3242b7b1c226e48c1e874ec007df2b1d2e20a7d8e6d",
+        "USDCUSD": "0xae2b4871a1db6453d870c20a0a3a3d8f59c74e1b864e485f86fea31c31a9d0e4"
       }
     },
     "waterx_perp": {
@@ -198,6 +203,10 @@
         "TSLAXUSD": {
           "market": "0x0f7b7e72cbe3cd563c3ec1335d822e0951c02c932ee3ae0ec0d47a57c7a9c1b9",
           "config": "0x8f442fec5592260e3f5e4efb6321f4daaf6f4d9ebb15df0e3cf5085c9a53192c"
+        },
+        "USDCUSD": {
+          "market": "0x548e716b08ff26949bcdba5968d044f2eaf04ed4e7a4889516991791f6ac760f",
+          "config": "0xf8aececd6edaca20c48edc4a662c626d3ace946db6881111a4f60cbc10bcb3f4"
         }
       }
     },
@@ -224,7 +233,10 @@
       "upgrade_capability": "0x0ed7b111b0a968f7863cf30b63372887fbacf6452b5d46253af8665fe3c62306",
       "metadata_cap": "0xa8593b8ab3b19c994e847e512a0dbeab57e82e7c3dd71dd29f01b02f83b0def1",
       "currency": "0x6f31226b10fc1cede286962d208303adf1d6aed77a68d7f2379ee2c10faf41ef",
-      "wlp_pool": "0xb8b23b9554879326224a5dbe615642956dcdfebde90618c832d14642d91f010c"
+      "wlp_pool": "0xb8b23b9554879326224a5dbe615642956dcdfebde90618c832d14642d91f010c",
+      "pool_tokens": {
+        "USDCUSD": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
+      }
     }
   }
 }

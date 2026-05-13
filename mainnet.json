@@ -65,7 +65,8 @@
       "upgrade_capability": null,
       "metadata_cap": null,
       "currency": null,
-      "wlp_pool": null
+      "wlp_pool": null,
+      "pool_tokens": {}
     }
   }
 }
