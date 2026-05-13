@@ -28,17 +28,17 @@
       "metadata_cap": "0x7cfe3cc8a003a384aa3c1f92ca5d0bac9cfffcba959d254a76cc14375685a95a"
     },
     "pyth_rule": {
-      "published_at": "0x884773e6a4fdf324ec158b863254386f907f89b2efa2773f2078cff0c5586383",
-      "original_id": "0xecd0b3db574ac2ad6b1d6828e5643e7ffb9ff919d8b04843d411dd8b7e027e94",
-      "version": 2,
-      "upgrade_capability": "0x763f33a139f05cb5c124a51987665e46227c79ebe635020d8bc9cef8de9cc33b"
+      "published_at": "0x4b56cbbdbc31b975c6825effeeadaf76819650623b4d69065f8a723a9ed06fa0",
+      "original_id": "0x4b56cbbdbc31b975c6825effeeadaf76819650623b4d69065f8a723a9ed06fa0",
+      "version": 1,
+      "upgrade_capability": "0x3b60f929c8458bb70c454c8938fcc02afa9c18696f50b236f28d44e1d622be49"
     },
     "pyth_sponsor_rule": {
-      "published_at": "0x307737604317ee0c353bafb6d89832f05906b57dc5d357f7ef32fa59ae14db00",
-      "original_id": "0x307737604317ee0c353bafb6d89832f05906b57dc5d357f7ef32fa59ae14db00",
+      "published_at": "0xad089846b632a810516115180d20d26812c552860f9e8d7f0c6dbd66e910b2eb",
+      "original_id": "0xad089846b632a810516115180d20d26812c552860f9e8d7f0c6dbd66e910b2eb",
       "version": 1,
-      "upgrade_capability": "0x78711f34968778f06f0b7a1e345e2961e002836315f9ca6373d9834c678e7223",
-      "pyth_sponsor": "0x31e383d0df7de65568f5dcd129e57367c3291e022115e876d4a5ae5e7db2bbc2"
+      "upgrade_capability": "0xa26a61dcd1511d257bf5bc1eccbaec373c82c559b83a27fb0b6cb7051d8190d7",
+      "pyth_sponsor": "0x1528bdc52a60aaab31a9501001dfa69377708e4c2296c3d2e25b9ca0f4e9e256"
     },
     "reward_distributor": {
       "published_at": "0x1bab6422200e41232cce1ef8d0d64aa1fbf6458d04bb0ce86c8f4249c6c30ad3",
@@ -52,16 +52,35 @@
       "version": 2,
       "upgrade_capability": "0x7437d268ac4b43a0abc84e60f9b90732de00e2fd91a756176a1757fe2c7d79e1"
     },
+    "waterx_account": {
+      "published_at": "0x2d9b1eb3958fad8ff619d30d959351ecce851fcea231fa362b36d52c76b339b5",
+      "original_id": "0x2d9b1eb3958fad8ff619d30d959351ecce851fcea231fa362b36d52c76b339b5",
+      "version": 1,
+      "upgrade_capability": "0x6f6d36b313bd5915d930a3b7b632a3ee2f9ff4f810825b5902627730d6fb0002",
+      "admin_cap": "0x3aa99bae17507335c5c21b4ac65a82b381c7cf6e7959dd2785c447d8a99b7889",
+      "account_registry": "0xde28a18a1cecb0486d77ef371b08695029e183bc6910455fbe2c5cb463cb0861"
+    },
     "waterx_oracle": {
-      "published_at": "0x42d99e5eb4eb53f37e2526c2676a5af776823665368de3852ef9c96943461bd1",
-      "original_id": "0x42d99e5eb4eb53f37e2526c2676a5af776823665368de3852ef9c96943461bd1",
-      "version": 1
+      "published_at": "0x6b244c75800a105900b3fa0c2ac005a057ebabe8c3d452742a1690e3dc88229a",
+      "original_id": "0x6b244c75800a105900b3fa0c2ac005a057ebabe8c3d452742a1690e3dc88229a",
+      "version": 1,
+      "upgrade_capability": "0xf3187a3e1b4b15740f7033351131e3342661539743ced9a84d53acb616454e1a",
+      "listing_cap": "0x462b633fb4dceb99d2a1c4baec9f9b48e9e8215226979ba23fdbe8cc5d969fa9",
+      "oracle": "0x765d448f496d798dcf8b5488bb6452abe3ea820318f1ca4cbe803796cf5bcad7"
     },
     "waterx_perp": {
-      "published_at": "0x0ab918a0dd576e44b84f14ed4a2329030c6c07e09f44e82c544b23f3ddbf6b7f",
-      "original_id": "0x5d6d935e8a73c2df1c60135a798e404cc8545c3912236b8f82fe5554c539007a",
-      "version": 7,
-      "upgrade_capability": "0x5a6f659428336b6dcaebcf3dc267d8c3bb07a8d9172f9b45061b91bf486141c2"
+      "published_at": "0x9f40b37878f252b3ea20d1a73e3c35b4314ea66821599e62742119e375112419",
+      "original_id": "0x9f40b37878f252b3ea20d1a73e3c35b4314ea66821599e62742119e375112419",
+      "version": 1,
+      "upgrade_capability": "0xf4b00d5516edbb3dc2ee7c0288cbc16f0f760a16a844f3d6336a7237d1be601e",
+      "admin_cap": "0xe228fe69640b80e586a60d0391fc135fd9907c0f5e0ddfc5240f1de04f2c3194",
+      "global_config": "0x29376d0530b8e87bfe51677de4b4aa16bd3344530c5619e5b1b8d9564ecabfe3"
+    },
+    "waterx_perp_view": {
+      "published_at": "0xada57121b6a0988eb3149e613ee3acf5e10809e5fed6faa1741e55f5eeb3260b",
+      "original_id": "0xada57121b6a0988eb3149e613ee3acf5e10809e5fed6faa1741e55f5eeb3260b",
+      "version": 1,
+      "upgrade_capability": "0x4335ee596b25a724cafb21f9ed9df1edb21ea74e0f6195063e1bc58b0a62cdb0"
     },
     "waterx_rule": {
       "published_at": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
@@ -74,13 +93,14 @@
       "version": 1
     },
     "wlp": {
-      "published_at": "0x7d3c94df3644f025ec6dfe5ece2e2bd3d7d7eda8fee59697c0930bffad4123bc",
-      "original_id": "0x7d3c94df3644f025ec6dfe5ece2e2bd3d7d7eda8fee59697c0930bffad4123bc",
+      "published_at": "0xe6112759a0d6f503ef24050a891bd3cd1ced587a87a83b3fa9c96a8cc417558c",
+      "original_id": "0xe6112759a0d6f503ef24050a891bd3cd1ced587a87a83b3fa9c96a8cc417558c",
       "version": 1,
-      "upgrade_capability": "0xcb9e61ce9a8b650e7e80f361679a75895b142486a8111e041231d441e44abded",
-      "metadata_cap": "0x15fbf7a782f6d488b90324e482f9e24933d86b1d8d104a5d523d559934f9b966",
-      "currency": "0x4d71637d9f4479e01e1803c82ff65b72dd797483ed41b614da816ff75439861d",
-      "wlp_pool": "0x50167b112bc1d4dbe4907e22c11129074f8b2841519316b27f3405bef35c96a3"
+      "upgrade_capability": "0x0ed7b111b0a968f7863cf30b63372887fbacf6452b5d46253af8665fe3c62306",
+      "wlp_otw": "0xb52d9b698df5d9c7e944f684fc520f3ffd4cb69d092522669350bb49cb257dc9",
+      "metadata_cap": null,
+      "currency": null,
+      "wlp_pool": null
     }
   }
 }
