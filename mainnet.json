@@ -1,0 +1,66 @@
+{
+  "network": "mainnet",
+  "chain_id": null,
+  "packages": {
+    "bucket_framework": {
+      "published_at": null,
+      "original_id": null,
+      "version": null
+    },
+    "pyth_rule": {
+      "published_at": null,
+      "original_id": null,
+      "version": null,
+      "upgrade_capability": null
+    },
+    "pyth_sponsor_rule": {
+      "published_at": null,
+      "original_id": null,
+      "version": null,
+      "upgrade_capability": null,
+      "pyth_sponsor": null
+    },
+    "reward_distributor": {
+      "published_at": null,
+      "original_id": null,
+      "version": null,
+      "upgrade_capability": null
+    },
+    "supra_rule": {
+      "published_at": null,
+      "original_id": null,
+      "version": null,
+      "upgrade_capability": null
+    },
+    "waterx_oracle": {
+      "published_at": null,
+      "original_id": null,
+      "version": null
+    },
+    "waterx_perp": {
+      "published_at": null,
+      "original_id": null,
+      "version": null,
+      "upgrade_capability": null
+    },
+    "waterx_rule": {
+      "published_at": null,
+      "original_id": null,
+      "version": null
+    },
+    "waterx_rule_nautilus_enclave": {
+      "published_at": null,
+      "original_id": null,
+      "version": null
+    },
+    "wlp": {
+      "published_at": null,
+      "original_id": null,
+      "version": null,
+      "upgrade_capability": null,
+      "metadata_cap": null,
+      "currency": null,
+      "wlp_pool": null
+    }
+  }
+}

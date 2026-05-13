@@ -1,0 +1,86 @@
+{
+  "network": "testnet",
+  "chain_id": "4c78adac",
+  "packages": {
+    "bucket_framework": {
+      "published_at": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
+      "original_id": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
+      "version": 1
+    },
+    "mock_sui": {
+      "published_at": "0x896e53015216c5034825c056bcde37a694263601df2534ae5c91b8a3d9150c78",
+      "original_id": "0x896e53015216c5034825c056bcde37a694263601df2534ae5c91b8a3d9150c78",
+      "version": 1,
+      "upgrade_capability": "0x3aef5756c226419197c905af4562970881335475a825aab2e13ec7e3fe36a526"
+    },
+    "mock_usdc": {
+      "published_at": "0x7ccd477e884ec74f960b23a8b34b7d87999e4d7ee0dde738a0c25f46200f201a",
+      "original_id": "0x7ccd477e884ec74f960b23a8b34b7d87999e4d7ee0dde738a0c25f46200f201a",
+      "version": 1
+    },
+    "mock_usdsui": {
+      "published_at": "0xc0fad30bc21babe3b8b51c6a4c380d27b61a47e34b26968daf20315da0e35016",
+      "original_id": "0xc0fad30bc21babe3b8b51c6a4c380d27b61a47e34b26968daf20315da0e35016",
+      "version": 1,
+      "upgrade_capability": "0x445e8bd44129686b74e45f82616da79c093827dada5bd91b0014281d1f4bdc73",
+      "currency": "0x0177241143d5b41bc8676ed3f59e3fae8f6aefd555f5e4fc255d2aff71093493",
+      "treasury_cap": "0x25bf4ad713da4f63cc53ee57e0523ffa713079ae3bca5026dab7dd4999b1833e",
+      "metadata_cap": "0x7cfe3cc8a003a384aa3c1f92ca5d0bac9cfffcba959d254a76cc14375685a95a"
+    },
+    "pyth_rule": {
+      "published_at": "0x884773e6a4fdf324ec158b863254386f907f89b2efa2773f2078cff0c5586383",
+      "original_id": "0xecd0b3db574ac2ad6b1d6828e5643e7ffb9ff919d8b04843d411dd8b7e027e94",
+      "version": 2,
+      "upgrade_capability": "0x763f33a139f05cb5c124a51987665e46227c79ebe635020d8bc9cef8de9cc33b"
+    },
+    "pyth_sponsor_rule": {
+      "published_at": "0x307737604317ee0c353bafb6d89832f05906b57dc5d357f7ef32fa59ae14db00",
+      "original_id": "0x307737604317ee0c353bafb6d89832f05906b57dc5d357f7ef32fa59ae14db00",
+      "version": 1,
+      "upgrade_capability": "0x78711f34968778f06f0b7a1e345e2961e002836315f9ca6373d9834c678e7223",
+      "pyth_sponsor": "0x31e383d0df7de65568f5dcd129e57367c3291e022115e876d4a5ae5e7db2bbc2"
+    },
+    "reward_distributor": {
+      "published_at": "0x1bab6422200e41232cce1ef8d0d64aa1fbf6458d04bb0ce86c8f4249c6c30ad3",
+      "original_id": "0x1bab6422200e41232cce1ef8d0d64aa1fbf6458d04bb0ce86c8f4249c6c30ad3",
+      "version": 1,
+      "upgrade_capability": "0x5898c397dffd417ac797bddf1f140120d7cddb5e6432d7a170eea0c3a964d2c0"
+    },
+    "supra_rule": {
+      "published_at": "0x6b142d4401b7395fd40395278190792b698cbcdd7a462e55b27398c0d9f0dd1d",
+      "original_id": "0xde280cdb680998d632cca7a1972627854aae9b4acf4cf254fc541395e9471b6d",
+      "version": 2,
+      "upgrade_capability": "0x7437d268ac4b43a0abc84e60f9b90732de00e2fd91a756176a1757fe2c7d79e1"
+    },
+    "waterx_oracle": {
+      "published_at": "0x42d99e5eb4eb53f37e2526c2676a5af776823665368de3852ef9c96943461bd1",
+      "original_id": "0x42d99e5eb4eb53f37e2526c2676a5af776823665368de3852ef9c96943461bd1",
+      "version": 1
+    },
+    "waterx_perp": {
+      "published_at": "0x0ab918a0dd576e44b84f14ed4a2329030c6c07e09f44e82c544b23f3ddbf6b7f",
+      "original_id": "0x5d6d935e8a73c2df1c60135a798e404cc8545c3912236b8f82fe5554c539007a",
+      "version": 7,
+      "upgrade_capability": "0x5a6f659428336b6dcaebcf3dc267d8c3bb07a8d9172f9b45061b91bf486141c2"
+    },
+    "waterx_rule": {
+      "published_at": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
+      "original_id": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
+      "version": 1
+    },
+    "waterx_rule_nautilus_enclave": {
+      "published_at": "0x0704d98799580855eaae8fdc5df50472fe40646703ba5f5eaf8ee24831cfc4ea",
+      "original_id": "0x0704d98799580855eaae8fdc5df50472fe40646703ba5f5eaf8ee24831cfc4ea",
+      "version": 1
+    },
+    "wlp": {
+      "published_at": "0x7d3c94df3644f025ec6dfe5ece2e2bd3d7d7eda8fee59697c0930bffad4123bc",
+      "original_id": "0x7d3c94df3644f025ec6dfe5ece2e2bd3d7d7eda8fee59697c0930bffad4123bc",
+      "version": 1,
+      "upgrade_capability": "0xcb9e61ce9a8b650e7e80f361679a75895b142486a8111e041231d441e44abded",
+      "metadata_cap": "0x15fbf7a782f6d488b90324e482f9e24933d86b1d8d104a5d523d559934f9b966",
+      "currency": "0x4d71637d9f4479e01e1803c82ff65b72dd797483ed41b614da816ff75439861d",
+      "wlp_pool": "0x50167b112bc1d4dbe4907e22c11129074f8b2841519316b27f3405bef35c96a3"
+    }
+  }
+}
