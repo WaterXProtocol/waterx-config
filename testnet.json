@@ -139,9 +139,9 @@
       }
     },
     "waterx_perp": {
-      "published_at": "0x9f40b37878f252b3ea20d1a73e3c35b4314ea66821599e62742119e375112419",
+      "published_at": "0x8f699ee7e645d6b73fa5b10536246ec13275aab81a8608675fedf51658d201aa",
       "original_id": "0x9f40b37878f252b3ea20d1a73e3c35b4314ea66821599e62742119e375112419",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0xf4b00d5516edbb3dc2ee7c0288cbc16f0f760a16a844f3d6336a7237d1be601e",
       "admin_cap": "0xe228fe69640b80e586a60d0391fc135fd9907c0f5e0ddfc5240f1de04f2c3194",
       "global_config": "0x29376d0530b8e87bfe51677de4b4aa16bd3344530c5619e5b1b8d9564ecabfe3",
