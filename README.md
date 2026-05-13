@@ -37,7 +37,7 @@ WaterX 各網路的鏈上部署資訊（package id、object id 等），給後�
 | `waterx_account` | `admin_cap`, `account_registry` |
 | `waterx_oracle` | `listing_cap`, `oracle`, `aggregators`（per-ticker `PriceAggregator` id） |
 | `waterx_perp` | `admin_cap`, `global_config`, `market_registry_wlp`, `markets`（per-ticker `{ market, config }`） |
-| `wlp` | `wlp_otw`, `currency`, `metadata_cap`, `wlp_pool` |
+| `wlp` | `currency`, `metadata_cap`, `wlp_pool` |
 
 `mock_sui` / `mock_usdc` / `mock_usdsui` 為 testnet-only，mainnet 使用真實 CoinType，故 `mainnet.json` 不含這些套件。
 

@@ -222,10 +222,9 @@
       "original_id": "0xe6112759a0d6f503ef24050a891bd3cd1ced587a87a83b3fa9c96a8cc417558c",
       "version": 1,
       "upgrade_capability": "0x0ed7b111b0a968f7863cf30b63372887fbacf6452b5d46253af8665fe3c62306",
-      "wlp_otw": "0xb52d9b698df5d9c7e944f684fc520f3ffd4cb69d092522669350bb49cb257dc9",
-      "metadata_cap": null,
-      "currency": null,
-      "wlp_pool": null
+      "metadata_cap": "0xa8593b8ab3b19c994e847e512a0dbeab57e82e7c3dd71dd29f01b02f83b0def1",
+      "currency": "0x6f31226b10fc1cede286962d208303adf1d6aed77a68d7f2379ee2c10faf41ef",
+      "wlp_pool": "0xb8b23b9554879326224a5dbe615642956dcdfebde90618c832d14642d91f010c"
     }
   }
 }
