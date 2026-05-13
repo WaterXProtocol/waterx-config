@@ -11,7 +11,9 @@
       "published_at": null,
       "original_id": null,
       "version": null,
-      "upgrade_capability": null
+      "upgrade_capability": null,
+      "config": null,
+      "feeds": {}
     },
     "pyth_sponsor_rule": {
       "published_at": null,
@@ -35,13 +37,16 @@
     "waterx_oracle": {
       "published_at": null,
       "original_id": null,
-      "version": null
+      "version": null,
+      "aggregators": {}
     },
     "waterx_perp": {
       "published_at": null,
       "original_id": null,
       "version": null,
-      "upgrade_capability": null
+      "upgrade_capability": null,
+      "market_registry_wlp": null,
+      "markets": {}
     },
     "waterx_rule": {
       "published_at": null,
