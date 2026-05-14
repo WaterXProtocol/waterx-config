@@ -31,6 +31,7 @@ WaterX 各網路的鏈上部署資訊（package id、object id 等），給後�
 
 | 套件 | 額外欄位 |
 | --- | --- |
+| `bucket_referral` | `referral_table`（共用的 `ReferralTable` 物件） |
 | `mock_usdsui` | `currency`, `treasury_cap`, `metadata_cap` |
 | `pyth_rule` | `config`（shared `Config` 物件：`identifier_map` + `tolerance_sec_map`），`feeds`（per-ticker `{ feed_id, price_info_object }`） |
 | `pyth_sponsor_rule` | `pyth_sponsor`（共用的 sponsor pool） |

@@ -7,6 +7,12 @@
       "original_id": null,
       "version": null
     },
+    "bucket_referral": {
+      "published_at": "0x17235897a9c2e977d60f3ded7b05e85724d7ee846b1519e6d8af7fdbc840da37",
+      "original_id": "0x17235897a9c2e977d60f3ded7b05e85724d7ee846b1519e6d8af7fdbc840da37",
+      "version": 1,
+      "referral_table": "0xbbbfeed8ebdca08e4d43eaf6f2f937ddf193b3d08ee93a4864693dbfa0d0df7b"
+    },
     "pyth_rule": {
       "published_at": null,
       "original_id": null,
