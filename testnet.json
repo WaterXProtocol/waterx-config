@@ -99,18 +99,6 @@
       "upgrade_capability": "0xa26a61dcd1511d257bf5bc1eccbaec373c82c559b83a27fb0b6cb7051d8190d7",
       "pyth_sponsor": "0x1528bdc52a60aaab31a9501001dfa69377708e4c2296c3d2e25b9ca0f4e9e256"
     },
-    "reward_distributor": {
-      "published_at": "0x1bab6422200e41232cce1ef8d0d64aa1fbf6458d04bb0ce86c8f4249c6c30ad3",
-      "original_id": "0x1bab6422200e41232cce1ef8d0d64aa1fbf6458d04bb0ce86c8f4249c6c30ad3",
-      "version": 1,
-      "upgrade_capability": "0x5898c397dffd417ac797bddf1f140120d7cddb5e6432d7a170eea0c3a964d2c0"
-    },
-    "supra_rule": {
-      "published_at": "0x6b142d4401b7395fd40395278190792b698cbcdd7a462e55b27398c0d9f0dd1d",
-      "original_id": "0xde280cdb680998d632cca7a1972627854aae9b4acf4cf254fc541395e9471b6d",
-      "version": 2,
-      "upgrade_capability": "0x7437d268ac4b43a0abc84e60f9b90732de00e2fd91a756176a1757fe2c7d79e1"
-    },
     "waterx_account": {
       "published_at": "0x2d9b1eb3958fad8ff619d30d959351ecce851fcea231fa362b36d52c76b339b5",
       "original_id": "0x2d9b1eb3958fad8ff619d30d959351ecce851fcea231fa362b36d52c76b339b5",
@@ -221,10 +209,12 @@
       "original_id": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
       "version": 1
     },
-    "waterx_rule_nautilus_enclave": {
-      "published_at": "0x0704d98799580855eaae8fdc5df50472fe40646703ba5f5eaf8ee24831cfc4ea",
-      "original_id": "0x0704d98799580855eaae8fdc5df50472fe40646703ba5f5eaf8ee24831cfc4ea",
-      "version": 1
+    "waterx_staking": {
+      "published_at": "0x33b128a17cb484919ff90e2035d5b8914acee808b8ce040cff723cce15214862",
+      "original_id": "0x33b128a17cb484919ff90e2035d5b8914acee808b8ce040cff723cce15214862",
+      "version": 1,
+      "upgrade_capability": "0xa2343aa8b1a1e2dc64915dee24f6db243559fb268f1c356a7440affcf62530cd",
+      "admin_cap": "0x09ad5e4a2e31c48f2f93b119d31d4e237efd036bf3439a7afbbf89ee86bfb815"
     },
     "wlp": {
       "published_at": "0xe6112759a0d6f503ef24050a891bd3cd1ced587a87a83b3fa9c96a8cc417558c",
