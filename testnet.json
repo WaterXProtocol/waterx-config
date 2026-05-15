@@ -223,6 +223,11 @@
       "admin_cap": "0x09ad5e4a2e31c48f2f93b119d31d4e237efd036bf3439a7afbbf89ee86bfb815",
       "pools": {
         "WLP": "0xa5da612cf5bd9c5bc90495e67a12cbbd1fbf4d872886d5cd9d95022058624830"
+      },
+      "rewarders": {
+        "WLP": {
+          "MOCK_SUI": "0x5578d500d8ac0fc99816227cf53e72eb6253ef9df08cdcce27e26094ed03a8b3"
+        }
       }
     },
     "wlp": {
