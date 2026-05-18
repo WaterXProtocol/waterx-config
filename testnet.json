@@ -204,6 +204,20 @@
         }
       }
     },
+    "waterx_prediction": {
+      "published_at": "0xcd9385ff6414afeefb994a646af5c7451c5f88ab4c751f828453fbddb3d2f111",
+      "original_id": "0xcd9385ff6414afeefb994a646af5c7451c5f88ab4c751f828453fbddb3d2f111",
+      "version": 1,
+      "upgrade_capability": "0x830212f1cfa2b0a2e02308553b503d1b9164687b0699e928d4521a32edd77ab9",
+      "admin_cap": "0x3afca689df306babe5ac83651268276989222fe47ffc5084f4df53a0b08421bf",
+      "global_config": "0x6d3489019a0943f9015765826c732a3ba598ea1906f263d894ba5d6fad6346c1",
+      "market_registries": {
+        "USD": "0x8bb484a7e8ee2a85c88265906bde08ac2897b4e34bbd2b9d4e7dacc39456c772"
+      },
+      "settlement_coin_types": {
+        "USD": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
+      }
+    },
     "waterx_perp_view": {
       "published_at": "0xada57121b6a0988eb3149e613ee3acf5e10809e5fed6faa1741e55f5eeb3260b",
       "original_id": "0xada57121b6a0988eb3149e613ee3acf5e10809e5fed6faa1741e55f5eeb3260b",
