@@ -1,6 +1,7 @@
 {
   "network": "testnet",
   "chain_id": "4c78adac",
+  "coin_registry": "0xc",
   "packages": {
     "bucket_framework": {
       "published_at": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
@@ -256,6 +257,70 @@
       "pool_tokens": {
         "USDCUSD": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
       }
+    },
+    "waterx_credit": {
+      "published_at": "0xf6750397c266eca69451691b5125fbf35e5c4575c98884ac3ab6f084493fd497",
+      "original_id": "0xf6750397c266eca69451691b5125fbf35e5c4575c98884ac3ab6f084493fd497",
+      "credit_registry": "0xd3c432ee9b0bb49a8d8af00a35b357649d592e7c851ce9a8fd02eb665c4dafb7",
+      "credit_type": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
+    },
+    "native_custody": {
+      "published_at": "0x45c2074e892975f0fb62b934824531c04d43f6e7f00bf8d1e7ce2556e84fd6ee",
+      "original_id": "0x45c2074e892975f0fb62b934824531c04d43f6e7f00bf8d1e7ce2556e84fd6ee",
+      "assets": [
+        {
+          "type": "0x7ccd477e884ec74f960b23a8b34b7d87999e4d7ee0dde738a0c25f46200f201a::mock_usdc::MOCK_USDC",
+          "decimal": 6,
+          "mint_fee_scaled": "0",
+          "burn_fee_scaled": "1000000",
+          "min_burn_amount": "0"
+        },
+        {
+          "type": "0xc0fad30bc21babe3b8b51c6a4c380d27b61a47e34b26968daf20315da0e35016::mock_usdsui::MOCK_USDSUI",
+          "decimal": 6,
+          "mint_fee_scaled": "0",
+          "burn_fee_scaled": "1000000",
+          "min_burn_amount": "0"
+        }
+      ],
+      "vault": "0xa16c7b06afc1baeedd9acb5f590d14bbb6a887df6e810a72e7709acb764c5b71"
+    },
+    "wormhole_bridge": {
+      "published_at": "0x985fc035da97d950cc91678553c7f9d9ebc099a5660dcc39ed879561a23ea377",
+      "original_id": "0x985fc035da97d950cc91678553c7f9d9ebc099a5660dcc39ed879561a23ea377",
+      "wormhole_state": "0x31358d198147da50db32eda2562951d53973a0c0ad5ed738e9b17d88b213d790",
+      "hourly_mint_limit": "1000000000000",
+      "max_mint_per_tx": "100000000000",
+      "hourly_burn_limit": "1000000000000",
+      "max_burn_per_tx": "100000000000",
+      "trusted_emitters": [
+        {
+          "chain_id": 10002,
+          "evm_bridge_address_32b": "0x000000000000000000000000425B50658A643A746642A72295Db0084FF5A0b2E",
+          "evm_tokens_20b": [
+            "0xe81cFf07AA416cA84bA1A48CA25A269feaeB828d",
+            "0xD18CC7cBA19191ccaA8DE0AF5530715bbbAd0Fbe"
+          ]
+        }
+      ],
+      "bridge": "0x02c22027c4e358fc3b17f8a91fc446827d8a51438d1f82d180b20a6d305cf43c",
+      "emitter_cap": "0x4494af0594680a371c5a42076aebd08b54f4d74a602c12166ed6e0135e8282ad"
+    },
+    "withdrawal_queue": {
+      "published_at": "0xd5980af52e1945ffbfdb115f7d3b3fd94a3b77fccdcd0f0669164af88ccc1ca2",
+      "original_id": "0xd5980af52e1945ffbfdb115f7d3b3fd94a3b77fccdcd0f0669164af88ccc1ca2",
+      "executors": [
+        "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
+      ],
+      "queue": "0xa3c9522d4fb0f3141ac5016ea07519b5ef4537d8c7055f673ede24e8d68f26a6"
+    },
+    "testnet_faucet": {
+      "published_at": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
+      "original_id": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
+      "whitelist": [
+        "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
+      ],
+      "faucet": "0xa6b694d68a1807277bf2f7f304284442311c8cd4d2fe0b52b93f26abb95c290f"
     }
   }
 }
