@@ -260,11 +260,13 @@
     },
     "waterx_credit": {
       "published_at": "0xf6750397c266eca69451691b5125fbf35e5c4575c98884ac3ab6f084493fd497",
+      "original_id": "0xf6750397c266eca69451691b5125fbf35e5c4575c98884ac3ab6f084493fd497",
       "credit_registry": "0xd3c432ee9b0bb49a8d8af00a35b357649d592e7c851ce9a8fd02eb665c4dafb7",
       "credit_type": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
     },
     "native_custody": {
       "published_at": "0x45c2074e892975f0fb62b934824531c04d43f6e7f00bf8d1e7ce2556e84fd6ee",
+      "original_id": "0x45c2074e892975f0fb62b934824531c04d43f6e7f00bf8d1e7ce2556e84fd6ee",
       "assets": [
         {
           "type": "0x7ccd477e884ec74f960b23a8b34b7d87999e4d7ee0dde738a0c25f46200f201a::mock_usdc::MOCK_USDC",
@@ -285,6 +287,7 @@
     },
     "wormhole_bridge": {
       "published_at": "0x985fc035da97d950cc91678553c7f9d9ebc099a5660dcc39ed879561a23ea377",
+      "original_id": "0x985fc035da97d950cc91678553c7f9d9ebc099a5660dcc39ed879561a23ea377",
       "wormhole_state": "0x31358d198147da50db32eda2562951d53973a0c0ad5ed738e9b17d88b213d790",
       "hourly_mint_limit": "1000000000000",
       "max_mint_per_tx": "100000000000",
@@ -305,6 +308,7 @@
     },
     "withdrawal_queue": {
       "published_at": "0xd5980af52e1945ffbfdb115f7d3b3fd94a3b77fccdcd0f0669164af88ccc1ca2",
+      "original_id": "0xd5980af52e1945ffbfdb115f7d3b3fd94a3b77fccdcd0f0669164af88ccc1ca2",
       "executors": [
         "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
       ],
@@ -312,6 +316,7 @@
     },
     "testnet_faucet": {
       "published_at": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
+      "original_id": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
       "whitelist": [
         "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
       ],
