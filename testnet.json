@@ -10,8 +10,9 @@
     },
     "waterx_referral": {
       "published_at": "0x0ab918a0dd576e44b84f14ed4a2329030c6c07e09f44e82c544b23f3ddbf6b7f",
-      "original_id": "0x0ab918a0dd576e44b84f14ed4a2329030c6c07e09f44e82c544b23f3ddbf6b7f",
-      "version": 1,
+      "original_id": "0x5d6d935e8a73c2df1c60135a798e404cc8545c3912236b8f82fe5554c539007a",
+      "version": 7,
+      "upgrade_capability": "0x5a6f659428336b6dcaebcf3dc267d8c3bb07a8d9172f9b45061b91bf486141c2",
       "referral_table": "0xb008a69a277ed7a62318566fd1bba6bc213cdd642232cf62ed3bf58fe437515f"
     },
     "mock_sui": {
