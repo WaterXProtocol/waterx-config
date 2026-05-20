@@ -97,6 +97,22 @@
         "USDCUSD": {
           "feed_id": "0x41f3625971ca2ed2263e78573fe5ce23e13d2558ed3f2e47ab0f84fb9e7ae722",
           "price_info_object": "0x9c4dd4008297ffa5e480684b8100ec21cc934405ed9a25d4e4d7b6259aad9c81"
+        },
+        "HYPEUSD": {
+          "feed_id": "0x33c2eb214f05d15cbb798fad5e7eda3f695947cffd1a837d143a87f130e57e28",
+          "price_info_object": "0xa45195089f2196922b4877899d53d3934530202547645a77ba99d178d5ffed16"
+        },
+        "XRPUSD": {
+          "feed_id": "0xbfaf7739cb6fe3e1c57a0ac08e1d931e9e6062d476fa57804e165ab572b5b621",
+          "price_info_object": "0x289d44e44ccb9b79b9234050ac69c9365b342a20a95bed068c813c74f9a8ee9d"
+        },
+        "ZECUSD": {
+          "feed_id": "0x683832447e2920e3d85ab52609be9822ad0da95de656b8acd9a8f0e3a3717895",
+          "price_info_object": "0xbc545d7ef94aafa4601fdc226b5d7ecc8d5812b5a93123db7dff097170c6b2d5"
+        },
+        "USDJPY": {
+          "feed_id": "0x20a938f54b68f1f2ef18ea0328f6dd0747f8ea11486d22b021e83a900be89776",
+          "price_info_object": "0xd14cadaf54a926f701db021eceaa89b3d09363e1bce51bfcb2291a32a693f928"
         }
       }
     },
@@ -136,7 +152,11 @@
         "QQQXUSD": "0x87e7369f365cf5d9a5e2b5973131bfafafc657a60e755d96e5b6bc778b3a566f",
         "SPYXUSD": "0xbb6036f74324179f56b9be6ee5e6c645cecfe8e20594c724e59066d101f1cd7f",
         "TSLAXUSD": "0x798433467a82c5fa06c2d3242b7b1c226e48c1e874ec007df2b1d2e20a7d8e6d",
-        "USDCUSD": "0xae2b4871a1db6453d870c20a0a3a3d8f59c74e1b864e485f86fea31c31a9d0e4"
+        "USDCUSD": "0xae2b4871a1db6453d870c20a0a3a3d8f59c74e1b864e485f86fea31c31a9d0e4",
+        "HYPEUSD": "0x266949733fe10b02ace71cc9a5128fd37f071560fbbdca55bd8a7059be8452a0",
+        "XRPUSD": "0xb0beb4453c0944de01061767077254fe0d1f026a22ddf39fad61aaea370b520f",
+        "ZECUSD": "0xe65eb777a0ef3f925c3500a3a5dc4020fe1e229ad7cdd23b7b452e14252427bf",
+        "USDJPY": "0x5cc89ca165b17f53697bd1689bbf15301e787ec35982f6068aac0f56dcd4fc5b"
       }
     },
     "waterx_perp": {
@@ -203,6 +223,22 @@
         "USDCUSD": {
           "market": "0x548e716b08ff26949bcdba5968d044f2eaf04ed4e7a4889516991791f6ac760f",
           "config": "0xf8aececd6edaca20c48edc4a662c626d3ace946db6881111a4f60cbc10bcb3f4"
+        },
+        "HYPEUSD": {
+          "market": "0x32b56b41dccb773cae224efad44921a2f34e94faffffbda5bcb9d7816c37faf8",
+          "config": "0xc3569b56312ce213d36b3bc016abd28a33ac3f8583487c2ce253a7d873087bfa"
+        },
+        "XRPUSD": {
+          "market": "0xe03f4c162735edfe4e89694742d4435699d8cebb25d75ff5b4ccbb64bd3a8913",
+          "config": "0xd7d98a645dd970a1fa919045df5a21b9f34fbe1fc8e590bf5a2ea363f991966b"
+        },
+        "ZECUSD": {
+          "market": "0x3e34ddedd719c1b829b73300f12df836e806b0423122bc481193f14837a7b928",
+          "config": "0x25d2e71fc082f39a7d86ccff25e67db0f08342405efaf5f01e455a163715e5aa"
+        },
+        "USDJPY": {
+          "market": "0x64c620f6ef46511714f61c9c6a64300c9cd75e9d35fa34d399671c36e58692a8",
+          "config": "0xe83d352be1fb5d463e6ad05b2751c2fa482bf7ff407d4ebce14fcf41314f1559"
         }
       }
     },
