@@ -6,25 +6,33 @@
     "bucket_framework": {
       "published_at": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
       "original_id": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
-      "version": 1
+      "version": 1,
+      "publish_digest": "4e8aXYCKD7Kd3cJTaY3QSCcC4neTZvq1T3yeP3pBxX2a",
+      "publish_checkpoint": "316604001"
     },
     "waterx_referral": {
       "published_at": "0x0ab918a0dd576e44b84f14ed4a2329030c6c07e09f44e82c544b23f3ddbf6b7f",
       "original_id": "0x5d6d935e8a73c2df1c60135a798e404cc8545c3912236b8f82fe5554c539007a",
       "version": 7,
       "upgrade_capability": "0x5a6f659428336b6dcaebcf3dc267d8c3bb07a8d9172f9b45061b91bf486141c2",
-      "referral_table": "0xb008a69a277ed7a62318566fd1bba6bc213cdd642232cf62ed3bf58fe437515f"
+      "referral_table": "0xb008a69a277ed7a62318566fd1bba6bc213cdd642232cf62ed3bf58fe437515f",
+      "publish_digest": "4nV3yHgdW72uLXpNHGWvGo4wpBnjTDth3hTn5VcCMJJv",
+      "publish_checkpoint": "326287569"
     },
     "mock_sui": {
       "published_at": "0x896e53015216c5034825c056bcde37a694263601df2534ae5c91b8a3d9150c78",
       "original_id": "0x896e53015216c5034825c056bcde37a694263601df2534ae5c91b8a3d9150c78",
       "version": 1,
-      "upgrade_capability": "0x3aef5756c226419197c905af4562970881335475a825aab2e13ec7e3fe36a526"
+      "upgrade_capability": "0x3aef5756c226419197c905af4562970881335475a825aab2e13ec7e3fe36a526",
+      "publish_digest": "8n79DxJvHZ7rXPQHKgcfWtLUhwxdo8uxirqipGcd2Pzy",
+      "publish_checkpoint": "324022335"
     },
     "mock_usdc": {
       "published_at": "0x7ccd477e884ec74f960b23a8b34b7d87999e4d7ee0dde738a0c25f46200f201a",
       "original_id": "0x7ccd477e884ec74f960b23a8b34b7d87999e4d7ee0dde738a0c25f46200f201a",
-      "version": 1
+      "version": 1,
+      "publish_digest": "7m5wQxcwCtESGiLw6SEcwzqXMEpx6Uea4KUbp6a688HL",
+      "publish_checkpoint": "316606738"
     },
     "mock_usdsui": {
       "published_at": "0xc0fad30bc21babe3b8b51c6a4c380d27b61a47e34b26968daf20315da0e35016",
@@ -33,7 +41,9 @@
       "upgrade_capability": "0x445e8bd44129686b74e45f82616da79c093827dada5bd91b0014281d1f4bdc73",
       "currency": "0x0177241143d5b41bc8676ed3f59e3fae8f6aefd555f5e4fc255d2aff71093493",
       "treasury_cap": "0x25bf4ad713da4f63cc53ee57e0523ffa713079ae3bca5026dab7dd4999b1833e",
-      "metadata_cap": "0x7cfe3cc8a003a384aa3c1f92ca5d0bac9cfffcba959d254a76cc14375685a95a"
+      "metadata_cap": "0x7cfe3cc8a003a384aa3c1f92ca5d0bac9cfffcba959d254a76cc14375685a95a",
+      "publish_digest": "7Sd6D7jdSn6LVep4Fv6LwCUKQH2bVwVeGXHbsda7Pfzf",
+      "publish_checkpoint": "322190204"
     },
     "pyth_rule": {
       "published_at": "0x4b56cbbdbc31b975c6825effeeadaf76819650623b4d69065f8a723a9ed06fa0",
@@ -114,14 +124,18 @@
           "feed_id": "0x20a938f54b68f1f2ef18ea0328f6dd0747f8ea11486d22b021e83a900be89776",
           "price_info_object": "0xd14cadaf54a926f701db021eceaa89b3d09363e1bce51bfcb2291a32a693f928"
         }
-      }
+      },
+      "publish_digest": "4HC9qSuBPgKANEp8mhR2jLdEL8VznQzxKfKhrPTyTU3S",
+      "publish_checkpoint": "336384650"
     },
     "pyth_sponsor_rule": {
       "published_at": "0xad089846b632a810516115180d20d26812c552860f9e8d7f0c6dbd66e910b2eb",
       "original_id": "0xad089846b632a810516115180d20d26812c552860f9e8d7f0c6dbd66e910b2eb",
       "version": 1,
       "upgrade_capability": "0xa26a61dcd1511d257bf5bc1eccbaec373c82c559b83a27fb0b6cb7051d8190d7",
-      "pyth_sponsor": "0x1528bdc52a60aaab31a9501001dfa69377708e4c2296c3d2e25b9ca0f4e9e256"
+      "pyth_sponsor": "0x1528bdc52a60aaab31a9501001dfa69377708e4c2296c3d2e25b9ca0f4e9e256",
+      "publish_digest": "Fx4cKDK9JFp5FGDw9v8Z9KwGU8K2z3VbNJgrAr2TPyvp",
+      "publish_checkpoint": "336384736"
     },
     "waterx_account": {
       "published_at": "0x2d9b1eb3958fad8ff619d30d959351ecce851fcea231fa362b36d52c76b339b5",
@@ -129,7 +143,9 @@
       "version": 1,
       "upgrade_capability": "0x6f6d36b313bd5915d930a3b7b632a3ee2f9ff4f810825b5902627730d6fb0002",
       "admin_cap": "0x3aa99bae17507335c5c21b4ac65a82b381c7cf6e7959dd2785c447d8a99b7889",
-      "account_registry": "0xde28a18a1cecb0486d77ef371b08695029e183bc6910455fbe2c5cb463cb0861"
+      "account_registry": "0xde28a18a1cecb0486d77ef371b08695029e183bc6910455fbe2c5cb463cb0861",
+      "publish_digest": "BhVn8x2FtqADb13MMdJuXZfDaDAK5QYLNqKtodGRXNz",
+      "publish_checkpoint": "336384297"
     },
     "waterx_oracle": {
       "published_at": "0x6b244c75800a105900b3fa0c2ac005a057ebabe8c3d452742a1690e3dc88229a",
@@ -157,7 +173,9 @@
         "XRPUSD": "0xb0beb4453c0944de01061767077254fe0d1f026a22ddf39fad61aaea370b520f",
         "ZECUSD": "0xe65eb777a0ef3f925c3500a3a5dc4020fe1e229ad7cdd23b7b452e14252427bf",
         "USDJPY": "0x5cc89ca165b17f53697bd1689bbf15301e787ec35982f6068aac0f56dcd4fc5b"
-      }
+      },
+      "publish_digest": "3AHyA8ThWM6pD9eVK3paisG8TaNE51XVkRbn5TeS2ZKD",
+      "publish_checkpoint": "336384226"
     },
     "waterx_perp": {
       "published_at": "0xde7df7bb0ff235817a41c9b0ca06526456eaaafbb3a2ad3692992c47ab45ecf9",
@@ -240,7 +258,9 @@
           "market": "0x64c620f6ef46511714f61c9c6a64300c9cd75e9d35fa34d399671c36e58692a8",
           "config": "0xe83d352be1fb5d463e6ad05b2751c2fa482bf7ff407d4ebce14fcf41314f1559"
         }
-      }
+      },
+      "publish_digest": "4txRbMYZMX2dyHkWJzM76kPjZn7evdfet8Ki7yHn25t5",
+      "publish_checkpoint": "336384413"
     },
     "waterx_prediction": {
       "published_at": "0xcd9385ff6414afeefb994a646af5c7451c5f88ab4c751f828453fbddb3d2f111",
@@ -254,18 +274,24 @@
       },
       "settlement_coin_types": {
         "USD": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
-      }
+      },
+      "publish_digest": "9eypodg67q4TiiyjMKGZr5TroE8MjmaqjMtGp2shQ3BH",
+      "publish_checkpoint": "338283299"
     },
     "waterx_perp_view": {
       "published_at": "0xada57121b6a0988eb3149e613ee3acf5e10809e5fed6faa1741e55f5eeb3260b",
       "original_id": "0xada57121b6a0988eb3149e613ee3acf5e10809e5fed6faa1741e55f5eeb3260b",
       "version": 1,
-      "upgrade_capability": "0x4335ee596b25a724cafb21f9ed9df1edb21ea74e0f6195063e1bc58b0a62cdb0"
+      "upgrade_capability": "0x4335ee596b25a724cafb21f9ed9df1edb21ea74e0f6195063e1bc58b0a62cdb0",
+      "publish_digest": "Hf13ynpMJN6tnYxqqw2PoGcVhuXsjAB5g3z3mWFy6v6V",
+      "publish_checkpoint": "336384484"
     },
     "waterx_rule": {
       "published_at": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
       "original_id": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
-      "version": 1
+      "version": 1,
+      "publish_digest": "4XuRhPYUqgH26DHhToED3afHiKPJN9HLDXxXutK58VHi",
+      "publish_checkpoint": "336051562"
     },
     "waterx_staking": {
       "published_at": "0x33b128a17cb484919ff90e2035d5b8914acee808b8ce040cff723cce15214862",
@@ -280,7 +306,9 @@
         "WLP": {
           "MOCK_SUI": "0x5578d500d8ac0fc99816227cf53e72eb6253ef9df08cdcce27e26094ed03a8b3"
         }
-      }
+      },
+      "publish_digest": "6m262gKqhjZYfmvvAwEDWyjazTAiAoz9wKgR3Gunpy8m",
+      "publish_checkpoint": "336744695"
     },
     "wlp": {
       "published_at": "0xe6112759a0d6f503ef24050a891bd3cd1ced587a87a83b3fa9c96a8cc417558c",
@@ -293,7 +321,9 @@
       "wlp_aum": "0xa64fb2cac92ac3b31aefc799c5dd9ba0ed87b3049deda81fce0719f1b2081ce7",
       "pool_tokens": {
         "USDCUSD": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
-      }
+      },
+      "publish_digest": "DQ4w22cbehrc6253fY91hDnthVZB1QMrbSqSWbdQbhGu",
+      "publish_checkpoint": "336384554"
     },
     "waterx_credit": {
       "published_at": "0xf6750397c266eca69451691b5125fbf35e5c4575c98884ac3ab6f084493fd497",
@@ -301,7 +331,9 @@
       "version": 1,
       "upgrade_capability": "0xca85f8c47a2c8f227b2d9c81962b8df16bf26d5e307e9d2a0fb8ab300c710511",
       "credit_registry": "0xd3c432ee9b0bb49a8d8af00a35b357649d592e7c851ce9a8fd02eb665c4dafb7",
-      "credit_type": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
+      "credit_type": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD",
+      "publish_digest": "7SATJh8sKGPqoPV8so3MPZc1NPGPUfp4Ss4671mLT8nq",
+      "publish_checkpoint": "338575097"
     },
     "native_custody": {
       "published_at": "0x32678281954f247bcfffe3235cf2faf06b25f0ab236097f74d05c41d4ff889a5",
@@ -324,7 +356,9 @@
           "min_burn_amount": "0"
         }
       ],
-      "vault": "0xa16c7b06afc1baeedd9acb5f590d14bbb6a887df6e810a72e7709acb764c5b71"
+      "vault": "0xa16c7b06afc1baeedd9acb5f590d14bbb6a887df6e810a72e7709acb764c5b71",
+      "publish_digest": "Bk7KYHedqU7qZYWzsimQa4xGVLtbiZLQDvyaix652rEa",
+      "publish_checkpoint": "338601320"
     },
     "wormhole_bridge": {
       "published_at": "0x985fc035da97d950cc91678553c7f9d9ebc099a5660dcc39ed879561a23ea377",
@@ -347,7 +381,9 @@
         }
       ],
       "bridge": "0x02c22027c4e358fc3b17f8a91fc446827d8a51438d1f82d180b20a6d305cf43c",
-      "emitter_cap": "0x4494af0594680a371c5a42076aebd08b54f4d74a602c12166ed6e0135e8282ad"
+      "emitter_cap": "0x4494af0594680a371c5a42076aebd08b54f4d74a602c12166ed6e0135e8282ad",
+      "publish_digest": "Fev1CyTpgw7wkF5ctZshPfN1PsLTJtbPyMg6dTH2gymD",
+      "publish_checkpoint": "338579114"
     },
     "withdrawal_queue": {
       "published_at": "0xd5980af52e1945ffbfdb115f7d3b3fd94a3b77fccdcd0f0669164af88ccc1ca2",
@@ -357,7 +393,9 @@
       "executors": [
         "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
       ],
-      "queue": "0xa3c9522d4fb0f3141ac5016ea07519b5ef4537d8c7055f673ede24e8d68f26a6"
+      "queue": "0xa3c9522d4fb0f3141ac5016ea07519b5ef4537d8c7055f673ede24e8d68f26a6",
+      "publish_digest": "AAcBmHAn2paFQmBPpTZMuzG3y8E5Q2MjCVJpYABnp6om",
+      "publish_checkpoint": "338628431"
     },
     "testnet_faucet": {
       "published_at": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
@@ -367,7 +405,9 @@
       "whitelist": [
         "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
       ],
-      "faucet": "0xa6b694d68a1807277bf2f7f304284442311c8cd4d2fe0b52b93f26abb95c290f"
+      "faucet": "0xa6b694d68a1807277bf2f7f304284442311c8cd4d2fe0b52b93f26abb95c290f",
+      "publish_digest": "5ioVM4hEZzxVqV43tKg9VPxAqwYEgs7cfiCs5wUHnVSd",
+      "publish_checkpoint": "338586209"
     }
   }
 }
