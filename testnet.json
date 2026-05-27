@@ -46,11 +46,11 @@
       "publish_checkpoint": "322190204"
     },
     "pyth_rule": {
-      "published_at": "0xe5056f4a7ca19dc85e13112251f45f2408efd543444f918871c0b4950ececbb7",
-      "original_id": "0xe5056f4a7ca19dc85e13112251f45f2408efd543444f918871c0b4950ececbb7",
+      "published_at": "0xb7fcd1a82372821f7133f96e978ed00d7fa4000a6fd0ab7e5e0106eeb0b40b7c",
+      "original_id": "0xb7fcd1a82372821f7133f96e978ed00d7fa4000a6fd0ab7e5e0106eeb0b40b7c",
       "version": 1,
-      "upgrade_capability": "0x188924764bfca5ae09e123ebf47100303c909d2b8ac212c7344d823efeec5d41",
-      "config": "0x3dc5c4ff13b2b39be90b274e0ea63237db69d997f50c57b078283740f2271c3e",
+      "upgrade_capability": "0xbef10c8de315c0884108c66e6208217a49b3ee6a16846cac1f8cba83e6823653",
+      "config": "0x1d59704fb6cd6ce0eb9704127073eb4a753b97f34920d3ca8489e26fe7776d72",
       "feeds": {
         "SUIUSD": {
           "feed_id": "0x50c67b3fd225db8912a424dd4baed60ffdde625ed2feaaf283724f9608fea266",
@@ -169,217 +169,217 @@
           "price_info_object": "0x9c4dd4008297ffa5e480684b8100ec21cc934405ed9a25d4e4d7b6259aad9c81"
         }
       },
-      "publish_digest": "9PZFDkwGcaCYmZEX3NPu7jmg2XW26DUrQeZrxjeLL9Bz",
-      "publish_checkpoint": "341618073"
+      "publish_digest": "GaHTZ4gcZFzesxznkQ4Tny6NyXLDLdtACJeGW4gXfsxy",
+      "publish_checkpoint": "341636391"
     },
     "pyth_sponsor_rule": {
-      "published_at": "0x4457ab4141a2ede6a6e3a025353fc3ce81dd2d4598152fe51ef32699a8a43019",
-      "original_id": "0x4457ab4141a2ede6a6e3a025353fc3ce81dd2d4598152fe51ef32699a8a43019",
+      "published_at": "0x11097e3d0a511ef55ad9fd5f208d3025375b654263f10f7d347acd524b423cbd",
+      "original_id": "0x11097e3d0a511ef55ad9fd5f208d3025375b654263f10f7d347acd524b423cbd",
       "version": 1,
-      "upgrade_capability": "0xa3559cff9de94baef1623a363e3581214360d29d5ce5e107f351d5c8a5d86e7e",
-      "pyth_sponsor": "0xf43c7ac1a67989e941af413ff560720f8eeca1fa4799f3b32c92af2c3fee6d6f",
-      "publish_digest": "FBvzbdrxJJxSDLRZTC7NmRYfsKTChv1yRghRbSZ12RSD",
-      "publish_checkpoint": "341618087"
+      "upgrade_capability": "0x67c911d2c17cb4a413fcac6ef399742ccd8b6a10d649281c6d1f3189f05cf38f",
+      "pyth_sponsor": "0xa325769d29ee6cf263027daba052fcee0ed291d38356e4edaca3c171e19e3391",
+      "publish_digest": "5wptMaYivAG1BeXYFTndkH9S95AKpBfR1XqJeVghfs6T",
+      "publish_checkpoint": "341636405"
     },
     "waterx_account": {
-      "published_at": "0x426095fa82390b680172b3fa92a85a13a0acb7c120d80887dedfd7e69f833f50",
-      "original_id": "0x426095fa82390b680172b3fa92a85a13a0acb7c120d80887dedfd7e69f833f50",
+      "published_at": "0xaca20506c4b14cfd2ea767d68e3dd489af082b2d0f6ed6f33b32e78abeaff2cc",
+      "original_id": "0xaca20506c4b14cfd2ea767d68e3dd489af082b2d0f6ed6f33b32e78abeaff2cc",
       "version": 1,
-      "upgrade_capability": "0x5389e6119957fe375e7b1a694a451d5470d4c6a283b8c2108b247875b4112713",
-      "admin_cap": "0xe31449f6cf4a989699ef2bc57ef8cc8ccc8a7204c990d43c4d6d44691df6f1ff",
-      "account_registry": "0xffeae11f0b52280a3e15d69d04e335b8a7788402062a0c8fdbee0a37d6de2431",
-      "publish_digest": "3uAHittuRKGBDMxUnaN7a2jsZ7UXcFcZvBCidP2Ea7Pn",
-      "publish_checkpoint": "341618004"
+      "upgrade_capability": "0x48349437df1d195289cfb3580b41d46f23d70dde2a7103273ee647d828c26ba8",
+      "admin_cap": "0xa95510259d9995fb9440ffb5c16c21b64e0ae5287509be84ec61ade1d6bf273a",
+      "account_registry": "0x7f3cc3c674daff974efb81fc84ae816df58797b352d5d45453fddbd5380fa292",
+      "publish_digest": "4f1jTjeRttS4DxbFzkhxLJMNzCB9EjgQ9RMDDRtBUNsm",
+      "publish_checkpoint": "341636325"
     },
     "waterx_oracle": {
-      "published_at": "0x121ba77b0c54ca26b51d42908eb84c7cf4f6992cfbd076081ec3979a12dd9f58",
-      "original_id": "0x121ba77b0c54ca26b51d42908eb84c7cf4f6992cfbd076081ec3979a12dd9f58",
+      "published_at": "0x6306e4e51125da1064fea61bfd3aa98593918730305981948584cb0c14d9f0a0",
+      "original_id": "0x6306e4e51125da1064fea61bfd3aa98593918730305981948584cb0c14d9f0a0",
       "version": 1,
-      "upgrade_capability": "0xb1a68742f0eb0271b51797e9a68eef68e5e3353f40439eb897e88bc06cbbc94b",
-      "listing_cap": "0x064399510010c5abf06becb3f3c9910559c1243c2982437ba18ad6859be97590",
-      "oracle": "0x65a2abfdb0b86bb5c035ea9f8c1b21097ed662ea57be61b10ac86d43173af9eb",
+      "upgrade_capability": "0xe698dae4df3eeb85e1f81cb904b077e76e8b462938afa937b024f7db1b7fca37",
+      "listing_cap": "0xac8a969f3fcb73a9705d02d36d922ae5402b0a655855d09a2e558e8a624926f7",
+      "oracle": "0x4744837685e752c558fb2c9f2868ce07b15c3e505d51e237d166d0f15c233dfe",
       "aggregators": {
-        "SUIUSD": "0x28d6a62240a6f6d678dda3d271175d7e55cd13a60424ac34a89ae8d67497ebe9",
-        "BTCUSD": "0xb3e2dd8b5e3fbdf65a1e6370449deaaa7cab8b5ed6482cdff3b1957f57042bf3",
-        "ETHUSD": "0x96d8ea9acfdc5847239779a7243c7e32bc753f15fac0fd9eeee121b43c7bb812",
-        "SOLUSD": "0xaf8e650acc35b646d30a180fb9ab08c1b45a06ff37047d6de58bccf67d7ba432",
-        "DEEPUSD": "0xbab6aaee2ccd5352ffe19df5c0ef2adb89f6364ff57adc9c7f28348f7b94a199",
-        "WALUSD": "0xfa333b99716122857039e9e024fb7181ed90230ad7da0e90c33f5421beebbd2a",
-        "HYPEUSD": "0x446a1b751acf729be5dcff38dd76d3101431b57253af08a35cc6333822605f42",
-        "XRPUSD": "0x23fcf20f570a145fd2bdf0e993324babe1d745b5b333ce18b95acb41ee423c45",
-        "BNBUSD": "0x44b856768e61abe04a789be0ac672be4d3686d9bd123d2d53d4c323449c5585f",
-        "ZECUSD": "0xb379cf9f92558b17f00d553df0f91ed6c08de009dc0af226b4415d9f2280a6f7",
-        "QQQXUSD": "0x22d2d8e7fbefa9c106c7c7c581272daa61dfe48eca2a8ebab45ad8d784a5f677",
-        "SPYXUSD": "0xe749c3bf626e458530390ca1022164064408f705e555d1bdcd164214dbc5280d",
-        "NVDAXUSD": "0x8589e48da6c4c30f53022c8ee1028f0f75993a189b1d4114d9e445eceb5f4fbb",
-        "TSLAXUSD": "0x90465d90611efd056b71bc9bf9433a015533bae3e7e29b27d529d630252ff87b",
-        "AAPLXUSD": "0x88136d1b66f6b081c71cb5b3185d80eb9a14ed204accb98a5143a0f3c61b7673",
-        "GOOGLXUSD": "0x582a69152a190e5076d34899d5fa82234d8449a4ca93a14f5231f589d7326fa9",
-        "METAXUSD": "0x758f321400e358cb13001f2dc0ba14bd70f55a8928a738ca4972693215cfe548",
-        "MSTRXUSD": "0x227269095508bc9590700a1269ba7b778b6bcd9639332b81e217c6a960ec1523",
-        "COINXUSD": "0x320529218a8b978a72e4aab4ab17a2a54d9bfd6729cd39174a97d372c26f8e90",
-        "HOODXUSD": "0xd3bc175b5a9e692d225ad2d45dd1b7daf80b5795838c599850922823cc48f706",
-        "CRCLXUSD": "0x6c6a1083b2dc6cfddb9f253f0b2111ffddb74bb05ec9f990b8cb0fb562a25e6a",
-        "NFLXXUSD": "0x5b3e68d6ac705f3be6c7d286d575ba5fd4d1104e5fe8feb970c726230bf7133b",
-        "XAUTUSD": "0xb9cd7a17475f395a8cf97ac2e036d76ce0f64fd18acd0822164b46c044290df4",
-        "XAGUSD": "0x8fc9776a14e2e85eb40a4df9a176a536020b72564e0156cd4d741bcf3b84cb66",
-        "WTIUSD": "0x49613c1c4d6afd92f3d563242ff93139812736e4e68b2b4b760e1f4aa1b65626",
-        "BRENTUSD": "0xa9063a23588430e6d03a38b3afbb140ac76db0bfa72a76a548988719eef8fe86",
-        "EURUSD": "0x191b2246bdf1a659fe2612d66db761e5f91c7480e45673b62e5717f4baeaa4f9",
-        "USDJPY": "0x614344f512852271a11c379ec277ff6ccdfb9c49afb72b8c4ef415e530f380d6",
-        "USDCUSD": "0x0e66bf8d7270bfe3da6facb90e5f7bc9eff6e240ad8baeb410b49fc5f9aafbca"
+        "SUIUSD": "0x8379c31f1c1fe539747fd02e77e5d6868c18f8c8b5b5893cd11da2d6119bc502",
+        "BTCUSD": "0x0080eb53b4b5b18107f15b25a46df3eff7896e0f42c6c10a1637edc96d254800",
+        "ETHUSD": "0xc8da3878dab3fe14afdf55add66497f2d37c916031e74731d6b7930f7dc05c19",
+        "SOLUSD": "0x55091fbc65949ad4b00acf7c4b72132e0dcc366e58d4a4c43f7de5cdba37bc2d",
+        "DEEPUSD": "0xa5a9ba4f7107f86a38a54ccb6b799f87386945f960545332cb0da060d64a72ea",
+        "WALUSD": "0x0065726880ec350cb9337968abb9ca855e065543395cc91c21a75da8cdd80bc8",
+        "HYPEUSD": "0xd333652f1545eb5630b7837c5fc0acf04af291620327e4e85e81081001c21726",
+        "XRPUSD": "0x02b065c39092cb5a8eb145ea9f469b7535a822c83f0785c85aacea7874d4ce09",
+        "BNBUSD": "0xe3029d55d1a422ebd02e72252ee37f7546f95e0c945444b549d304ec0a76001d",
+        "ZECUSD": "0xa40e94913a721bec32c168605d6b17b814a85511ba9e5e19e5972957e694570f",
+        "QQQXUSD": "0x23bee3b2b638f5f1bee09609f43f169c1453ac981c6ede20d418dffcfe08e595",
+        "SPYXUSD": "0x82d28981e21833c2e8c9774a92d265f7889827d765bc5fd7f94364ea6e96047b",
+        "NVDAXUSD": "0xb10b4da288ec0a9f099e2603a828d606553daca6e1e57c43d0072bad308baf81",
+        "TSLAXUSD": "0xfb9252a931df612c99f6b9a3fa9f4fe3c6d8e38480c5e6bc3ecd8cb77bef7ff1",
+        "AAPLXUSD": "0x8528d0f224143c80f7bc498a0e28a7f49d0a115c7c2766a3634c0a7626319ff6",
+        "GOOGLXUSD": "0x7fcd4b7e020044add49d1768cb7b475c2026b92aafe903e6726752207906359b",
+        "METAXUSD": "0x91e4d1e8a67d904b2eeb513c10b3aadc43af13aebfcf338c27e1076394019da5",
+        "MSTRXUSD": "0xdf4193a4dea929a37535e33c1c5234d67c9740feca8dc500fa47bce8a3f2f1be",
+        "COINXUSD": "0x2681a66a9f45b2349752bc7db2e4bb6dc7e3a18e7f9ec723c0a9f65e7d2329a8",
+        "HOODXUSD": "0xfaab789393fd3c84a3a596de30efecd2b465d316c5cdc0f45b0d1e91aef0055f",
+        "CRCLXUSD": "0x3d8acc6317b75e803c9f44f70bf2d01293fd1b6b4e4570584bb33700c4ee05f0",
+        "NFLXXUSD": "0xb5b1ca3cd1511eae87998abf4554a9cc738a9d58e1bb70c55eeca59e77256f04",
+        "XAUTUSD": "0x2f40640519e4aeed1e52224f3e67eb5537af0bdd5b2e7ab1777a120482450d9e",
+        "XAGUSD": "0xe71350be16b6e2d31b962878974135091706679439cee9243f90eef48e6ae6a3",
+        "WTIUSD": "0xd5b00dd5e69f24f329fe7efca85ecd0637f5b0181df4b1e7580b52b9d496f722",
+        "BRENTUSD": "0x6d218e5f745757b3c60741baf74ea35adf4719b8d16fe4bb8305e911c79b8900",
+        "EURUSD": "0x6ec3016ba7af68b6c4f6de9472032f0021ce70b69bc453cf144135163e6f9bab",
+        "USDJPY": "0x7f35939e72179c8236fcaf92aa9e85283a7790334bc73c20af84e2746c4b63fb",
+        "USDCUSD": "0x1a267c39d2b99c19453727d6416b080a38a37b7bf24ffc6afc6dd9d99ffa64f7"
       },
-      "publish_digest": "F1Y7Lisv3hhjT69SZd4NhDihhNiWcAeA2ML8FQKiBxGQ",
-      "publish_checkpoint": "341617990"
+      "publish_digest": "CQE5kRAgar7zsNhgYv9yXt9qhJGfnqzkbgCU1ZJgQDpt",
+      "publish_checkpoint": "341636310"
     },
     "waterx_perp": {
-      "published_at": "0x3f808f77afa4d09e0931c34f3d4b6326762f6493c5d0341cc2e806164c3d7afa",
-      "original_id": "0x3f808f77afa4d09e0931c34f3d4b6326762f6493c5d0341cc2e806164c3d7afa",
+      "published_at": "0x2b3d887b4ef15c8ded66ea3bd8d5ae63cc7e1a358feeb0b3b9a4436603b3f588",
+      "original_id": "0x2b3d887b4ef15c8ded66ea3bd8d5ae63cc7e1a358feeb0b3b9a4436603b3f588",
       "version": 1,
-      "upgrade_capability": "0x3fb895dfacf8728e338445576dbcba2b63306e39c3e8ae74c7b56d1fa2f902e2",
-      "admin_cap": "0x7d83054a3824c4f6427b418e03ad26333231af768a1ec1dc003fff9f0bb31283",
-      "global_config": "0x24b5a189c2718b5ee2d2b328a69bf7303a54f1e6f1a4706ec7c3f8efecc5805f",
-      "market_registry_wlp": "0x9477debb6f0383df470638313369a7f2c8823b5d80eae86b1f8ea1739787c9f0",
+      "upgrade_capability": "0x6029d8772a6d94e9d19bd2497063982597b8fc654453f32acd8cff18da95326c",
+      "admin_cap": "0xdb0753513d6109238f3e4e7044d6a2a6c6fd9423ff3bd104983d100ebe2ef655",
+      "global_config": "0xf5344623034bcb5a5a91decfc3fbe239d5ada75f36ec839d8433368902ade753",
+      "market_registry_wlp": "0xdf4fcf277b1c979631f7dcde9964f59213bd16a894591f275ab2418f20f1cceb",
       "markets": {
         "SUIUSD": {
-          "market": "0xd9d05ad0d96c73985a66ea28724a833a6dab49b5ccdaa411b2bfe95f1664cb9e",
-          "config": "0xcd28484289dbfadd27223d77cf133063f076e9f9fdaef3aad7327391d4fea3d1"
+          "market": "0x0a6dcc7fb1ad6deb25cde9b99dfeefc95b8830f27c565a5d7371a7bc7759e38d",
+          "config": "0xa668ed73e38659cd93c40788d9c8a99f853e07fb039d3e88c37293bb9dc246d6"
         },
         "BTCUSD": {
-          "market": "0x41ae297074c5676ddd3b00ee332c91f2d82612d1947db24cf0e2f6ece5cdb947",
-          "config": "0x1540aa80bb843cbb66da95af5efd948197fbaf2462033b8cc6dcd26474c0c3d5"
+          "market": "0xb3e5833fd1266973da5f97ddab290023b38cbb38b00497afc0e0fb017c4a467d",
+          "config": "0xfc9335f7cd72a905b8cb6042c1b526879313ce74d2b902d05458e45533dd2967"
         },
         "ETHUSD": {
-          "market": "0x5aa33920c7f08a556916062d0717ddd5558482ce051b553961c4b90238e44cd0",
-          "config": "0x0fee284ee424f9e069653c38552d7cb2d8e89bcbb6071e453d2a3d7e07732b57"
+          "market": "0x47926ee75ab7ea257820bec135b3398425f740f278590858a0ad68b232728908",
+          "config": "0x7c545b2dbebf9dab1d8d0c487577d8003d0393d5a5ca35fd29d93cb43be9af2c"
         },
         "SOLUSD": {
-          "market": "0xbc5ec3a7553ef6c206d6a89f4da4eb779e7587c761371db415142d2bc2be9e67",
-          "config": "0x897ab345af52ff4e6465a9a6240163d3e0d56a63bd683905a11ccfbb35786e8c"
+          "market": "0x360b1a9b24f91cb9168cc83a45df73399d6f2827d9a17609eaa8a8f436cfaf70",
+          "config": "0x2c8fa7648e33492f933bfed17a22f93861cbda799cdc049ca942eea4aa962935"
         },
         "DEEPUSD": {
-          "market": "0xa1bc6560264c29d236169bf3ff109cc695feb87f966b70ad0f279be4cf616bd6",
-          "config": "0xb7c932dc1686fe3d7051bdf8ebe58b9aa1b11d415b7510efc9981b1c592832a9"
+          "market": "0x6a9c4f7db94ca3c376d5e362c8842ff5e5f283108f89d837fb4e871931f2ff2a",
+          "config": "0xef3613529c7984ad0379f808b3b1f40da952b69d1195b427e529e0b25a546573"
         },
         "WALUSD": {
-          "market": "0x4928fee33b0448877ab6fe7687f86500d59d85b499fd0013a5d24e9de0518fb4",
-          "config": "0x3955f1793258fcd0f6d56aad7a5ce84564c4c8cc104f7c6b7c07e2d047f5388d"
+          "market": "0xd332aff6a37c887dc0fdd04e7065f9a9ee58099596759ce50e781c37c31434b7",
+          "config": "0xa7bf5fa2c5cb4563a442285e91868c30787b5b5c967af55c8ec78422af0fc1a3"
         },
         "HYPEUSD": {
-          "market": "0x2ad87fefbb784b0bc8408d0adec6ba52cd4fabb7596fc9ad24636bd75b7cd463",
-          "config": "0x0982783df58f2b23f5d1caf437f7034f4322a9cc1d7fe81a3e9c67bf7206ed96"
+          "market": "0x6785c73a238e3bda987fac51de4006c78489bb16323f975c0383e12dda4e0af0",
+          "config": "0x0b04166bc763414b17b1d6b357dfab698bc67ac5b3ecbd4b6623cc7ca12ad7b5"
         },
         "XRPUSD": {
-          "market": "0x5f1733535499fdb18994c803f880a10143294135fd0823758d1b38121ed6bab4",
-          "config": "0xb8e42a67f1a544c417f258ab3ffbccd9a3a259072a741c056023222d9029208e"
+          "market": "0xc9237b45fe005f4eec606a2be4cdb2b42cb4a7b6dc21e8920e52066043e1568f",
+          "config": "0xe717b8c94cc1ea845dcca78ff74ccb5227d001893543b50f5eb50262092efe83"
         },
         "BNBUSD": {
-          "market": "0xc1fd91dc84cc97a585a4e867e66e3c9021633b2d7b70e8402ca169e4f440290b",
-          "config": "0x1436bcb43c75eb7e68e86f5d554083867415b297613685ef73597f76ae761b2a"
+          "market": "0x1662fd3e31edc238812a7a25e2deaebee22ecb8f24e767ee5b87b9a306dcd6ba",
+          "config": "0x6ed4b35366c6ced290f7d9712ddd330067562b574146a8c3f757c794f4efe58e"
         },
         "ZECUSD": {
-          "market": "0x2150a3f867d22043c2a6ecaeb45caec694af8e904da6d85f94c68067ab918e7c",
-          "config": "0xbae07f6ddd14a085f9c79f0669179f7a343bded84ce983ad39e25abe552a14fb"
+          "market": "0x74d35153fad6e5639bbf4ccd661d27abcd10d4d39f23f6a8120b7d42bba7d9e9",
+          "config": "0x6ef88ba236da5c98c9dceff0c9c7cc7e01915da2d7e6426483c7e39a9596c78e"
         },
         "QQQXUSD": {
-          "market": "0x88f0810e9362498d3e145b3ec31f09c40e3c3cc32a5d17e69d9ef37e570aeaa2",
-          "config": "0xbc74d53bf71b015ad2f6d79e749afa7085678066b8867ccc2b9a7fd37fc1d761"
+          "market": "0x60563f51d27ce0ba65513c21f913ea323534b5746110f4a5e28af3af0f4b9348",
+          "config": "0xcce7a42cc98244701f12524e981181bc17e806a5326a6a7be68d1fad1bd2c641"
         },
         "SPYXUSD": {
-          "market": "0x7909a201a6a0f5149409daff61113d56e4c5eac19d932fc4f83f4b6fcaec504d",
-          "config": "0xa1f3d809e83a2f6ddda0af1ebafb95fc2dd301ed67a7a1a4d89cd0f0c9dc25c7"
+          "market": "0x268216ca9f72a38745c9eb1657e06bfdf8b571e8069153841ffb060895501904",
+          "config": "0x4ea23c45ac1c2a88d94faf62b502657c45d89b64ead8056a1bc8b2ce6878bbc6"
         },
         "NVDAXUSD": {
-          "market": "0x334e6056ab07530beb68dd513f97a246d0072b09ad0178d4a49dfb9b07e61163",
-          "config": "0xc3d6bc43e1ea44c12a596ab2cfc4e706efbda094b7cf414939f3fabf024b4b8a"
+          "market": "0xbc65dd1d287b56255138c78eccbd5bfc6deec5ea9d188c9f0783c05b4bc62e45",
+          "config": "0x2dc7c118f36f9c9f65d7d48de1b12ef05f2371b10a6e7d80a8868fab09e7fee9"
         },
         "TSLAXUSD": {
-          "market": "0x2ba869dc43b1a1a2750b4198028cb81c1001548aeb1218faea1bc7441f06e0ee",
-          "config": "0x64670d41480875619917ef0b93884f82a09aeb91e64c4ba636f64478b2086504"
+          "market": "0xd9e38e086b1497d54ae784d2cd277956b55758076c43e0aad2b6863b4c2254cd",
+          "config": "0x868d2a8570e8c04bead3d4e2958d9d79eda31e1daf672ac4eb0791e87bcaa735"
         },
         "AAPLXUSD": {
-          "market": "0x7fd03b804fb25c2247cd4031a6a43a184a367c578a784ed9b6505da64f0c7c04",
-          "config": "0xc159d8162ab187a58fb99afc380e10c54fd73aa640e013adf33a7297f95052ed"
+          "market": "0x293136161fc9454597e824449ba22387ae08ce709bc336833db451cb023af2e9",
+          "config": "0x8146bad6855de8c6bcfeaade95d1d0dc33317ed2a6313fbaa5947b96c12b1c2d"
         },
         "GOOGLXUSD": {
-          "market": "0x2f95d5a4ceb7fa76715e2cbe708a53515760f19e621d6ef732f7eca894c60ba6",
-          "config": "0xbe029d8ff6086bc0d10203946a8cc7b741442e9fb2ec1644e2d634b07e32ad5b"
+          "market": "0xfc90f463c9eff3d4dc20a8dd1bec9585505963a50d0cd09ecc89e835431e4b9a",
+          "config": "0xeecdd14b937f545071bfc1bd17a1c97e1448daccc8997e9c7240c6f44ce1d8cf"
         },
         "METAXUSD": {
-          "market": "0x92a5199fb387ce238a9998bb31830c1e28574c3883a604aec17384b4935fbfd2",
-          "config": "0x2b2c2f01a37337de56b7b98a47fe20d23cd21ee4eec765347b19f2bf454f9770"
+          "market": "0xee6f5f6fc09a7b3964d83ea854bb48ce4da6f403505a184731aec487510aab58",
+          "config": "0xce6c563daf70d23981005c09ad68fe4825bc5757003e0a8da3e0734bc93a0fe2"
         },
         "MSTRXUSD": {
-          "market": "0x9e9f04a286f29e168328b8bf266029089740b1ff1f0b25fe6420bdaad46e2f70",
-          "config": "0xa167991ec6b96ef8b04166ddddf088d5e43a2b40d2984c072e677a8f1bf6698f"
+          "market": "0xd379180d2a03fce0465e7b32a0f76802f12981d3a3af5a80a170129734e2282a",
+          "config": "0xf91d127b077ed11174f92d20f2113e1ff85f07c3a79aa6762491ec4680668e91"
         },
         "COINXUSD": {
-          "market": "0x23a5f9393db26f65bda01197dec1bd189d201e236a8ae68c0ef1c79fb146e972",
-          "config": "0x84cd047fb43b9acb73445f94949dfeb81aa9fec24e0d31868d3cdcebb9f62644"
+          "market": "0x42a23ba29577255e99277a9424080daee8ae1b688af4acdf2af494d133540b4a",
+          "config": "0x7ab699bcd74408f7bb5fc9155b736dea8e54ba9385e933980e1b641671698175"
         },
         "HOODXUSD": {
-          "market": "0x8696fca09e23fc67eedf5f6410c028527936e27d46e46c3110084be1d494a52c",
-          "config": "0xdae2328bda1999662df6b1d4ae9e59fa8714c5e52ff18f244556d7fb9a3d8af9"
+          "market": "0x6908fa786b46689446db62c8fd7b6e50ca258f6139b906719f39dea05e8f0da7",
+          "config": "0xdf9bc86df5de15a1038ea12faee8fb750bcc45d458f24eb775fc843068ef53d9"
         },
         "CRCLXUSD": {
-          "market": "0x88bb5fa0c71b3facc581ca10306ec43ce0e4791f35ad9befccce5b895ef16e76",
-          "config": "0xccb6658c756ba9ac687674732845c0e8e68e2f76d97a89b69e101f45e6d6ef02"
+          "market": "0xda095f96075c3be43364c1c9ba89296126387e0bd3a2f463a285796cefdc68a5",
+          "config": "0xdc67c908c80040434b41ba03ad043a6716858a9d8a663b333f8917cabf4f37df"
         },
         "NFLXXUSD": {
-          "market": "0x121f895b5556bc71b91ae2ac4a2111a8e95616b882b25d5bda6e635e9dbe671a",
-          "config": "0x803fda9f3e3a08d78d201e44dbba3a1d73015553dd2149426c1333684acd142c"
+          "market": "0x3119f8af197d468516e1d376370347f2831ae42a75e1c30a22e4ac9165fc3714",
+          "config": "0xe12dca8e9b1380848b0e8c38555ef555ba34ca2f375fe30bb4628bd3294d57f7"
         },
         "XAUTUSD": {
-          "market": "0x4cfd381f2d4fb87bc6eddbd6e68ef4cd9aa050eff5412b0d0d6937d4e1338d23",
-          "config": "0x495c79cd7d72b6f44805e6b8a66f04d86ff72d40036fc1be11453ab36572ca64"
+          "market": "0x0274f43a1a6ae7373aa38ef388d815991f233d09bc803545fdde69e0c8f78eae",
+          "config": "0x5ba6d6d2303c25e6bbbbf3cb49bbdfe064a9f8c9362b8607b29709fd9a70ec08"
         },
         "XAGUSD": {
-          "market": "0xe5998b99fff2e231f63cc4d814aaa7dec9d080eafd34ec1e4b47dd441dc1f576",
-          "config": "0x8abd349758d75b5fcdb2b7208b71d5159afa6647aba372d4787cdf44607599f7"
+          "market": "0x37a057162d09c7e5307a848e7fdc77cbe2af8d42a447a3c575846bdd0b28dae8",
+          "config": "0x71dbe2f0bfb21d8d4ad9657706112a62c4d239b7ac2277357f5d860ec8f7869e"
         },
         "WTIUSD": {
-          "market": "0x266573d3313706f156785b3d0238a850cbd93bf8f6ef7c38a84c07f0af0edf1a",
-          "config": "0x177605800657ad623ecf5aaf8b5f96ec54bbccf7d0990c1e5f9212dc0c8cad75"
+          "market": "0x6aa5ecda4c8a3cfe6e1fa7acbfea7e9bdcea0388c74adf3e926c004cf5c8837e",
+          "config": "0x125325135b15f6149176712f8aaaeaf0afbef6d8637a925ce591cc6508f967da"
         },
         "BRENTUSD": {
-          "market": "0x2b46a7ffcfc0ed3372f5695075cc41e3418b4cbab21b6cabcd24cb29fe3295f0",
-          "config": "0xd235b54720dd9f1fddd33c247e6848a149582f40c4ab5cf0cbdf50a97996ab74"
+          "market": "0xa2105295e68e40004117cb3df4e5d2e86590b969252d780090d83c605c30491d",
+          "config": "0xf160f8a496e4bd138d09ea4bd9983c7063c5500c4beb907acb8fdc8b45d44ceb"
         },
         "EURUSD": {
-          "market": "0x88c4550f4aae88e675720e1fb3df794f4d1a1304ec4194a4ce934a010988bd1f",
-          "config": "0xcce5b9a4a3680385c174e61c2e50b0cf4423ce9924a1b0f1d67e3c2e9c56bf2d"
+          "market": "0xbc2bcc18300b532c9cba017a884bdff89670c4b48a04e29d6fcb76754575935e",
+          "config": "0xe6fb91de604582e53693aaaecfd53168affd821732787c82c3469ed15d752166"
         },
         "USDJPY": {
-          "market": "0x7dfaba6203e746a3849670f24832dd8913686252e17952c110a196d1858f44bd",
-          "config": "0x3f33eaa679b42ef8156cc63729dd01ef02dd04f9cc5b29286856228efe15b740"
+          "market": "0xf72062a38b658bd72033ae89a617c7ec7ccaf479fe7d9c9c2d032b88a63ece41",
+          "config": "0x956c57056f6ea3a86f39f066420bfb5fdf65e13c447030961f1eae4660fb828b"
         }
       },
-      "publish_digest": "5tGMuqRxJ8JJSSgVVo4eGsayYEZq5rSrAYPSay4BtWLD",
-      "publish_checkpoint": "341618023"
+      "publish_digest": "DE1ji19SvES7Y91nrUsrEC5pMhMDJ7L6jTyRzT3C5Zkr",
+      "publish_checkpoint": "341636344"
     },
     "waterx_prediction": {
-      "published_at": "0x06b363c644307210e2caf3baec145784f2798c5239f80ba6a9b36ffe84d9c565",
-      "original_id": "0x06b363c644307210e2caf3baec145784f2798c5239f80ba6a9b36ffe84d9c565",
+      "published_at": "0x0ced3be529195de0e9f3714622bff49feb4e72ef8588e0d53594324d961b6738",
+      "original_id": "0x0ced3be529195de0e9f3714622bff49feb4e72ef8588e0d53594324d961b6738",
       "version": 1,
-      "upgrade_capability": "0x680285ec5234a0b99baefa7ae8ad205f0ceaca57dd4d16bc927b5849443fa73e",
-      "admin_cap": "0x8f774beabbf132867d495ac4f2d4bda1fd8e2279198a4c06228f318a94336a01",
-      "global_config": "0xb8e55fd0f634ac0632f20addaceebb5739e3e1b08a9ca4b515605f9e20db7f6a",
+      "upgrade_capability": "0xcbb5d73193ff77ec5b5e1b7a171a06f571752cbf6caf4bdd036910fecd1150c4",
+      "admin_cap": "0xb07b11774c595c4c5fc0d1299d04c4dc6eea248b7ec1bb246fe31077107c12ff",
+      "global_config": "0xade50b742d24e938196922f79e15ffeb6d98ad0c58eab005d3bb5ad80afad14c",
       "market_registries": {
-        "USD": "0x6266fbcc35d248ba30765331768867a08754f8b92dc8d1007385578caa7a937a"
+        "USD": "0x1e973f83ba2f08fcbdd91953d0ec2c7d88e7f97aa83ceb8cab89f30e6daaa717"
       },
       "settlement_coin_types": {
-        "USD": "0xedb90073c8b4eda88c7e0e7df3b3d697dadb41d7d1b85e86ed9fb57beb5c2691::usd::USD"
+        "USD": "0x5b60857dc403e65a3406c65402765e518259ba3394588f9528aa4f895378764e::usd::USD"
       },
-      "publish_digest": "4Pmm5MMgJ9fbNgaQJokBSmy4ayDXiGheBvBimbUgkMyt",
-      "publish_checkpoint": "341618186"
+      "publish_digest": "27JPFHBvgVto9nDCwS7R9YUZKAM2dN6gvPXRdVt524jp",
+      "publish_checkpoint": "341636511"
     },
     "waterx_perp_view": {
-      "published_at": "0x6d96de62e336c636571532992d55a28a49463df21268845a4e3b8f40dc000b6b",
-      "original_id": "0x6d96de62e336c636571532992d55a28a49463df21268845a4e3b8f40dc000b6b",
+      "published_at": "0xf87ee74d9e5aac348753e2cd2e9fe012442e17b0134f5b3103d7c279d429eb4a",
+      "original_id": "0xf87ee74d9e5aac348753e2cd2e9fe012442e17b0134f5b3103d7c279d429eb4a",
       "version": 1,
-      "upgrade_capability": "0xc489c14ffe964838247d2aad9a83a28d7c58d5f7a6394fe1d72c0708e770a310",
-      "publish_digest": "FwUFR1VsdnjLkTptYFkJ1HtBhMLSP2XDWdpKBojgRsGi",
-      "publish_checkpoint": "341618041"
+      "upgrade_capability": "0x2987e9d11f069b2afa446b24374490f12190b2b90e0b2880023a8046cbe6fe55",
+      "publish_digest": "GgL9Eby9rVe8XrV7AkksWitiRFDsc3eM5cPeaQt1jfJy",
+      "publish_checkpoint": "341636361"
     },
     "waterx_rule": {
       "published_at": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
@@ -389,47 +389,46 @@
       "publish_checkpoint": "336051562"
     },
     "waterx_staking": {
-      "published_at": "0x899231380b8db5bb1f43ae7d181a1a679257cfedea83a47538d0ba28bc2da924",
-      "original_id": "0x899231380b8db5bb1f43ae7d181a1a679257cfedea83a47538d0ba28bc2da924",
+      "published_at": "0xe577ad872d2f952c69ca810376aaa70b9e6262bfdc477d77a0c9887c164b732d",
+      "original_id": "0xe577ad872d2f952c69ca810376aaa70b9e6262bfdc477d77a0c9887c164b732d",
       "version": 1,
-      "upgrade_capability": "0x82782a5efbdbd9d402ed1040ad62abd98eb6ddf3ddaa13b13950131dab3bdd7a",
-      "admin_cap": "0x7172877c53ae0e9541c62911b1bed97e2d79a539f063898aa665e9ee73421e18",
+      "upgrade_capability": "0xc7dd6913f3ff97610e36c856fb90b02ffa1ad85d1901572d26984530c2bb05d9",
+      "admin_cap": "0xb70d21bfc27d0bbe9ba3ac8c3c42b91e920c561e2b2a7f678dd39e417ecf5f0f",
       "pools": {},
       "rewarders": {},
-      "publish_digest": "AQFXLrzqjaCRQ3Msa94VEZwaPdUEMws7biuWpRh4zZbe",
-      "publish_checkpoint": "341618100"
+      "publish_digest": "4qMZ1qnHUJf4ixqwz3Kx7D9TfDYy1YcRMyez6W6vG43k",
+      "publish_checkpoint": "341636418"
     },
     "wlp": {
-      "published_at": "0x2694ea90ddffd54def41b268d40896d21d7393f950152d2886cc946b3f31421a",
-      "original_id": "0x2694ea90ddffd54def41b268d40896d21d7393f950152d2886cc946b3f31421a",
+      "published_at": "0xc72864a6d391f26fd1db2b9e4cd242e51f36553924ec5b760e2e2e0e5c11be2a",
+      "original_id": "0xc72864a6d391f26fd1db2b9e4cd242e51f36553924ec5b760e2e2e0e5c11be2a",
       "version": 1,
-      "upgrade_capability": "0x0046675086431fe780815f05741947c3573fcd12a59bfb2c3d08d6bd32f5aa5a",
-      "metadata_cap": "0xcf39223aaf3355fb300540e4af1beff2a93de6a72bab30e14e2c11d2f4ed2d4a",
+      "upgrade_capability": "0xe46bffa4e9a20310cf0e5705f8fbb2866954de3e8778b07032765c526820e9aa",
+      "metadata_cap": "0xf10b22b73962bdc525d663e0898efbc8d3e457d41590601f808edd5e14f225e3",
       "currency": "0x6f31226b10fc1cede286962d208303adf1d6aed77a68d7f2379ee2c10faf41ef",
-      "wlp_pool": "0xe1fbfee8aaaf98470982595aa44d0733892b342f8cc7fa543fd9a2e5c6240ee0",
-      "wlp_aum": "0x135da6edd2b41a311f83e90a4814783c5b4acea0abc678c15a205b8ec8d994a7",
+      "wlp_pool": "0xe91dfb1e511f2c01bc3660b59a7b5c20693a8d547413b4ebdcd38833278690f7",
+      "wlp_aum": "0x6ae9b172d3720ab69d17c6eaffeb67af9c90a15a4af2c6e09fbcff6380a0837d",
       "pool_tokens": {
-        "USD": "0xedb90073c8b4eda88c7e0e7df3b3d697dadb41d7d1b85e86ed9fb57beb5c2691::usd::USD",
-        "WLP": "0x2694ea90ddffd54def41b268d40896d21d7393f950152d2886cc946b3f31421a::wlp::WLP"
+        "USD": "0x5b60857dc403e65a3406c65402765e518259ba3394588f9528aa4f895378764e::usd::USD"
       },
-      "publish_digest": "7MnDGZHZtcyF4kVbvkUkPdgJhMiGCW2sQtdEiGPEHvsb",
-      "publish_checkpoint": "341618056"
+      "publish_digest": "J9cTrnjqnyyxDQZN3NT8g46Xy9gXCrZ1baTUAj3jjNrg",
+      "publish_checkpoint": "341636374"
     },
     "waterx_credit": {
-      "published_at": "0x7c3c083a637f1ec2a3388bf96cef6c07333b8c322500d9ead2289fdc80f11f6d",
-      "original_id": "0x7c3c083a637f1ec2a3388bf96cef6c07333b8c322500d9ead2289fdc80f11f6d",
+      "published_at": "0xa929e21ce6b4f43ec05ef3b16221b64c4c02fe31ec39c56625a4e7193f72737e",
+      "original_id": "0xa929e21ce6b4f43ec05ef3b16221b64c4c02fe31ec39c56625a4e7193f72737e",
       "version": 1,
-      "upgrade_capability": "0xb57cb65a40786f369a74223b95d6f4299086dfba916cb36ecba37fa31fce4f10",
-      "credit_registry": "0x367f437b3e4c24afa62c86077a387aa929258bf0bbf66c5376bd440daaaa8feb",
-      "credit_type": "0xedb90073c8b4eda88c7e0e7df3b3d697dadb41d7d1b85e86ed9fb57beb5c2691::usd::USD",
-      "publish_digest": "3DCSygepoduUupkfBx4AN5xJrys44n2TYAozQddTV6Po",
-      "publish_checkpoint": "341618115"
+      "upgrade_capability": "0xeecf0cefb77768e3b8008567c78a61eccd3b02be209f441f1e69551bc8ba7685",
+      "credit_registry": "0x2b8a0f61bbe99c1731d3d2b386f77ddc0a34bd5d478c7327a19c8553ff323e1a",
+      "credit_type": "0x5b60857dc403e65a3406c65402765e518259ba3394588f9528aa4f895378764e::usd::USD",
+      "publish_digest": "Dc5PMcAmueBWoXmZUS99fuR3MPr8ZA2Z7yMkJMk2zqn5",
+      "publish_checkpoint": "341636433"
     },
     "native_custody": {
-      "published_at": "0xd2f966793609212183a6caf865d7d41283719ad5857c5c17eaafd00b4988c0ff",
-      "original_id": "0xd2f966793609212183a6caf865d7d41283719ad5857c5c17eaafd00b4988c0ff",
+      "published_at": "0xdb2aca1afb281786f4090c5e47df608f0127130544eee5bbf4c02d582beded14",
+      "original_id": "0xdb2aca1afb281786f4090c5e47df608f0127130544eee5bbf4c02d582beded14",
       "version": 1,
-      "upgrade_capability": "0x30b76dbf5c82f45302586a6df036e4d6da688877178aac4471875fd1382d84e7",
+      "upgrade_capability": "0x1f2c6ea6e4742e9c137c24ed5a701f528552a7415bb64fcc89657534d5c45d2e",
       "assets": [
         {
           "name": "MOCK_USDC",
@@ -440,15 +439,15 @@
           "min_burn_amount": "0"
         }
       ],
-      "vault": "0x1048b27ef3f4a157e24a32b69ae1627bc0339a8b2b6d007574b263257da86f34",
-      "publish_digest": "vUWXjSFRCWYuWqZqkzSwJzBNYw7pfJe1VsYA5vLssbU",
-      "publish_checkpoint": "341618129"
+      "vault": "0x887270272425e20213b02cc670cb558289ff8b182788b316fcca1fa1f843f53f",
+      "publish_digest": "7Re4kQvzSjTcCSjSovxH3NuQnPJj6qq3D2U4Pm7MuwK2",
+      "publish_checkpoint": "341636448"
     },
     "wormhole_bridge": {
-      "published_at": "0x0117919082a7b90588f09a0d759f7c8cc75d084990d92ef2a381f82293626a76",
-      "original_id": "0x0117919082a7b90588f09a0d759f7c8cc75d084990d92ef2a381f82293626a76",
+      "published_at": "0x9860506275826f4460f64bac40eb9212c05b067c66f0698b7ab0ae6414ba4830",
+      "original_id": "0x9860506275826f4460f64bac40eb9212c05b067c66f0698b7ab0ae6414ba4830",
       "version": 1,
-      "upgrade_capability": "0x1a7a718afe25bdc05afba94983df9e0099419321951b832848095da0b6ec0357",
+      "upgrade_capability": "0x546645c94a5d5f008b02239a99686f6ac27f23fbcb30f505588a8b2150ecb88f",
       "wormhole_state": "0x31358d198147da50db32eda2562951d53973a0c0ad5ed738e9b17d88b213d790",
       "hourly_mint_limit": "1000000000000",
       "max_mint_per_tx": "100000000000",
@@ -464,22 +463,22 @@
           ]
         }
       ],
-      "bridge": "0x8c488098295ff148e472257d9db14eedea3569440e6b29d1eed0e449bc852463",
+      "bridge": "0xb59cf41d3f5460f33513447738565192dacae9cc1c5cb2d9aac898e0c7fdc967",
       "emitter_cap": "0x4494af0594680a371c5a42076aebd08b54f4d74a602c12166ed6e0135e8282ad",
-      "publish_digest": "ChSknKYzWbWpnycjDPAFNj9YwhyjxSbAAhNBBTjzE4JK",
-      "publish_checkpoint": "341618146"
+      "publish_digest": "9goRa7aDZRbkEuPMBZkPcssPKNZnaHGteLGXXvHhpoo2",
+      "publish_checkpoint": "341636464"
     },
     "withdrawal_queue": {
-      "published_at": "0xbc97541256217b2ae227d8a5aed615841c7760a1f0482d49fa232e51bd5abfdd",
-      "original_id": "0xbc97541256217b2ae227d8a5aed615841c7760a1f0482d49fa232e51bd5abfdd",
+      "published_at": "0xcfddc1610a8b0e8dc61860fdd1278ac40c4c576954a34de167f7c32fa4a1dbd1",
+      "original_id": "0xcfddc1610a8b0e8dc61860fdd1278ac40c4c576954a34de167f7c32fa4a1dbd1",
       "version": 1,
-      "upgrade_capability": "0x922a7428dfc134276ccfc07f2ec69ce554620dcddba54dde3eaa855ca788e1c7",
+      "upgrade_capability": "0xb182c5dd029242a424e268d63d8a6252e3237b80a01d3f09dc840bfd395212a5",
       "executors": [
         "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
       ],
-      "queue": "0xd183de02dc48adbc9978aa361afbda7b34b24a2ed9bfad27f19cf249e955c2b1",
-      "publish_digest": "92yokWoYVwz89BVzCmEKpuUAZoLSh4yqqy1PfVyzKaT9",
-      "publish_checkpoint": "341618161"
+      "queue": "0xc280290c74d0f9f00abcd900956e71104774801b263fa9c6c2cf783a361825cd",
+      "publish_digest": "Cp2RR8RwU5BPHYLYAeBREkGrH5EPgn5fJXbGfLA7REAZ",
+      "publish_checkpoint": "341636482"
     },
     "testnet_faucet": {
       "published_at": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
@@ -494,13 +493,13 @@
       "publish_checkpoint": "338586209"
     },
     "usd": {
-      "published_at": "0xedb90073c8b4eda88c7e0e7df3b3d697dadb41d7d1b85e86ed9fb57beb5c2691",
-      "original_id": "0xedb90073c8b4eda88c7e0e7df3b3d697dadb41d7d1b85e86ed9fb57beb5c2691",
+      "published_at": "0x5b60857dc403e65a3406c65402765e518259ba3394588f9528aa4f895378764e",
+      "original_id": "0x5b60857dc403e65a3406c65402765e518259ba3394588f9528aa4f895378764e",
       "version": 1,
-      "upgrade_capability": "0x5f1ef9fd59496251a5b7130af8de502ac098977016f8cbeecc2fcdfca49dbb8d",
-      "metadata_cap": "0x7b0eac9c482c59a30b765c17864da08fd681e485ab0190dffaadd7b7f1c7c2df",
-      "publish_digest": "2GUP9EzwYDSvTpvSpiqQcfxDgvdM4X9oQcM9NYgao7qY",
-      "publish_checkpoint": "341618173"
+      "upgrade_capability": "0xb213de9bc7e17e5fa3f8561b72d9c075f21e3035abd39cfa36389e21edaffa97",
+      "metadata_cap": "0xcddc3d7d32b1c722c4c83971e4c1da235686001cae379c0713ebf50dc61a89f4",
+      "publish_digest": "5B9foQr6418jRcgtQhhjzbzPcc3CQpbXL2kJb9sNmbdN",
+      "publish_checkpoint": "341636496"
     }
   }
 }
