@@ -394,7 +394,9 @@
       "version": 1,
       "upgrade_capability": "0xc7dd6913f3ff97610e36c856fb90b02ffa1ad85d1901572d26984530c2bb05d9",
       "admin_cap": "0xb70d21bfc27d0bbe9ba3ac8c3c42b91e920c561e2b2a7f678dd39e417ecf5f0f",
-      "pools": {},
+      "pools": {
+        "WLP": "0x0f40bf97eefc6fe357ee6e9d6d5e15105be81959f2b969876c0ac2186acff7c2"
+      },
       "rewarders": {},
       "publish_digest": "4qMZ1qnHUJf4ixqwz3Kx7D9TfDYy1YcRMyez6W6vG43k",
       "publish_checkpoint": "341636418"
