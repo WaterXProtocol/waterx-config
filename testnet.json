@@ -85,7 +85,8 @@
           "price_info_object": "0x289d44e44ccb9b79b9234050ac69c9365b342a20a95bed068c813c74f9a8ee9d"
         },
         "BNBUSD": {
-          "feed_id": "0xecf553770d9b10965f8fb64771e93f5690a182edc32be4a3236e0caaa6e0581a"
+          "feed_id": "0xecf553770d9b10965f8fb64771e93f5690a182edc32be4a3236e0caaa6e0581a",
+          "price_info_object": "0xb1fe6728782d2b155f3054d12bb176fe5288905d64af78fc807313a32f5930a0"
         },
         "ZECUSD": {
           "feed_id": "0x683832447e2920e3d85ab52609be9822ad0da95de656b8acd9a8f0e3a3717895",
@@ -120,34 +121,44 @@
           "price_info_object": "0x01bc231ce32545e288901387f86461bba5fde539ada370a82e1ba271a5caf60b"
         },
         "MSTRXUSD": {
-          "feed_id": "0x8cf8c8ad17f5c90fab9cd0db1b4fa5a59ba2ad0df7f4489efcf8476665255eb1"
+          "feed_id": "0x8cf8c8ad17f5c90fab9cd0db1b4fa5a59ba2ad0df7f4489efcf8476665255eb1",
+          "price_info_object": "0x2e3165c2f8b89e71c2373fa19a8841cde61cdad790b8e54e57dc7bc0374b3295"
         },
         "COINXUSD": {
-          "feed_id": "0x458778b11c038677ce2cd2589e990f07f9f903479ce381bda7bddb4c7e744edf"
+          "feed_id": "0x458778b11c038677ce2cd2589e990f07f9f903479ce381bda7bddb4c7e744edf",
+          "price_info_object": "0x08b024e7776b01ec8c8a4ab712b7026d0547ae5102d70b57c5ccb3b058d49709"
         },
         "HOODXUSD": {
-          "feed_id": "0xb576c931652bed5ba9db21c54fd9dfc6584f105e9b073849cc74d1d871f4a0e2"
+          "feed_id": "0xb576c931652bed5ba9db21c54fd9dfc6584f105e9b073849cc74d1d871f4a0e2",
+          "price_info_object": "0xed13901a3301060e395d5059f5a44fc8f8e1c88c091dcf0804163dbc4be360c1"
         },
         "CRCLXUSD": {
-          "feed_id": "0xd971026515c8a2f784cdc430d0ca43dddbdb4aa5595f43db61dc5eb6a8b09e82"
+          "feed_id": "0xd971026515c8a2f784cdc430d0ca43dddbdb4aa5595f43db61dc5eb6a8b09e82",
+          "price_info_object": "0xa39584f26f09a8b87bf7bc320b5b2b3b4a52af1b27752606a8a3c66ab8717d53"
         },
         "NFLXXUSD": {
-          "feed_id": "0x75d7a5ce49485d126f44741cdbce92b2834688d24aa6d7b677584ae167d66a88"
+          "feed_id": "0x75d7a5ce49485d126f44741cdbce92b2834688d24aa6d7b677584ae167d66a88",
+          "price_info_object": "0x0259b13dce72dac3b248279fb201c0bed957fc021436cfde3907e489e824cb45"
         },
         "XAUTUSD": {
-          "feed_id": "0xb828d7baf048f26e111d1d057238dea676d99869345d6ea90e1ca7799a2c23f3"
+          "feed_id": "0xb828d7baf048f26e111d1d057238dea676d99869345d6ea90e1ca7799a2c23f3",
+          "price_info_object": "0x8415456228741b1965909bdfe9e13478cbd2ffdf8b46d56398ddd1b84d297f5e"
         },
         "XAGUSD": {
-          "feed_id": "0x321ba4d608fa75ba76d6d73daa715abcbdeb9dba02257f05a1b59178b49f599b"
+          "feed_id": "0x321ba4d608fa75ba76d6d73daa715abcbdeb9dba02257f05a1b59178b49f599b",
+          "price_info_object": "0x13726b1595ddd092d579b864bda9f74e75b6de4478a20d294efc36f8fd1f3fee"
         },
         "WTIUSD": {
-          "feed_id": "0x24d84a7ab973231e4394015ece17a2155174123be2f8e38c751e17fbd2fcedad"
+          "feed_id": "0x24d84a7ab973231e4394015ece17a2155174123be2f8e38c751e17fbd2fcedad",
+          "price_info_object": "0x18497ba040f761b24b3c81fb51714246c5bb516d12a6ae9fd9be4840253785e8"
         },
         "BRENTUSD": {
-          "feed_id": "0x8665ba68406e83e3f8fa4de23a5cc7eeb4e4a04ad15502134c69b20465d83445"
+          "feed_id": "0x8665ba68406e83e3f8fa4de23a5cc7eeb4e4a04ad15502134c69b20465d83445",
+          "price_info_object": "0xb096bfd4e69a8e7f47afd8c8242977f4916a308a8e4f1524975f77a636372935"
         },
         "EURUSD": {
-          "feed_id": "0xc1b12769f6633798d45adfd62bfc70114839232e2949b01fb3d3f927d2606154"
+          "feed_id": "0xc1b12769f6633798d45adfd62bfc70114839232e2949b01fb3d3f927d2606154",
+          "price_info_object": "0xb1f1dbcd2009070862d6ffbf3a111487c5c34849ae001ccb6f537b67662231cd"
         },
         "USDJPY": {
           "feed_id": "0x20a938f54b68f1f2ef18ea0328f6dd0747f8ea11486d22b021e83a900be89776",
