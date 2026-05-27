@@ -456,10 +456,10 @@
       "trusted_emitters": [
         {
           "chain_id": 10002,
-          "evm_bridge_address_32b": "0x000000000000000000000000425B50658A643A746642A72295Db0084FF5A0b2E",
+          "evm_bridge_address_32b": "0x000000000000000000000000Bf9dfe8ea6880303f9EF65D0d882097e8eC2EddB",
           "evm_tokens_20b": [
-            "0xe81cFf07AA416cA84bA1A48CA25A269feaeB828d",
-            "0xD18CC7cBA19191ccaA8DE0AF5530715bbbAd0Fbe"
+            "0xB7A34Bb604DC79065Fc3aA48ABEa43087Ff8a0c2",
+            "0x573899948b8704ECAdd623799147f21f48D961d7"
           ]
         }
       ],
