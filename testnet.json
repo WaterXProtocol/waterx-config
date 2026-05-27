@@ -409,8 +409,8 @@
       "wlp_pool": "0x5df3f852160fad20769ded767f5cd327b80c6f610f2e699ac409490e089f602b",
       "wlp_aum": "0x84f4d0cf6a2f9d93cffc4a120706fe59a3cced0bde5f2da0c9aa87acc3a8eb82",
       "pool_tokens": {
-        "MOCK_USDC": "0x7ccd477e884ec74f960b23a8b34b7d87999e4d7ee0dde738a0c25f46200f201a::mock_usdc::MOCK_USDC",
-        "WLP": "0xe5f28f6feea5a601a085fd38e964608ff55e6f91c0cd95f28d19fccb23ff1844::wlp::WLP"
+        "WLP": "0xe5f28f6feea5a601a085fd38e964608ff55e6f91c0cd95f28d19fccb23ff1844::wlp::WLP",
+        "USD": "0x3d6fd5e79c5134f94523f5d6d24a96ecf9f9af35bdbf9e6af87f5a6dbb032efe::usd::USD"
       },
       "publish_digest": "4NLKn88saS2t8MGF9rUBke1kyknFVZdGpcSc6FskEefE",
       "publish_checkpoint": "341591319"
