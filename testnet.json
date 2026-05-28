@@ -233,9 +233,9 @@
       "publish_checkpoint": "341636310"
     },
     "waterx_perp": {
-      "published_at": "0x2b3d887b4ef15c8ded66ea3bd8d5ae63cc7e1a358feeb0b3b9a4436603b3f588",
+      "published_at": "0x8fe18488d9828623af6786634a762c3c2d75dcaa4a2981e3a1d809bffbd26133",
       "original_id": "0x2b3d887b4ef15c8ded66ea3bd8d5ae63cc7e1a358feeb0b3b9a4436603b3f588",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x6029d8772a6d94e9d19bd2497063982597b8fc654453f32acd8cff18da95326c",
       "admin_cap": "0xdb0753513d6109238f3e4e7044d6a2a6c6fd9423ff3bd104983d100ebe2ef655",
       "global_config": "0xf5344623034bcb5a5a91decfc3fbe239d5ada75f36ec839d8433368902ade753",
