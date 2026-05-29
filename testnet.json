@@ -458,18 +458,20 @@
       "trusted_emitters": [
         {
           "chain_id": 10002,
-          "evm_bridge_address_32b": "0x000000000000000000000000Bf9dfe8ea6880303f9EF65D0d882097e8eC2EddB",
+          "network": "ETH Sepolia",
+          "evm_bridge_address_32b": "0x000000000000000000000000860f272ef2e63337F50bcb77e2AdC39E390339D1",
           "evm_tokens_20b": [
-            "0xB7A34Bb604DC79065Fc3aA48ABEa43087Ff8a0c2",
-            "0x573899948b8704ECAdd623799147f21f48D961d7"
+            "0x8Ffd3aaAd2aC65EE9f5C0734fFedcdCFA033f5aE",
+            "0x04e3F905596da75C19Bf3D47911213C4328f8A97"
           ]
         },
         {
           "chain_id": 10003,
-          "evm_bridge_address_32b": "0x000000000000000000000000E338ac9FF785978B56e81d0Fb8C9A5F0398CcEb3",
+          "network": "Arbitrum Sepolia",
+          "evm_bridge_address_32b": "0x00000000000000000000000006b408ecdb60C13e03Fb128614845D40F9176062",
           "evm_tokens_20b": [
-            "0xc216dD258bD780641D042aF5a8ae223dD170A6B0",
-            "0x4404168b59B6Fd1Be391705C9F72256A3F4A0484"
+            "0xEA0fE4d4197b3c00A43c710F2859AF1320Ac109F",
+            "0xAaF6b6bC0bA1df03EF30dB7529403b1761c185B4"
           ]
         }
       ],
