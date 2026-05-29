@@ -178,8 +178,8 @@
       "version": 1,
       "upgrade_capability": "0xaf6dcd7cac99a30d65c0bee8f824fafd67b842addee8b66778a9b58e92115062",
       "pyth_sponsor": "0x52205e8c0fd88fc1c0939fa96bcd2218a840e6e3ddf3838ee736bd0574cea8e3",
-      "publish_digest": "5wptMaYivAG1BeXYFTndkH9S95AKpBfR1XqJeVghfs6T",
-      "publish_checkpoint": "341636405"
+      "publish_digest": "4qEH7VADZ5rjuGTyiKTRTNY4pwtCX16a6rLB76j9J5jH",
+      "publish_checkpoint": "342289478"
     },
     "waterx_account": {
       "published_at": "0xaca20506c4b14cfd2ea767d68e3dd489af082b2d0f6ed6f33b32e78abeaff2cc",
@@ -354,8 +354,8 @@
           "config": "0x5774c07e0c850278a9dce46730c8481af0bb732dde16619a209dce00ceb9bd6c"
         }
       },
-      "publish_digest": "DE1ji19SvES7Y91nrUsrEC5pMhMDJ7L6jTyRzT3C5Zkr",
-      "publish_checkpoint": "341636344"
+      "publish_digest": "4wDd6GSQ9hLacUyx6gBmAfWHEoxF1vRB5vJ8KdorStNi",
+      "publish_checkpoint": "342289439"
     },
     "waterx_prediction": {
       "published_at": "0x0ced3be529195de0e9f3714622bff49feb4e72ef8588e0d53594324d961b6738",
@@ -378,8 +378,8 @@
       "original_id": "0xaacaeed06b6de64c1a6480dd73bea00d90784887c669a40530a8f1142ac8adc2",
       "version": 1,
       "upgrade_capability": "0x3df368bd42728ebf83ee89908c3163be92c73305fbc7335a0780925c4c59032a",
-      "publish_digest": "GgL9Eby9rVe8XrV7AkksWitiRFDsc3eM5cPeaQt1jfJy",
-      "publish_checkpoint": "341636361"
+      "publish_digest": "HpXXV5oCUMFFTCS8F8xNzoB5vmvyPFCiVwmPLRPKyMT4",
+      "publish_checkpoint": "342289452"
     },
     "waterx_rule": {
       "published_at": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
@@ -395,7 +395,7 @@
       "upgrade_capability": "0xc7dd6913f3ff97610e36c856fb90b02ffa1ad85d1901572d26984530c2bb05d9",
       "admin_cap": "0xb70d21bfc27d0bbe9ba3ac8c3c42b91e920c561e2b2a7f678dd39e417ecf5f0f",
       "pools": {
-        "WLP": "0x0f40bf97eefc6fe357ee6e9d6d5e15105be81959f2b969876c0ac2186acff7c2"
+        "WLP": "0x16305dbe07d15614e0e75d63636d3cf5e3c18c893c971e29cfaaa357a52815e4"
       },
       "rewarders": {},
       "publish_digest": "4qMZ1qnHUJf4ixqwz3Kx7D9TfDYy1YcRMyez6W6vG43k",
@@ -413,8 +413,8 @@
       "pool_tokens": {
         "USDCUSD": "0x5b60857dc403e65a3406c65402765e518259ba3394588f9528aa4f895378764e::usd::USD"
       },
-      "publish_digest": "J9cTrnjqnyyxDQZN3NT8g46Xy9gXCrZ1baTUAj3jjNrg",
-      "publish_checkpoint": "341636374"
+      "publish_digest": "HaB6quvcLDxqKNyidb67XFsdDo9Utg3huHw5BpSzvvNh",
+      "publish_checkpoint": "342289465"
     },
     "waterx_credit": {
       "published_at": "0xa929e21ce6b4f43ec05ef3b16221b64c4c02fe31ec39c56625a4e7193f72737e",
