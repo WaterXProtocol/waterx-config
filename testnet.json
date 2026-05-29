@@ -411,7 +411,7 @@
       "wlp_pool": "0x452b9c0528a1cc1dc8f0fb80ec8bcc6654c6b452f90f27468c58e0a09428091f",
       "wlp_aum": "0xbbbf6fe667b15a91224a099c07a605fb3b52eb7e45670210a8ce117608770fc4",
       "pool_tokens": {
-        "USD": "0x5b60857dc403e65a3406c65402765e518259ba3394588f9528aa4f895378764e::usd::USD"
+        "USDCUSD": "0x5b60857dc403e65a3406c65402765e518259ba3394588f9528aa4f895378764e::usd::USD"
       },
       "publish_digest": "J9cTrnjqnyyxDQZN3NT8g46Xy9gXCrZ1baTUAj3jjNrg",
       "publish_checkpoint": "341636374"
