@@ -96,7 +96,7 @@
           "wormhole_core": "0xa5f208e072434bC67592E4C49C1B991BA79BCA46",
           "wormhole_executor": "0x3980f8318fc03d79033Bbb421A622CDF8d2Eeab4",
           "block_explorer": "https://arbiscan.io",
-          "deposit_vault": "0x69325a62a8Ad417c7fC2238c3fc21A949cA65804",
+          "deposit_vault": "0x0000000000000000000000000000000000000000",
           "tokens": {
             "USDC": "0xDB46340eB3F04AA651B25db3964765e389107Ff9",
             "USDT": "0x0b6636d474653ed8c4d4F286173aeeEE68345B66"
