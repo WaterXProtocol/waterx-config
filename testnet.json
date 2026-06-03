@@ -524,6 +524,36 @@
       "publish_checkpoint": "343899445"
     }
   },
+  "evm": {
+    "bridge": {
+      "chains": {
+        "ethereum_sepolia": {
+          "chain_id": 11155111,
+          "wormhole_chain_id": 10002,
+          "wormhole_core": "0x4a8bc80Ed5a4067f1CCf107057b8270E0cC11A78",
+          "wormhole_executor": "0xD0fb39f5a3361F21457653cB70F9D0C9bD86B66B",
+          "block_explorer": "https://sepolia.etherscan.io",
+          "deposit_vault": "0xbe7f974d1f9e4F97Ed0ecc3D4C392C44Dd39beB8",
+          "tokens": {
+            "tUSDC": "0x423A0663A39FB81300c3D94E23D3D9335F9809ce",
+            "tUSDT": "0xCd8Cd99294cA8B66600C4fd7D4059AD09963a2f8"
+          }
+        },
+        "arbitrum_sepolia": {
+          "chain_id": 421614,
+          "wormhole_chain_id": 10003,
+          "wormhole_core": "0x6b9C8671cdDC8dEab9c719bB87cBd3e782bA6a35",
+          "wormhole_executor": "0xBF161de6B819c8af8f2230Bcd99a9B3592f6F87b",
+          "block_explorer": "https://sepolia.arbiscan.io",
+          "deposit_vault": "0x3911B175F7E27bFfEf2bf66F89C0694CdADd55aD",
+          "tokens": {
+            "tUSDC": "0x54b35340E0544aa0E3542dbe137F6C7a18AA9f6c",
+            "tUSDT": "0xfFE7d293e6Df872B78A2D835c9179B8920A88866"
+          }
+        }
+      }
+    }
+  },
   "deploy_tx_log": [
     {
       "phase": "1.publish:waterx_oracle",

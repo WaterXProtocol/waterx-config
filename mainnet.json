@@ -74,5 +74,35 @@
       "wlp_pool": null,
       "pool_tokens": {}
     }
+  },
+  "evm": {
+    "bridge": {
+      "chains": {
+        "ethereum": {
+          "chain_id": 1,
+          "wormhole_chain_id": 2,
+          "wormhole_core": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
+          "wormhole_executor": "0x84EEe8dBa37C36947397E1E11251cA9A06Fc6F8a",
+          "block_explorer": "https://etherscan.io",
+          "deposit_vault": "0x0000000000000000000000000000000000000000",
+          "tokens": {
+            "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+          }
+        },
+        "arbitrum_one": {
+          "chain_id": 42161,
+          "wormhole_chain_id": 23,
+          "wormhole_core": "0xa5f208e072434bC67592E4C49C1B991BA79BCA46",
+          "wormhole_executor": "0x3980f8318fc03d79033Bbb421A622CDF8d2Eeab4",
+          "block_explorer": "https://arbiscan.io",
+          "deposit_vault": "0x69325a62a8Ad417c7fC2238c3fc21A949cA65804",
+          "tokens": {
+            "USDC": "0xDB46340eB3F04AA651B25db3964765e389107Ff9",
+            "USDT": "0x0b6636d474653ed8c4d4F286173aeeEE68345B66"
+          }
+        }
+      }
+    }
   }
 }
