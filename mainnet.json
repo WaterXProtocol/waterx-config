@@ -348,6 +348,11 @@
       },
       "rewarders": {
         "WLP": {
+          "USDC": {
+            "rewarder_id": "0xcd66c94b77364c147120f2b2ac77287b817a9c9d10f18096e6e7910a26ed8247",
+            "coin_type": "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC",
+            "decimals": 6
+          },
           "DEEP": {
             "rewarder_id": "0x5582709a7fc32140b21fa7dbc2033ea37d9e5d00f4193955ca6bee84080c58b5",
             "coin_type": "0xdeeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP",
