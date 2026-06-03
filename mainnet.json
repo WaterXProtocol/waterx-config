@@ -362,17 +362,17 @@
       }
     },
     "waterx_credit": {
-      "published_at": "0x86e05a9f95757ed4574cf209683e69e5e1fa4ac7ce7a529c91848343a232c989",
+      "published_at": "0xae342a90e06235a41d3bed320e3eb434b84aa88a5ce1c8ea6d068733082e571d",
       "original_id": "0x86e05a9f95757ed4574cf209683e69e5e1fa4ac7ce7a529c91848343a232c989",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x9d90ffd5ff2b38c52f12b965465e3d5dcdfb4cac5119be570ff8cbdeced71c74",
       "credit_registry": "0x3b32d761b1182531f105d84c5869c66d7c9958c689a1d51a3347db7ac6356c5e",
       "credit_type": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD"
     },
     "native_custody": {
-      "published_at": "0xebd4336ac8d5a12fc7d314b84f8c06a8190dcdfc3c9ef4133ffb53e0aed3c70a",
+      "published_at": "0x093e285d310af097f6ab24fbce646065015e620083f94629bb77785695919782",
       "original_id": "0xebd4336ac8d5a12fc7d314b84f8c06a8190dcdfc3c9ef4133ffb53e0aed3c70a",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0xde3946cd9575f19bd02b77af1c4f2ec8a85bacd145bcfab2d43a8c62a24913f0",
       "vault": "0xf27ebfd21ea4ea759beefb1c4385825e02ab6c50f57305abec601ea4522d04bd",
       "assets": [
@@ -396,9 +396,9 @@
       ]
     },
     "wormhole_bridge": {
-      "published_at": "0xc6129ed341b014213284742d681766c48ea3cbb287f91685f0c0ccd608e17982",
+      "published_at": "0xe68b0b4af7fd4aca0ace303f1d929b3212c6863c8efa6320165edcb82cc77c6d",
       "original_id": "0xc6129ed341b014213284742d681766c48ea3cbb287f91685f0c0ccd608e17982",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x131b2e79dbdf2a8b7b728c70008443ed4fe55f077fcb227663a847df79ea41e8",
       "bridge": "0xe7275d334a1a65deae0133a20a7ac83cb49b1b4629718c4b8cd21dcf37277c1b",
       "emitter_cap": "0x28a1e7abc1fa459b1c82e5d86a9c71af9c8c893d5c288196d3b0e4968675924d",
@@ -413,9 +413,9 @@
       }
     },
     "withdrawal_queue": {
-      "published_at": "0x257a2e2574ba118fb25ee2bb110db032a827a70e2b621dfc0005c8cffbc24a48",
+      "published_at": "0x9e0985bcb006b0e8852e017a6414a11bd318ba05a997dbdb7d026b27a4a3cc0f",
       "original_id": "0x257a2e2574ba118fb25ee2bb110db032a827a70e2b621dfc0005c8cffbc24a48",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x43a8a34d356baf96ad64be205a96bb072e8e4304271a95657e474f62358a6163",
       "queue": "0xd5f3ffc217af104037975e66cf0b315a58cd2e880fef24f175d8cc9852a42b67"
     },
