@@ -1,11 +1,12 @@
 {
   "network": "mainnet",
-  "chain_id": null,
+  "chain_id": "35834a8a",
+  "coin_registry": "0xc",
   "packages": {
     "bucket_framework": {
-      "published_at": null,
-      "original_id": null,
-      "version": null
+      "published_at": "0xe2d49d67ff42dc500275f2d84841bf35632aa6c1abdb70af66a10e1de93a4400",
+      "original_id": "0x665188033384920a5bb5dcfb2ef21f54b4568d08b431718b97e02e5c184b92cc",
+      "version": 2
     },
     "waterx_referral": {
       "published_at": "0x17235897a9c2e977d60f3ded7b05e85724d7ee846b1519e6d8af7fdbc840da37",
@@ -144,18 +145,6 @@
       "version": 1,
       "upgrade_capability": "0xb5e295f7afe0e5ff91c1fcc4fe98daa5632c3703b2e0075aa972afe73b5a7bf5",
       "pyth_sponsor": "0xf1b5ea5e4e0788be19899b4d72a2285c4385e3af3f1861c6519c7085d8b6abd4"
-    },
-    "reward_distributor": {
-      "published_at": null,
-      "original_id": null,
-      "version": null,
-      "upgrade_capability": null
-    },
-    "supra_rule": {
-      "published_at": null,
-      "original_id": null,
-      "version": null,
-      "upgrade_capability": null
     },
     "waterx_oracle": {
       "published_at": "0xd6fd5fa8be2f2cb3042fbb11f31f26c27280676f6a08681b16cbb5e4cb64f24e",
@@ -321,23 +310,13 @@
       "global_config": "0xf9110d82767c91c381d7be230bdad5a8c2e6107d02c8a243ab02e333fb29f7b4",
       "admin_cap": "0x647dc890381d1514633e5958cfd7f2f9a718da031bb7c7b303bffdd1a3de8099"
     },
-    "waterx_rule": {
-      "published_at": null,
-      "original_id": null,
-      "version": null
-    },
-    "waterx_rule_nautilus_enclave": {
-      "published_at": null,
-      "original_id": null,
-      "version": null
-    },
     "wlp": {
       "published_at": "0x183b4cbecf29d6de0a94a90547e16ec7c3de7100c0852fbfbe73e61eed97e5cc",
       "original_id": "0x183b4cbecf29d6de0a94a90547e16ec7c3de7100c0852fbfbe73e61eed97e5cc",
       "version": 1,
       "upgrade_capability": "0xc73a290cb8c3a00635ea91d64b0faf6cb5a41cb1f2e4e72f63f6a3c3e3d094f2",
       "metadata_cap": "0x2d6a2eed24a0d458ce5eb6dd65c4a579511d3e7f71c871bc77ad9409f3f9aa6b",
-      "currency": null,
+      "currency": "0x7ede6728f1c9764de8f9642c05efea850f276df53c81ed8eaefa9a5669f7e14f",
       "wlp_pool": "0xfcf9c1beaae8274a32cf3cc4717ec24acf3f96195abb213f0db4d6c80055a545",
       "pool_tokens": {
         "USDCUSD": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD"
@@ -369,7 +348,11 @@
       },
       "rewarders": {
         "WLP": {
-          "USDC": "0xcd66c94b77364c147120f2b2ac77287b817a9c9d10f18096e6e7910a26ed8247"
+          "DEEP": {
+            "rewarder_id": "0x5582709a7fc32140b21fa7dbc2033ea37d9e5d00f4193955ca6bee84080c58b5",
+            "coin_type": "0xdeeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP",
+            "decimals": 6
+          }
         }
       }
     },
