@@ -464,18 +464,18 @@
       "trusted_emitters": [
         {
           "chain_id": 10002,
-          "evm_bridge_address_32b": "0x000000000000000000000000Bf9dfe8ea6880303f9EF65D0d882097e8eC2EddB",
+          "evm_bridge_address_32b": "0x000000000000000000000000be7f974d1f9e4F97Ed0ecc3D4C392C44Dd39beB8",
           "evm_tokens_20b": [
-            "0xB7A34Bb604DC79065Fc3aA48ABEa43087Ff8a0c2",
-            "0x573899948b8704ECAdd623799147f21f48D961d7"
+            "0x423A0663A39FB81300c3D94E23D3D9335F9809ce",
+            "0xCd8Cd99294cA8B66600C4fd7D4059AD09963a2f8"
           ]
         },
         {
           "chain_id": 10003,
-          "evm_bridge_address_32b": "0x000000000000000000000000E338ac9FF785978B56e81d0Fb8C9A5F0398CcEb3",
+          "evm_bridge_address_32b": "0x0000000000000000000000003911B175F7E27bFfEf2bf66F89C0694CdADd55aD",
           "evm_tokens_20b": [
-            "0xc216dD258bD780641D042aF5a8ae223dD170A6B0",
-            "0x4404168b59B6Fd1Be391705C9F72256A3F4A0484"
+            "0x54b35340E0544aa0E3542dbe137F6C7a18AA9f6c",
+            "0xfFE7d293e6Df872B78A2D835c9179B8920A88866"
           ]
         }
       ],
