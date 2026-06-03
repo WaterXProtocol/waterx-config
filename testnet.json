@@ -461,24 +461,6 @@
       "wormhole_state": "0x31358d198147da50db32eda2562951d53973a0c0ad5ed738e9b17d88b213d790",
       "max_mint_per_tx": "100000000000",
       "max_burn_per_tx": "100000000000",
-      "trusted_emitters": [
-        {
-          "chain_id": 10002,
-          "evm_bridge_address_32b": "0x000000000000000000000000be7f974d1f9e4F97Ed0ecc3D4C392C44Dd39beB8",
-          "evm_tokens_20b": [
-            "0x423A0663A39FB81300c3D94E23D3D9335F9809ce",
-            "0xCd8Cd99294cA8B66600C4fd7D4059AD09963a2f8"
-          ]
-        },
-        {
-          "chain_id": 10003,
-          "evm_bridge_address_32b": "0x0000000000000000000000003911B175F7E27bFfEf2bf66F89C0694CdADd55aD",
-          "evm_tokens_20b": [
-            "0x54b35340E0544aa0E3542dbe137F6C7a18AA9f6c",
-            "0xfFE7d293e6Df872B78A2D835c9179B8920A88866"
-          ]
-        }
-      ],
       "bridge": "0xe428e17a935f76a3aefe2356bb8b4a5724d6bce3751bf8ef0f1a199016aca2d7",
       "emitter_cap": "0x1ce28520f68edc209b9144cf812e5a8fbe549b820852ffe23300a1d0f3d04d1a",
       "publish_digest": "29JLcoS1wHF5wkaxLUNPo9J4jXtzTMBaMzorzASmDnrU",
