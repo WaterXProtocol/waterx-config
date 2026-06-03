@@ -441,15 +441,6 @@
           "min_burn_amount": "0"
         },
         {
-          "name": "MOCK_SUI",
-          "type": "0x896e53015216c5034825c056bcde37a694263601df2534ae5c91b8a3d9150c78::mock_sui::MOCK_SUI",
-          "decimal": 9,
-          "mint_fee_scaled": "0",
-          "burn_fee_scaled": "0",
-          "min_burn_amount": "0",
-          "deprecated": true
-        },
-        {
           "name": "MOCK_USDSUI",
           "type": "0xc0fad30bc21babe3b8b51c6a4c380d27b61a47e34b26968daf20315da0e35016::mock_usdsui::MOCK_USDSUI",
           "decimal": 6,
