@@ -397,7 +397,15 @@
       "pools": {
         "WLP": "0xbb2f127857e9e59cc09126aa0a2ef2ed48f505632c486d67d81e4009bac2c9c2"
       },
-      "rewarders": {},
+      "rewarders": {
+        "WLP": {
+          "MOCK_DEEP": {
+            "rewarder_id": "0x04fa44e41433cdf0a6b253036ffdf0715510809a5c132c6288ee68b581d5c4ad",
+            "coin_type": "0x8a14c090204331e3cf8d999d8a2653929869e3e406d2a8a8f46852e247a38d18::mock_deep::MOCK_DEEP",
+            "decimals": 6
+          }
+        }
+      },
       "publish_digest": "Bq4c1PWxL21doUUr4o9TQitwGAfohHzt3zfywV4vHDtL",
       "publish_checkpoint": "343899384"
     },
