@@ -137,6 +137,16 @@
           "feed_id": "0xeaa020c61cc479712813461ce153894a96a6c00b21ed0cfc2798d1f9a9e9c94a",
           "price_info_object": "0x5dec622733a204ca27f5a90d8c2fad453cc6665186fd5dff13a83d0b6c9027ab"
         }
+      },
+      "mvr": {
+        "name": "@waterx-protocol/pyth-rule",
+        "package_info_id": "0xd285db86b173801d534cf1ab102bd3df10e4a6870805db39a320008c81bf41f1",
+        "app_cap_id": "0x9e7af4c8d7f7fefd6e2650e8792b6c087d3a59ebea00fae6abc3cd4649c4f238",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_oracle_rule/pyth_rule",
+          "version": 1
+        }
       }
     },
     "pyth_sponsor_rule": {
@@ -144,7 +154,17 @@
       "original_id": "0xc60138533ff50b2f649bac1e076c1797f2ec0b4ee52d2f636d3419859bf95f0e",
       "version": 1,
       "upgrade_capability": "0xb5e295f7afe0e5ff91c1fcc4fe98daa5632c3703b2e0075aa972afe73b5a7bf5",
-      "pyth_sponsor": "0xf1b5ea5e4e0788be19899b4d72a2285c4385e3af3f1861c6519c7085d8b6abd4"
+      "pyth_sponsor": "0xf1b5ea5e4e0788be19899b4d72a2285c4385e3af3f1861c6519c7085d8b6abd4",
+      "mvr": {
+        "name": "@waterx-protocol/pyth-sponsor-rule",
+        "package_info_id": "0x4e3bde315bbd92b44dac962bec95461b7babc7234730c749564068f92659b8cd",
+        "app_cap_id": "0x720913ce6b238d7dc0b23ddad6d0fd42c4dfdf1dece004a3c1cedd2f12364e42",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_oracle_rule/pyth_sponsor_rule",
+          "version": 1
+        }
+      }
     },
     "waterx_oracle": {
       "published_at": "0xd6fd5fa8be2f2cb3042fbb11f31f26c27280676f6a08681b16cbb5e4cb64f24e",
@@ -185,7 +205,17 @@
       "oracle": "0x53cb392436aa9c1a1ae59350e3426e5c22126e9e140a9967f6a897829d00e151",
       "listing_cap": "0xfaa03cc36b34c8ffa54cb351d849bead0bfdee65fa94968d163e63131163a68c",
       "publish_digest": "27BUEDeitk52L3czDkRmYnfe7QnmN36tLYWHoC5Tfp8J",
-      "publish_checkpoint": "282565926"
+      "publish_checkpoint": "282565926",
+      "mvr": {
+        "name": "@waterx-protocol/oracle",
+        "package_info_id": "0x333f47bd6f464f45198bf28d7e48e40e9a32c10db13c8dd60c6103b354e52dff",
+        "app_cap_id": "0x87adbff62cbc751dff647583b456307ef9b1ce2d5addcb4037a71259a7d8c1ce",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_oracle",
+          "version": 1
+        }
+      }
     },
     "waterx_perp": {
       "published_at": "0x7759396b8d7f1672811ce1f773a1c743c23f3a6a24cca2979ecfdb73a5dd63af",
@@ -308,7 +338,17 @@
         }
       },
       "global_config": "0xf9110d82767c91c381d7be230bdad5a8c2e6107d02c8a243ab02e333fb29f7b4",
-      "admin_cap": "0x647dc890381d1514633e5958cfd7f2f9a718da031bb7c7b303bffdd1a3de8099"
+      "admin_cap": "0x647dc890381d1514633e5958cfd7f2f9a718da031bb7c7b303bffdd1a3de8099",
+      "mvr": {
+        "name": "@waterx-protocol/perp",
+        "package_info_id": "0xcd25ffd710320745092d401bca3767f22e14a3baf2294fae0ce6056b181d7c48",
+        "app_cap_id": "0x2276b63aaa123a6e696c019acf54dd130de36d7a183a3062e587a1bc7f8414c2",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_perp",
+          "version": 2
+        }
+      }
     },
     "wlp": {
       "published_at": "0x183b4cbecf29d6de0a94a90547e16ec7c3de7100c0852fbfbe73e61eed97e5cc",
@@ -329,13 +369,33 @@
       "version": 1,
       "upgrade_capability": "0x80a4247b73d6a704e003158d4384565c208f72103daaecb0d7cbebe06886da35",
       "account_registry": "0x4bdad79586cad7617768bd991fd6988b796e88339d8ee4ff89c4e5652239bb45",
-      "admin_cap": "0x7b990d36868f191e575625036d737b23b20abd3a1b38e80a8734222b3a88cff8"
+      "admin_cap": "0x7b990d36868f191e575625036d737b23b20abd3a1b38e80a8734222b3a88cff8",
+      "mvr": {
+        "name": "@waterx-protocol/account",
+        "package_info_id": "0x1767b4b9d79d534f283f204a086e5a3c29e9398eafb11b020c35db5143c9dcfe",
+        "app_cap_id": "0xa1a67c436e21c9389816420f4528468c1dd2837f07ce17ae6c8f979db42ce46a",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_account",
+          "version": 1
+        }
+      }
     },
     "waterx_perp_view": {
       "published_at": "0xace3c08864acdbc7163de6f72347213ac2fe03044a8c2c4cc3bbeb80e2cf5cdb",
       "original_id": "0xace3c08864acdbc7163de6f72347213ac2fe03044a8c2c4cc3bbeb80e2cf5cdb",
       "version": 1,
-      "upgrade_capability": "0x5d5d9c474ef8cb6997a00697a922d63d541dbe614b0b91bd38a287bd66ad9332"
+      "upgrade_capability": "0x5d5d9c474ef8cb6997a00697a922d63d541dbe614b0b91bd38a287bd66ad9332",
+      "mvr": {
+        "name": "@waterx-protocol/perp-view",
+        "package_info_id": "0xcde0a9c052cce154f507e6d67042e39be2072bf51858f014a67c0649d10b4025",
+        "app_cap_id": "0x2e4d2ae10d5c88a3bbcbb7556795c55f201e1017b4ac1b976216f061079df6b5",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_perp_view",
+          "version": 1
+        }
+      }
     },
     "waterx_staking": {
       "published_at": "0x061d53088c7beede5b7f087ed950563b94722104f26f5f84ea5d51921b1b7bf4",
@@ -359,6 +419,16 @@
             "decimals": 6
           }
         }
+      },
+      "mvr": {
+        "name": "@waterx-protocol/staking",
+        "package_info_id": "0xee63c8df275ff5abe02c5b2d4dafd1aaa90413b44d871a417ece24dd60e113c1",
+        "app_cap_id": "0xdee56c71751827c70558adad7aa4d80a8e407e1d585cf592bb56d970d5b7ffc3",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_staking",
+          "version": 1
+        }
       }
     },
     "waterx_credit": {
@@ -367,7 +437,17 @@
       "version": 2,
       "upgrade_capability": "0x9d90ffd5ff2b38c52f12b965465e3d5dcdfb4cac5119be570ff8cbdeced71c74",
       "credit_registry": "0x3b32d761b1182531f105d84c5869c66d7c9958c689a1d51a3347db7ac6356c5e",
-      "credit_type": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD"
+      "credit_type": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD",
+      "mvr": {
+        "name": "@waterx-protocol/credit",
+        "package_info_id": "0x21cc502370904fadfe8a5519e98794670e08fc19838137f96948a89b13b9684c",
+        "app_cap_id": "0x280b5745afeb1ad881a981754e4d66cc3d7936f1f6355f2702e4c4b96a870be8",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_credit/sui/credit",
+          "version": 2
+        }
+      }
     },
     "native_custody": {
       "published_at": "0x093e285d310af097f6ab24fbce646065015e620083f94629bb77785695919782",
@@ -393,7 +473,17 @@
           "burn_fee_scaled": "0",
           "min_burn_amount": "0"
         }
-      ]
+      ],
+      "mvr": {
+        "name": "@waterx-protocol/native-custody",
+        "package_info_id": "0xc453094e95dc518b75b2ff16934d3cb532af6c33a752cf27f9709ef07e82b60c",
+        "app_cap_id": "0x96dbf7b945c20a961ff8bf2a84bebabfb29eaf7930c1f7e72d7e933dc0eb0666",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_credit/sui/native_custody",
+          "version": 2
+        }
+      }
     },
     "wormhole_bridge": {
       "published_at": "0xe68b0b4af7fd4aca0ace303f1d929b3212c6863c8efa6320165edcb82cc77c6d",
@@ -410,6 +500,16 @@
       "personal_burn_cap": {
         "cap_amount": "1000000000",
         "window_ms": "86400000"
+      },
+      "mvr": {
+        "name": "@waterx-protocol/wormhole-bridge",
+        "package_info_id": "0x080c3f3d9503f4f844bb2beb548286766300bee1a74f232aea5aaf900ef26a26",
+        "app_cap_id": "0xd7f2ae43574470a89c63a807e1c34c62866e5405d020326fec5d299e2349ec65",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_credit/sui/wormhole_bridge",
+          "version": 2
+        }
       }
     },
     "withdrawal_queue": {
@@ -417,7 +517,17 @@
       "original_id": "0x257a2e2574ba118fb25ee2bb110db032a827a70e2b621dfc0005c8cffbc24a48",
       "version": 2,
       "upgrade_capability": "0x43a8a34d356baf96ad64be205a96bb072e8e4304271a95657e474f62358a6163",
-      "queue": "0xd5f3ffc217af104037975e66cf0b315a58cd2e880fef24f175d8cc9852a42b67"
+      "queue": "0xd5f3ffc217af104037975e66cf0b315a58cd2e880fef24f175d8cc9852a42b67",
+      "mvr": {
+        "name": "@waterx-protocol/withdrawal-queue",
+        "package_info_id": "0x2d0364578c81b65ec1e6345741cd91c1ef81321ca6212d05e6514c1fe0b2ad3f",
+        "app_cap_id": "0x24d18b7921cfa392281a535080c73c989e6878207f62d009eb5239c687af36d1",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_credit/sui/withdrawal_queue",
+          "version": 2
+        }
+      }
     },
     "usd": {
       "published_at": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4",
@@ -438,6 +548,16 @@
       },
       "settlement_coin_types": {
         "USD": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD"
+      },
+      "mvr": {
+        "name": "@waterx-protocol/prediction",
+        "package_info_id": "0x590418f8b396848b8e7aa1133e734a5b60d2553df235b12d4992e601124e4e80",
+        "app_cap_id": "0x52a789a6538e9e3c4cca6cfaa771c5a2db01aea1ab8c79f9107a74e20ce93bd7",
+        "git": {
+          "repo": "https://github.com/WaterXProtocol/waterx-contract",
+          "path": "waterx_prediction",
+          "version": 1
+        }
       }
     }
   },
@@ -625,6 +745,12 @@
       "digest": "FokCGbcEMqh4z1LpXdoEEx3TPD8JsKrqecUdKSqTD1uT",
       "checkpoint": "282578584",
       "timestamp": "2026-06-03T08:08:35.672Z"
+    },
+    {
+      "phase": "mvr.register",
+      "action": "MVR registration of @waterx-protocol/* (12 apps) — single M1 PTB",
+      "digest": "RCD2qayFvDYgC3iG1D36xxtt7BemSfqQuUycuuaMrzc",
+      "timestamp": "2026-06-10T17:16:22.232Z"
     }
   ]
 }
