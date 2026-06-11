@@ -450,7 +450,7 @@
           "wormhole_core": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
           "wormhole_executor": "0x84EEe8dBa37C36947397E1E11251cA9A06Fc6F8a",
           "block_explorer": "https://etherscan.io",
-          "deposit_vault": "0x0000000000000000000000000000000000000000",
+          "deposit_vault": "0xEc67486d91c81540AceEbA95AEB197C044601d72",
           "tokens": {
             "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
@@ -464,8 +464,8 @@
           "block_explorer": "https://arbiscan.io",
           "deposit_vault": "0x0000000000000000000000000000000000000000",
           "tokens": {
-            "USDC": "0xDB46340eB3F04AA651B25db3964765e389107Ff9",
-            "USDT": "0x0b6636d474653ed8c4d4F286173aeeEE68345B66"
+            "USDC": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
           }
         }
       }
