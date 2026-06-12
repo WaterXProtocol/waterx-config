@@ -525,7 +525,7 @@
         "git": {
           "repo": "https://github.com/WaterXProtocol/waterx-contract",
           "path": "waterx_credit/sui/withdrawal_queue",
-          "version": 3
+          "version": 2
         }
       }
     },
