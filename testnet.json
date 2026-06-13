@@ -373,6 +373,16 @@
       "publish_digest": "NhubZx3SJwvTnjxfW9qGdc7KaKV97gA36J6xXUN78Fc",
       "publish_checkpoint": "343899458"
     },
+    "waterx_prediction_gift": {
+      "published_at": "0x2cf6f6b047b4e0b97f33a77a75d6fa39175600894fe8615ef45caec2e59f023f",
+      "original_id": "0x2cf6f6b047b4e0b97f33a77a75d6fa39175600894fe8615ef45caec2e59f023f",
+      "version": 1,
+      "claimable_link_config": "0x39e9b1fa73e5a544acbe94409f6784c737ff5f64aab9094bbfa1043abc848eb2",
+      "upgrade_capability": "0x067fc22608d0fb12a703beb955f1b7ef3dec771a361ef907e40bb3322ef9b3c6",
+      "admin_cap": "0xaf093dcf28e2f09efdc821d7f9837a0c0fa5e01943d88d116d899c65afbd4baa",
+      "publish_digest": "Gykk1MRAj2XeddNJyB2A7ZuLUeEMtvwKGYhCs1oHKrdw",
+      "publish_checkpoint": "347776355"
+    },
     "waterx_perp_view": {
       "published_at": "0x82c988477579606d9ccf609e85296a2c521a024ca4699bfa32596be2391028a5",
       "original_id": "0x82c988477579606d9ccf609e85296a2c521a024ca4699bfa32596be2391028a5",
