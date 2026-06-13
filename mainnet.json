@@ -559,6 +559,16 @@
           "version": 1
         }
       }
+    },
+    "waterx_prediction_gift": {
+      "published_at": "0x6f279e417396f0c1a2e003f2508f2da38bed7e1bfd275f2a897ca0edd671929e",
+      "original_id": "0x6f279e417396f0c1a2e003f2508f2da38bed7e1bfd275f2a897ca0edd671929e",
+      "version": 1,
+      "claimable_link_config": "0x97e49c1f0abe8a09867698d99dd8cde18b75f085bd6615644f74f9165cbc9cd9",
+      "upgrade_capability": "0xdb55427e26d4642a462d69aebce48b6973b7c090ba8793b89667dc931c97c06a",
+      "admin_cap": "0x5493191ef3a5cfaa859f1a07b9ef277e75aa3d41edfcc9569aba8eae02c6655c",
+      "publish_digest": "DHPAvyfvN9PiXiYvAFQ2rFksdMyR59VVqCrLd2W5NiFq",
+      "publish_checkpoint": "286567975"
     }
   },
   "evm": {
