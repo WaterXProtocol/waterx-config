@@ -481,16 +481,16 @@
       }
     },
     "withdrawal_queue": {
-      "published_at": "0xd9698d972226c1c4f8180a059403fe808b4d92b5f88c878334d0efea830d0886",
+      "published_at": "0x8750c73636669f50a5e6be2c91ffb71808ac5113cde5e38364fa086e72bf355b",
       "original_id": "0xd9698d972226c1c4f8180a059403fe808b4d92b5f88c878334d0efea830d0886",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x49337f0f96bb4850ad21ed3bd56e7ff6e1373ad71e51518bd181e82c74b386ac",
       "executors": [
         "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
       ],
       "queue": "0x1ffa684735e601fb6454ef6dc3196d6c0bb945ee1b527094789f59027924e366",
-      "publish_digest": "6h4KdDvLqGc7UMuBwc5n7y3yzviwEiE9YJBq4afg2VVC",
-      "publish_checkpoint": "343899434"
+      "publish_digest": "5iWWUdFdfFujySpsfTRdCLt9Hx7Gb8MvQm2wqjvf7et6",
+      "publish_checkpoint": "349332500"
     },
     "testnet_faucet": {
       "published_at": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
