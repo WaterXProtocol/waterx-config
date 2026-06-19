@@ -358,9 +358,9 @@
       "publish_checkpoint": "343899321"
     },
     "waterx_prediction": {
-      "published_at": "0x99be07b27dbbd846eec72213f0ec221b3e7d38c8bfdee3cbf578b9bfa5df3481",
+      "published_at": "0xc6148ce38962cdbdb9d0ddc2f9df866a2142b960671fc27259a652136ec67954",
       "original_id": "0x99be07b27dbbd846eec72213f0ec221b3e7d38c8bfdee3cbf578b9bfa5df3481",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x4455efe909425bf55247b18c8ca744f2c84d79a1e36b82cdf3cd5d20c96702b9",
       "admin_cap": "0x31acc29c6f6171a86ad5583e4610d75bdd9bcc71e16b46b1b994770743cdc782",
       "global_config": "0x3e2d7bfce29e077f13f9feaf68af62410872817be476b2708540a0d5b23c5936",
