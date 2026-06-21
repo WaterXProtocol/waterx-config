@@ -449,6 +449,15 @@
           "min_burn_amount": "0"
         },
         {
+          "name": "MOCK_SUI",
+          "type": "0x896e53015216c5034825c056bcde37a694263601df2534ae5c91b8a3d9150c78::mock_sui::MOCK_SUI",
+          "decimal": 9,
+          "mint_fee_scaled": "0",
+          "burn_fee_scaled": "0",
+          "min_burn_amount": "0",
+          "deprecated": true
+        },
+        {
           "name": "MOCK_USDSUI",
           "type": "0xc0fad30bc21babe3b8b51c6a4c380d27b61a47e34b26968daf20315da0e35016::mock_usdsui::MOCK_USDSUI",
           "decimal": 6,
@@ -512,6 +521,24 @@
       "metadata_cap": "0xb650df8765c5735e478df589961494d90aef70eca805b4591e0483d513d82c69",
       "publish_digest": "98beQbLMCrRYYBPGwofyvRkkgePhjjNcVFnR5FS9eEyw",
       "publish_checkpoint": "343899445"
+    },
+    "waterx_constant_rule": {
+      "published_at": "0xb623f1243a990d892f6f5c9b3e336d86f27b3d6c1491e93a0e6cc4a55976caed",
+      "original_id": "0xb623f1243a990d892f6f5c9b3e336d86f27b3d6c1491e93a0e6cc4a55976caed",
+      "version": 1,
+      "upgrade_capability": "0xdab514c940b738287d045ed2975a2fdf6e84d7f20206dc24619033eaf0dabb32",
+      "config": "0xaa498ceed92217ae2b46d3166f1a1645b56a2954fe884a0bf422e0ce55d10dfd",
+      "prices": {}
+    },
+    "supra_rule": {
+      "published_at": "0x30fbd5dfd842202829fae2a9a2d0a3dcab0f0b81183dff1543967c45d2a33578",
+      "original_id": "0x30fbd5dfd842202829fae2a9a2d0a3dcab0f0b81183dff1543967c45d2a33578",
+      "version": 1,
+      "upgrade_capability": "0xe070e8746bb0e4dfad8204a0496abe7aa6bb3e717cd785be49ab578efc2dbe6f",
+      "config": "0x33387310c9ecebc465234d3a805e5e50f0aa2f88935a2cb0882b72f5e584989f",
+      "pairs": {},
+      "publish_digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
+      "publish_checkpoint": "349406324"
     }
   },
   "evm": {
@@ -817,6 +844,13 @@
       "digest": "DSCGyHsLvaLzc2nQpdkantaSbwZSUv8dA5t7fUQiTNiX",
       "checkpoint": "344067887",
       "timestamp": "2026-06-03T03:52:14.656Z"
+    },
+    {
+      "phase": "1.publish:supra_rule",
+      "action": "sui client publish waterx_oracle_rule/supra_rule",
+      "digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
+      "checkpoint": "349406324",
+      "timestamp": "2026-06-17T05:55:26.306Z"
     }
   ]
 }
