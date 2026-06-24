@@ -523,13 +523,15 @@
       "publish_digest": "98beQbLMCrRYYBPGwofyvRkkgePhjjNcVFnR5FS9eEyw",
       "publish_checkpoint": "343899445"
     },
-    "waterx_constant_rule": {
+    "constant_rule": {
       "published_at": "0xb623f1243a990d892f6f5c9b3e336d86f27b3d6c1491e93a0e6cc4a55976caed",
       "original_id": "0xb623f1243a990d892f6f5c9b3e336d86f27b3d6c1491e93a0e6cc4a55976caed",
       "version": 1,
       "upgrade_capability": "0xdab514c940b738287d045ed2975a2fdf6e84d7f20206dc24619033eaf0dabb32",
       "config": "0xaa498ceed92217ae2b46d3166f1a1645b56a2954fe884a0bf422e0ce55d10dfd",
-      "prices": {}
+      "feeds": {
+        "USDCUSD": { "price": "1000000000" }
+      }
     },
     "supra_rule": {
       "published_at": "0x30fbd5dfd842202829fae2a9a2d0a3dcab0f0b81183dff1543967c45d2a33578",
@@ -537,7 +539,22 @@
       "version": 1,
       "upgrade_capability": "0xe070e8746bb0e4dfad8204a0496abe7aa6bb3e717cd785be49ab578efc2dbe6f",
       "config": "0x33387310c9ecebc465234d3a805e5e50f0aa2f88935a2cb0882b72f5e584989f",
-      "pairs": {},
+      "feeds": {
+        "SUIUSD": { "pair_id": 90 },
+        "BTCUSD": { "pair_id": 18 },
+        "ETHUSD": { "pair_id": 19 },
+        "SOLUSD": { "pair_id": 10 },
+        "DEEPUSD": { "pair_id": 491 },
+        "WALUSD": { "pair_id": 534 },
+        "HYPEUSD": { "pair_id": 551 },
+        "XRPUSD": { "pair_id": 14 },
+        "BNBUSD": { "pair_id": 49 },
+        "ZECUSD": { "pair_id": 60 },
+        "XAGUSD": { "pair_id": 5501 },
+        "WTIUSD": { "pair_id": 5503 },
+        "EURUSD": { "pair_id": 5000 },
+        "USDJPY": { "pair_id": 5001 }
+      },
       "publish_digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
       "publish_checkpoint": "349406324"
     }
