@@ -523,7 +523,7 @@
       "publish_digest": "98beQbLMCrRYYBPGwofyvRkkgePhjjNcVFnR5FS9eEyw",
       "publish_checkpoint": "343899445"
     },
-    "waterx_constant_rule": {
+    "constant_rule": {
       "published_at": "0xb623f1243a990d892f6f5c9b3e336d86f27b3d6c1491e93a0e6cc4a55976caed",
       "original_id": "0xb623f1243a990d892f6f5c9b3e336d86f27b3d6c1491e93a0e6cc4a55976caed",
       "version": 1,
