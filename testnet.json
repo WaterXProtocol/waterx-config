@@ -529,7 +529,8 @@
       "version": 1,
       "upgrade_capability": "0xdab514c940b738287d045ed2975a2fdf6e84d7f20206dc24619033eaf0dabb32",
       "config": "0xaa498ceed92217ae2b46d3166f1a1645b56a2954fe884a0bf422e0ce55d10dfd",
-      "prices": {}
+      "prices": { "USDCUSD": "1000000000" },
+      "dual_feed": ["USDCUSD"]
     },
     "supra_rule": {
       "published_at": "0x30fbd5dfd842202829fae2a9a2d0a3dcab0f0b81183dff1543967c45d2a33578",
