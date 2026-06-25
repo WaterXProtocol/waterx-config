@@ -167,6 +167,14 @@
         "USDCUSD": {
           "feed_id": "0x41f3625971ca2ed2263e78573fe5ce23e13d2558ed3f2e47ab0f84fb9e7ae722",
           "price_info_object": "0x9c4dd4008297ffa5e480684b8100ec21cc934405ed9a25d4e4d7b6259aad9c81"
+        },
+        "DOGEUSD": {
+          "feed_id": "0x31775e1d6897129e8a84eeba975778fb50015b88039e9bc140bbd839694ac0ae",
+          "price_info_object": "0x17b358d730663caa888c8b621b9994a60af422cd83f32237c6b2a8b3230d71b9"
+        },
+        "LITUSD": {
+          "feed_id": "0x00db595027f350c8c18d03a654c806625e9d9329ce760add4fe061184d116add",
+          "price_info_object": "0x7fd5768ea0660e6fb72035c7809937526b482ec068b3ec1475cf934881aa94fe"
         }
       },
       "publish_digest": "234jQLrJ5mbFwi1To4k6VErLnoPMdDimWRakRpibU24d",
@@ -227,7 +235,9 @@
         "BRENTUSD": "0xb22cceb5672ba28a25199ee68b378da53d6213c982957adca844d1c8ae4909a5",
         "EURUSD": "0x766a270b9605c6841b7b5499de7fe032047d321c5737e55e7933a3bd02d21f59",
         "USDJPY": "0xbf00ae3880788943cb03892a88938bac34daab238df73668449ab04565964e6e",
-        "USDCUSD": "0x4df568b626407d7808622fbd1384792bfcf772b8f205403823e52ab0efbfb787"
+        "USDCUSD": "0x4df568b626407d7808622fbd1384792bfcf772b8f205403823e52ab0efbfb787",
+        "DOGEUSD": "0xcedcfdfd54e3ee5fad07ed90456667a0c0a3b36d8fe0df1008643729afdddb9c",
+        "LITUSD": "0x9603b436956ff0fb81b0f25ac7b6d8c4982d1f4e0862b74dd059698294029a88"
       },
       "publish_digest": "BqrAvRqe3T7vqJimjcavgHWHGHx1kaHh4PRubTJcRPRv",
       "publish_checkpoint": "343899296"
@@ -352,6 +362,14 @@
         "USDJPY": {
           "market": "0xe94149eaedba2e36cb283ca4584fdf68706ca091c2cf727b445f9c423bd76c9d",
           "config": "0x4440fb5beedc9c5fc8698e259414a9bebb049775097baa9a5492a529be689956"
+        },
+        "DOGEUSD": {
+          "market": "0xcc5e3648c4a65b959b008c42feb46c521315960087565204be4148e990544434",
+          "config": "0xf148fbc2e3e4ca485898718ef48e497d339be2d869a90aef589e6181c528db75"
+        },
+        "LITUSD": {
+          "market": "0x052532f8d7186ba884a3b0d2c42ccc3eab96a9fb6fc01e7b77af832d828749f8",
+          "config": "0xb3afcf946efc8a921661ab7810a1f039dca8c325a897a90f9c0f04f9581c4530"
         }
       },
       "publish_digest": "BmNsBbvP3LtyxhAbJ4cE2Wrv6X85J78PCj7tt32C8jC8",
