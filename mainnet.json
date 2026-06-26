@@ -61,6 +61,14 @@
           "feed_id": "0xbe9b59d178f0d6a97ab4c343bff2aa69caa1eaae3e9048a65788c529b125bb24",
           "price_info_object": "0xcc0f04f341b08fa9f1079f760d6dee779e6fdd46e50594eb931bce07f80c05d3"
         },
+        "DOGEUSD": {
+          "feed_id": "0xdcef50dd0a4cd2dcc17e45df1676dcb336a11a61c69df7a0299b0150c672d25c",
+          "price_info_object": "0xd59a5f5173424ba725a7d033d86f2eadf2745f87a908bd27e1d27339eff598ce"
+        },
+        "LITUSD": {
+          "feed_id": "0xc0c83f00c39165892d55dcd17ade2191e289697e2ac132d9ab721e20834e2a9e",
+          "price_info_object": "0x0a725ebbb6a13fd70f56dd9be248e1ef484b62a5b037b5815f04985688478147"
+        },
         "QQQXUSD": {
           "feed_id": "0x178a6f73a5aede9d0d682e86b0047c9f333ed0efe5c6537ca937565219c4054d",
           "price_info_object": "0xcce836357b028bd85e866320f194980125b58e6117a2e86a24ed5c154df1e799"
@@ -181,6 +189,8 @@
         "XRPUSD": "0xdee8c46f58e27ba3fdb7f23a3d6483338356a4711aacff58ac9588e723263cf2",
         "BNBUSD": "0xf4c3aaffc7a1532ccc0c99f2e9ffd3611b275afe3c98672007f2b5a4b7fb4b83",
         "ZECUSD": "0x041e506e81be3f5ddd94af7aa3c2e437989d9ed33ee9020ec0f75e0a06badeed",
+        "DOGEUSD": "0x145dd16af11381c017c336d74f6273c6a5e59d92bf408472df717344ba0d01c8",
+        "LITUSD": "0x565d7b1740b7e8147e8234604f87d5762b5aeb8bd6a79f2dc3a9ced9c77e3a07",
         "QQQXUSD": "0xe0315cb67df98ea0ce3d728577050c0a3526cbeb615ebf3a96e1e84476acc23d",
         "SPYXUSD": "0x3d5b8b43d871fc6b53159e916c40680708fc4b73113e298bfa45746f723f591d",
         "NVDAXUSD": "0xaa92048555e498c84d9873e2ed58fbc582496bda6f838e4dbb2f1875b3192edd",
@@ -263,6 +273,14 @@
         "ZECUSD": {
           "market": "0x1859597f0310f07865dc9cbdf97c941cfe8151642b442d0b9e2703d95ea12d98",
           "config": "0x863b609ec52f95672048231bf254625a7349b8eb2b81c867b74b7a9e528e088a"
+        },
+        "DOGEUSD": {
+          "market": "0x44a18103bb9b4580802cd1a4127c2c6ee934810ea1ed30a724e38b80b4922bc6",
+          "config": "0x24f252edeed830683ff731d11274228f8f40422af8aa51445e8a9adf1656838d"
+        },
+        "LITUSD": {
+          "market": "0x8b0433360a71988cf22cd4dbe37ed58fb130b5f01aad40128617a1e1a9da787d",
+          "config": "0x9d15c426f4228c9429e6d6b7c222723c7ba6a16796b49aeac34921c4e2e4bf56"
         },
         "QQQXUSD": {
           "market": "0xbde01f296160049cfcedc2744e79849c17d8e006bbcac2630bbcfb7971b1d200",
