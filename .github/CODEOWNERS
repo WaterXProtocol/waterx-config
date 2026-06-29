@@ -1,0 +1,4 @@
+# Code owners for waterx-config
+# Required reviewers for protected branches (e.g. production).
+# A PR into a protected branch needs approval from these owners.
+* @allen-hsu @JustaLiang @xstarjx
