@@ -1,0 +1,21 @@
+name: Guard main merges
+
+# 只有 staging 能 merge 進 main。任何其他來源 branch 的 PR 一律 fail，
+# 配合 main ruleset 把這個 check 設為 required，沒過就無法 merge。
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  guard-source-branch:
+    name: only-staging-can-merge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure PR source is staging
+        run: |
+          SRC="${{ github.head_ref }}"
+          if [ "$SRC" != "staging" ]; then
+            echo "::error::Only the 'staging' branch may be merged into main. This PR is from '$SRC'."
+            exit 1
+          fi
+          echo "Source branch '$SRC' is allowed."
