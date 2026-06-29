@@ -1,0 +1,60 @@
+name: Promote config
+
+# 手動觸發：輸入一個 commit（SHA 或 branch），把它發布到指定環境。
+# 發布方式 = 把該 commit 推到對應的環境 branch（staging / production），
+# 環境 branch 永遠是該環境「目前生效」的版本，raw URL 不變、內容隨之更新。
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: '要發布的 commit SHA 或 branch'
+        required: true
+        type: string
+      environment:
+        description: '目標環境'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  contents: write
+
+# 同一環境一次只跑一個 promote，避免兩個發布互相覆蓋
+concurrency:
+  group: promote-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    # ↓ 保護來源：production 在 repo Settings → Environments 設 Required reviewers，
+    #   job 跑到這裡會暫停等人工核可；staging 不設 reviewers 就直接放行。
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout source commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit }}
+          fetch-depth: 0
+
+      - name: Resolve commit SHA
+        id: resolve
+        run: |
+          SHA="$(git rev-parse HEAD)"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "Promoting $SHA → ${{ inputs.environment }}"
+
+      - name: Push to environment branch
+        run: |
+          git push --force origin HEAD:refs/heads/${{ inputs.environment }}
+
+      # production 才打不可變 tag，當作回滾點
+      - name: Tag production release
+        if: ${{ inputs.environment == 'production' }}
+        run: |
+          TAG="production-$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD)"
+          git tag "$TAG"
+          git push origin "$TAG"
+          echo "Tagged $TAG"
