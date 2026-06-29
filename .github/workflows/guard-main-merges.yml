@@ -12,10 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ensure PR source is staging
+        env:
+          SOURCE_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
-          SRC="${{ github.head_ref }}"
-          if [ "$SRC" != "staging" ]; then
-            echo "::error::Only the 'staging' branch may be merged into main. This PR is from '$SRC'."
+          if [ "$SOURCE_REPOSITORY" != "WaterXProtocol/waterx-config" ] || [ "$SOURCE_BRANCH" != "staging" ]; then
+            echo "::error::Only WaterXProtocol/waterx-config:staging may be merged into main. This PR is from $SOURCE_REPOSITORY:$SOURCE_BRANCH."
             exit 1
           fi
-          echo "Source branch '$SRC' is allowed."
+          echo "Source branch $SOURCE_REPOSITORY:$SOURCE_BRANCH is allowed."
