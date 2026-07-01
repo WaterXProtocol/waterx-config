@@ -228,9 +228,9 @@
       }
     },
     "waterx_perp": {
-      "published_at": "0x7759396b8d7f1672811ce1f773a1c743c23f3a6a24cca2979ecfdb73a5dd63af",
+      "published_at": "0x2d986babdac1ee98767c38c349d34402ddb85481152ac50ace0fc86e22b1fd47",
       "original_id": "0x44dad8a2899167fe2806c2c298366c0824180fc382aa66cb8bd034b2e9aef96f",
-      "version": 2,
+      "version": 3,
       "upgrade_capability": "0x6ecbcb8c63d56c97ae7b8f10cf0dab83fea6ee537fa53f74f5c9a94513caf963",
       "market_registry_wlp": "0x6657a7d57c9a8769a81041ea53834d080204672f5098dc7e8d91c1f8d4e03735",
       "markets": {
@@ -382,9 +382,9 @@
       "wlp_aum": "0x5265d7ca9e725e935aab3624915edb1df3bd9ddeb36c5f55b7996595fdd1b371"
     },
     "waterx_account": {
-      "published_at": "0xe308bd40bd81aa42b9245e4b51b3fe63801c77c78a76be4ce5902aae549f7221",
+      "published_at": "0x6cb6f3be75d37cd2b7db0e9fdac11b72ff0669765382cc9e00441d178b58bdbe",
       "original_id": "0xe308bd40bd81aa42b9245e4b51b3fe63801c77c78a76be4ce5902aae549f7221",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x80a4247b73d6a704e003158d4384565c208f72103daaecb0d7cbebe06886da35",
       "account_registry": "0x4bdad79586cad7617768bd991fd6988b796e88339d8ee4ff89c4e5652239bb45",
       "admin_cap": "0x7b990d36868f191e575625036d737b23b20abd3a1b38e80a8734222b3a88cff8",
@@ -416,9 +416,9 @@
       }
     },
     "waterx_staking": {
-      "published_at": "0x061d53088c7beede5b7f087ed950563b94722104f26f5f84ea5d51921b1b7bf4",
+      "published_at": "0xda968d77a68decca71f5c0b0d79d06be601374770380f39af90de6285d66ad20",
       "original_id": "0x061d53088c7beede5b7f087ed950563b94722104f26f5f84ea5d51921b1b7bf4",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x415d266f6543b679b9780c747da05b0c27c378d37ee6b92dc6d7b41e3581e374",
       "admin_cap": "0xc6fe782cb14fde8812a8fae2fc1e1c58af7f25bf99b51ad6487c2454e60797bb",
       "pools": {
@@ -450,9 +450,9 @@
       }
     },
     "waterx_credit": {
-      "published_at": "0xae342a90e06235a41d3bed320e3eb434b84aa88a5ce1c8ea6d068733082e571d",
+      "published_at": "0xf22d3e583abf09f4b01733fe0abf5c056b5fe1d704d62607f42551ea1245704f",
       "original_id": "0x86e05a9f95757ed4574cf209683e69e5e1fa4ac7ce7a529c91848343a232c989",
-      "version": 2,
+      "version": 3,
       "upgrade_capability": "0x9d90ffd5ff2b38c52f12b965465e3d5dcdfb4cac5119be570ff8cbdeced71c74",
       "credit_registry": "0x3b32d761b1182531f105d84c5869c66d7c9958c689a1d51a3347db7ac6356c5e",
       "credit_type": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD",
@@ -468,9 +468,9 @@
       }
     },
     "native_custody": {
-      "published_at": "0x093e285d310af097f6ab24fbce646065015e620083f94629bb77785695919782",
+      "published_at": "0x84e1f8aa9456205e6e38e878988e5ee4714f2254d7408ee40b455f0e8a1446c0",
       "original_id": "0xebd4336ac8d5a12fc7d314b84f8c06a8190dcdfc3c9ef4133ffb53e0aed3c70a",
-      "version": 2,
+      "version": 3,
       "upgrade_capability": "0xde3946cd9575f19bd02b77af1c4f2ec8a85bacd145bcfab2d43a8c62a24913f0",
       "vault": "0xf27ebfd21ea4ea759beefb1c4385825e02ab6c50f57305abec601ea4522d04bd",
       "assets": [
@@ -504,9 +504,9 @@
       }
     },
     "wormhole_bridge": {
-      "published_at": "0xe68b0b4af7fd4aca0ace303f1d929b3212c6863c8efa6320165edcb82cc77c6d",
+      "published_at": "0x5df5483a84cba4c244e98ef6519c2358d690cd8316dc50f09278c709371f0ee9",
       "original_id": "0xc6129ed341b014213284742d681766c48ea3cbb287f91685f0c0ccd608e17982",
-      "version": 2,
+      "version": 3,
       "upgrade_capability": "0x131b2e79dbdf2a8b7b728c70008443ed4fe55f077fcb227663a847df79ea41e8",
       "bridge": "0xe7275d334a1a65deae0133a20a7ac83cb49b1b4629718c4b8cd21dcf37277c1b",
       "emitter_cap": "0x28a1e7abc1fa459b1c82e5d86a9c71af9c8c893d5c288196d3b0e4968675924d",
@@ -531,9 +531,9 @@
       }
     },
     "withdrawal_queue": {
-      "published_at": "0x0e8f506ec4ca8e4f4835d3c46e43bc518ee1fe34ed37f4334427eb2c74309932",
+      "published_at": "0x200752ac52233e07a8814d93d626bb88621f6c066e2252e5d77c9c0903aa0bcf",
       "original_id": "0x257a2e2574ba118fb25ee2bb110db032a827a70e2b621dfc0005c8cffbc24a48",
-      "version": 3,
+      "version": 4,
       "upgrade_capability": "0x43a8a34d356baf96ad64be205a96bb072e8e4304271a95657e474f62358a6163",
       "queue": "0xd5f3ffc217af104037975e66cf0b315a58cd2e880fef24f175d8cc9852a42b67",
       "mvr": {
@@ -555,9 +555,9 @@
       "metadata_cap": "0xd0913660dbd60661c33c01cde5a6f3187c837842680d39af9bd25e3a5fe0687e"
     },
     "waterx_prediction": {
-      "published_at": "0x285898c2e59238919901330f105b94bf7ee912708a6d9caba589ce3c9a44c61c",
+      "published_at": "0xf2aeaf8e99ac54043e072019939293263c51e6fd5b86eedd7ee602d659799e62",
       "original_id": "0xa5cfafe6660a8bf37eedf1a09dba633048da374c30b835668473689668f9ef57",
-      "version": 2,
+      "version": 4,
       "upgrade_capability": "0x168e6d530c04a595736b4269d5100cb2d2df893b8ec629a6603b369992f5ae4a",
       "admin_cap": "0x8d65ecbe9c0863af842a15d60185a11b4d052bca6d1638ac745f93c56ac5c9dd",
       "global_config": "0xbeae59a5f462696fa639b02c62406c1b4f7acb951644eb4ee8f3f666391484ac",
@@ -579,9 +579,9 @@
       }
     },
     "waterx_prediction_gift": {
-      "published_at": "0x6f279e417396f0c1a2e003f2508f2da38bed7e1bfd275f2a897ca0edd671929e",
+      "published_at": "0xb8095fcd57c81c96b7b7742111d9dde1a637d614d6acdfbc7ddf16a90032c560",
       "original_id": "0x6f279e417396f0c1a2e003f2508f2da38bed7e1bfd275f2a897ca0edd671929e",
-      "version": 1,
+      "version": 3,
       "claimable_link_config": "0x97e49c1f0abe8a09867698d99dd8cde18b75f085bd6615644f74f9165cbc9cd9",
       "upgrade_capability": "0xdb55427e26d4642a462d69aebce48b6973b7c090ba8793b89667dc931c97c06a",
       "admin_cap": "0x5493191ef3a5cfaa859f1a07b9ef277e75aa3d41edfcc9569aba8eae02c6655c",
