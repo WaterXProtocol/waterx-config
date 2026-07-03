@@ -174,6 +174,16 @@
         }
       }
     },
+    "constant_rule": {
+      "published_at": "0x685dcb32ce65e0eaab691596bab72c6ace4f227f81277f83cc5bd59c6e574d09",
+      "original_id": "0x685dcb32ce65e0eaab691596bab72c6ace4f227f81277f83cc5bd59c6e574d09",
+      "version": 1,
+      "upgrade_capability": "0x0cb9d69784aba5a5418813a43ccd61727c9ca4b9a4ddd254b03841464be65e79",
+      "config": "0xa3d39ebf2b25c242b4589f54af2cb7e601b1356e5f4e57d93f17d043bf9785f1",
+      "feeds": {
+        "USDCUSD": { "price": "1000000000" }
+      }
+    },
     "waterx_oracle": {
       "published_at": "0xd6fd5fa8be2f2cb3042fbb11f31f26c27280676f6a08681b16cbb5e4cb64f24e",
       "original_id": "0xd6fd5fa8be2f2cb3042fbb11f31f26c27280676f6a08681b16cbb5e4cb64f24e",
