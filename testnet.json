@@ -164,10 +164,6 @@
           "feed_id": "0x20a938f54b68f1f2ef18ea0328f6dd0747f8ea11486d22b021e83a900be89776",
           "price_info_object": "0xd14cadaf54a926f701db021eceaa89b3d09363e1bce51bfcb2291a32a693f928"
         },
-        "USDCUSD": {
-          "feed_id": "0x41f3625971ca2ed2263e78573fe5ce23e13d2558ed3f2e47ab0f84fb9e7ae722",
-          "price_info_object": "0x9c4dd4008297ffa5e480684b8100ec21cc934405ed9a25d4e4d7b6259aad9c81"
-        },
         "DOGEUSD": {
           "feed_id": "0x31775e1d6897129e8a84eeba975778fb50015b88039e9bc140bbd839694ac0ae",
           "price_info_object": "0x17b358d730663caa888c8b621b9994a60af422cd83f32237c6b2a8b3230d71b9"
