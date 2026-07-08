@@ -1,0 +1,8 @@
+# Code owners for waterx-config.
+#
+# A review from at least one listed owner is required to merge — but only once
+# "Require review from Code Owners" is enabled in the branch ruleset (main).
+# GitHub evaluates the CODEOWNERS from the PR's base branch, so this file must
+# reach `main` (via the staging → main promotion) to gate PRs into main.
+
+*   @JustaLiang @allen-hsu @xstarjx
