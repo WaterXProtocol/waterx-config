@@ -2,6 +2,15 @@
 
 WaterX 各網路的鏈上部署資訊（package id、object id 等），給後端、SDK、前端及部署腳本共用。
 
+## 讀取方式（CDN）
+
+程式請透過自架 CDN 讀取，**不要**直接打 `raw.githubusercontent.com`（會撞到 GitHub 的 scraping 限流回 429）：
+
+- `https://config.waterx.app/mainnet.json`
+- `https://config.waterx.app/testnet.json`
+
+由 Cloudflare Pages 託管，接這個 repo 的 `main` branch，push 到 main 後自動部署並 purge edge 快取。回應標頭（CORS、`Content-Type`、`Cache-Control`）見根目錄的 [`_headers`](./_headers)。
+
 ## 檔案
 
 - `testnet.json` — Sui testnet 部署資訊（chain-id `4c78adac`），來源為 [`waterx-contract`](../waterx-contract) 各套件下的 `Published.toml`。
