@@ -565,9 +565,9 @@
       "metadata_cap": "0xd0913660dbd60661c33c01cde5a6f3187c837842680d39af9bd25e3a5fe0687e"
     },
     "waterx_prediction": {
-      "published_at": "0xa4665574f0224cf09a686eca29f9ae117638603c73f75cfcc8ce3602209ca93a",
+      "published_at": "0x972184710f3ea2d54973d325ca4035c8d44d1a9571da7ee42a34cf8da72facbd",
       "original_id": "0xa5cfafe6660a8bf37eedf1a09dba633048da374c30b835668473689668f9ef57",
-      "version": 5,
+      "version": 6,
       "upgrade_capability": "0x168e6d530c04a595736b4269d5100cb2d2df893b8ec629a6603b369992f5ae4a",
       "admin_cap": "0x8d65ecbe9c0863af842a15d60185a11b4d052bca6d1638ac745f93c56ac5c9dd",
       "global_config": "0xbeae59a5f462696fa639b02c62406c1b4f7acb951644eb4ee8f3f666391484ac",
