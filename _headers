@@ -1,15 +1,16 @@
-# Cloudflare Pages 回應標頭設定。
-# 部署時 Cloudflare 會自動 purge edge 快取，所以 config 更新（push 到 main）後 edge 立即失效；
-# 下方 Cache-Control 只影響 client / 中介快取。
+# Cloudflare Pages response header config.
+# Cloudflare purges the edge cache on every deploy, so config updates (push to main) invalidate
+# the edge immediately; the Cache-Control below only affects client / intermediary caches.
 
-# 全站：允許跨來源讀取（前端瀏覽器會直接 fetch），並防止 MIME 猜測。
+# Site-wide: allow cross-origin reads (browsers fetch these directly) and block MIME sniffing.
 /*
   Access-Control-Allow-Origin: *
   Access-Control-Allow-Methods: GET, HEAD, OPTIONS
   X-Content-Type-Options: nosniff
 
-# config 檔：明確標成 JSON，並用短 TTL + stale-while-revalidate
-# 讓 client 大約每分鐘回源 Cloudflare edge（不是 GitHub）重新驗證，兼顧新鮮度與限流。
+# Config files: mark explicitly as JSON, with a short TTL + stale-while-revalidate so clients
+# revalidate against the Cloudflare edge (not GitHub) roughly every minute — freshness without
+# hitting rate limits.
 /mainnet.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=60, stale-while-revalidate=600
