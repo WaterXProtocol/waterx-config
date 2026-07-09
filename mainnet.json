@@ -140,10 +140,6 @@
         "USDJPY": {
           "feed_id": "0xef2c98c804ba503c6a707e38be4dfbb16683775f195b091252bf24693042fd52",
           "price_info_object": "0xde0e6088e7292f50738ecbdebd4502415d4f8de4cfe001918e29b3f4faf15baa"
-        },
-        "USDCUSD": {
-          "feed_id": "0xeaa020c61cc479712813461ce153894a96a6c00b21ed0cfc2798d1f9a9e9c94a",
-          "price_info_object": "0x5dec622733a204ca27f5a90d8c2fad453cc6665186fd5dff13a83d0b6c9027ab"
         }
       },
       "mvr": {
