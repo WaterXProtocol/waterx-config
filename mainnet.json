@@ -616,10 +616,34 @@
           "wormhole_core": "0xa5f208e072434bC67592E4C49C1B991BA79BCA46",
           "wormhole_executor": "0x3980f8318fc03d79033Bbb421A622CDF8d2Eeab4",
           "block_explorer": "https://arbiscan.io",
-          "deposit_vault": "0x0000000000000000000000000000000000000000",
+          "deposit_vault": "0x41CD25ab961CDd79f4A57C7509E8dBe8bd0AfE66",
           "tokens": {
             "USDC": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
             "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
+          }
+        },
+        "polygon": {
+          "chain_id": 137,
+          "wormhole_chain_id": 5,
+          "wormhole_core": "0x7A4B5a56256163F07b2C80A7cA55aBE66c4ec4d7",
+          "wormhole_executor": "0x0B23efA164aB3eD08e9a39AC7aD930Ff4F5A5e81",
+          "block_explorer": "https://polygonscan.com",
+          "deposit_vault": "0x41CD25ab961CDd79f4A57C7509E8dBe8bd0AfE66",
+          "tokens": {
+            "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+            "USDT": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+          }
+        },
+        "bsc": {
+          "chain_id": 56,
+          "wormhole_chain_id": 4,
+          "wormhole_core": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
+          "wormhole_executor": "0xeC8cCCD058DbF28e5D002869Aa9aFa3992bf4ee0",
+          "block_explorer": "https://bscscan.com",
+          "deposit_vault": "0xEc67486d91c81540AceEbA95AEB197C044601d72",
+          "tokens": {
+            "USDC": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+            "USDT": "0x55d398326f99059fF775485246999027B3197955"
           }
         }
       }
