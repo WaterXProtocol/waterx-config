@@ -1,11 +1,20 @@
 # waterx-config
 
-WaterX 各網路的鏈上部署資訊（package id、object id 等），給後端、SDK、前端及部署腳本共用。
+On-chain deployment info (package ids, object ids, etc.) for each WaterX network, shared by the backend, SDK, frontend, and deployment scripts.
 
-## 檔案
+## How to read it (CDN)
 
-- `testnet.json` — Sui testnet 部署資訊（chain-id `4c78adac`），來源為 [`waterx-contract`](../waterx-contract) 各套件下的 `Published.toml`。
-- `mainnet.json` — Sui mainnet 部署資訊，目前所有欄位為 `null`，待 mainnet 部署後填入。
+Read through our own CDN. **Do not** hit `raw.githubusercontent.com` directly — GitHub's scraping rate limit will return 429:
+
+- `https://config.waterx.app/mainnet.json`
+- `https://config.waterx.app/testnet.json`
+
+Hosted on Cloudflare Pages, wired to this repo's `main` branch. Pushing to main deploys automatically and purges the edge cache. Response headers (CORS, `Content-Type`, `Cache-Control`) live in [`_headers`](./_headers) at the repo root.
+
+## Files
+
+- `testnet.json` — Sui testnet deployment info (chain-id `4c78adac`), sourced from the `Published.toml` under each package in [`waterx-contract`](../waterx-contract).
+- `mainnet.json` — Sui mainnet deployment info.
 
 ## Schema
 
@@ -15,37 +24,49 @@ WaterX 各網路的鏈上部署資訊（package id、object id 等），給後�
   "chain_id": "<sui chain id>",
   "packages": {
     "<package_name>": {
-      "published_at": "0x...",      // 目前最新版本的 package id
-      "original_id":  "0x...",      // 第一次發布的 package id（升級後仍不變，用於 type tag）
-      "version": 1,                  // upgrade 次數
-      "upgrade_capability": "0x..." // 部分套件：UpgradeCap object id
-      // ...其他套件特有的 shared object / cap id
+      "published_at": "0x...",      // package id of the current latest version
+      "original_id":  "0x...",      // package id from the first publish (unchanged across upgrades; used for type tags)
+      "version": 1,                  // package object version: 1 at first publish, +1 per upgrade
+      "upgrade_capability": "0x..." // some packages: UpgradeCap object id
+      // ...other package-specific shared object / cap ids
     }
   }
 }
 ```
 
-`published_at` 用於發送交易（呼叫該版本的函式）；`original_id` 用於組 type tag（例如 `<original_id>::module::Type`）。升級套件時只有 `published_at` / `version` 會變動。
+`published_at` is used to send transactions (calling that version's functions); `original_id` is used to build type tags (e.g. `<original_id>::module::Type`). Upgrading a package only changes `published_at` / `version`.
 
-## 套件補充欄位
+## Package-specific fields
 
-| 套件 | 額外欄位 |
+| Package | Extra fields |
 | --- | --- |
-| `waterx_referral` | `referral_table`（共用的 `ReferralTable` 物件） |
-| `mock_usdsui` | `currency`, `treasury_cap`, `metadata_cap` |
-| `pyth_rule` | `config`（shared `Config` 物件：`identifier_map` + `tolerance_sec_map`），`feeds`（per-ticker `{ feed_id, price_info_object }`） |
-| `pyth_sponsor_rule` | `pyth_sponsor`（共用的 sponsor pool） |
+| `waterx_referral` | `referral_table` (shared `ReferralTable` object) |
+| `pyth_rule` | `config` (shared `Config` object: `identifier_map` + `tolerance_sec_map`), `feeds` (per-ticker `{ feed_id, price_info_object }`) |
+| `pyth_sponsor_rule` | `pyth_sponsor` (shared sponsor pool) |
+| `constant_rule` | `config` (shared `Config` object), `feeds` (per-ticker `{ price }` — fixed-price assets like `USDCUSD`) |
 | `waterx_account` | `admin_cap`, `account_registry` |
-| `waterx_oracle` | `listing_cap`, `oracle`, `aggregators`（per-ticker `PriceAggregator` id） |
-| `waterx_perp` | `admin_cap`, `global_config`, `market_registry_wlp`, `markets`（per-ticker `{ market, config }`） |
-| `waterx_prediction` | `admin_cap`, `global_config`, `market_registries`（per-settlement coin `MarketRegistry` id）, `settlement_coin_types` |
-| `wlp` | `currency`, `metadata_cap`, `wlp_pool`, `pool_tokens`（per-ticker CoinType bound via `lp_pool::add_token<WLP, C>`） |
+| `waterx_oracle` | `listing_cap`, `oracle`, `aggregators` (per-ticker `PriceAggregator` id) |
+| `waterx_perp` | `admin_cap`, `global_config`, `market_registry_wlp`, `markets` (per-ticker `{ market, config }`) |
+| `waterx_prediction` | `admin_cap`, `global_config`, `market_registries` (per-settlement-coin `MarketRegistry` id), `settlement_coin_types` |
+| `waterx_prediction_gift` | `admin_cap`, `claimable_link_config` |
+| `waterx_staking` | `admin_cap`, `pools`, `rewarders` |
+| `waterx_credit` | `credit_registry`, `credit_type` |
+| `wlp` | `currency`, `metadata_cap`, `wlp_pool`, `wlp_aum` (shared `lp_pool::WlpAum<WLP>` object), `pool_tokens` (per-ticker CoinType bound via `lp_pool::add_token<WLP, C>`) |
+| `usd` | `metadata_cap` |
+| `native_custody` | `vault`, `assets` (per-asset backing config) |
+| `withdrawal_queue` | `queue`, `executors` |
+| `wormhole_bridge` | `bridge`, `wormhole_state`, `emitter_cap`, `personal_burn_cap`, `daily_mint_limit`, `daily_burn_limit`, `max_mint_per_tx`, `max_burn_per_tx` |
+| `mock_usdsui` | `currency`, `treasury_cap`, `metadata_cap` |
+| `supra_rule` | `config`, `feeds` |
+| `testnet_faucet` | `faucet`, `whitelist` |
 
-`mock_sui` / `mock_usdc` / `mock_usdsui` 為 testnet-only，mainnet 使用真實 CoinType，故 `mainnet.json` 不含這些套件。
+Packages may also carry `publish_checkpoint` / `publish_digest`, recording the checkpoint and transaction digest of the publish. Nearly every `testnet.json` package has them; on `mainnet.json` only a few do.
+
+Testnet-only packages, absent from `mainnet.json`: `mock_sui`, `mock_usdc`, `mock_usdsui` (mainnet uses real CoinTypes), plus `testnet_faucet`, `supra_rule`, and `waterx_rule`. There are no mainnet-only packages.
 
 ### Per-ticker maps (`aggregators` / `markets` / `feeds`)
 
-每上一個新交易對都會在這三個 map 各新增一筆，key 是 oracle ticker（例如 `"BTCUSD"`）：
+Listing a new trading pair adds one entry to each of these three maps, keyed by the oracle ticker (e.g. `"BTCUSD"`):
 
 ```jsonc
 "waterx_oracle": {
@@ -56,32 +77,32 @@ WaterX 各網路的鏈上部署資訊（package id、object id 等），給後�
 },
 "waterx_perp": {
   // ...
-  "market_registry_wlp": "0x<MarketRegistry<WLP> id>",   // 每個 LP 型別一個 shared registry
+  "market_registry_wlp": "0x<MarketRegistry<WLP> id>",   // one shared registry per LP type
   "markets": {
     "BTCUSD": {
-      "market": "0x<Market<WLP> id>",     // waterx_perp::trading::Market<LP_TOKEN>，registry 的 DOF child
-      "config": "0x<MarketConfig id>"     // 內嵌在 Market.config，記錄方便查詢
+      "market": "0x<Market<WLP> id>",     // waterx_perp::trading::Market<LP_TOKEN>, a DOF child of the registry
+      "config": "0x<MarketConfig id>"     // embedded in Market.config; recorded here for convenience
     }
   }
 },
 "pyth_rule": {
   // ...
-  "config": "0x<pyth_rule::Config id>",   // 共用，存放每 ticker 的 feed_id + tolerance_sec
+  "config": "0x<pyth_rule::Config id>",   // shared; holds each ticker's feed_id + tolerance_sec
   "feeds": {
     "BTCUSD": {
-      "feed_id":           "0x<32-byte Pyth feed id>",         // Hermes 對應的 price feed id
-      "price_info_object": "0x<Pyth PriceInfoObject id>"       // testnet/mainnet Pyth 上對應的 shared PriceInfoObject
+      "feed_id":           "0x<32-byte Pyth feed id>",         // the price feed id used by Hermes
+      "price_info_object": "0x<Pyth PriceInfoObject id>"       // the matching shared PriceInfoObject on testnet/mainnet Pyth
     }
   }
 }
 ```
 
-`feed_id` 由 Pyth 定義，testnet 與 mainnet 通常**不同**（要用 `hermes-beta.pyth.network` 或 `hermes.pyth.network` 找）。`price_info_object` 是 Pyth 在該鏈上實際的共享 PriceInfoObject，不是 `price_info` table 內的 `Field<PriceIdentifier, ID>` 包裝物件（後者不能直接當交易輸入）。
+`feed_id` is defined by Pyth and is usually **different** between testnet and mainnet (look them up via `hermes-beta.pyth.network` or `hermes.pyth.network`). `price_info_object` is Pyth's actual shared PriceInfoObject on that chain — not the `Field<PriceIdentifier, ID>` wrapper object inside the `price_info` table (that one cannot be passed directly as a transaction input).
 
-新交易對的上線流程（建立 aggregator → 接 Pyth → 建 Market）參見 [`waterx-contract/.claude/skills/list-perp-asset/SKILL.md`](../waterx-contract/.claude/skills/list-perp-asset/SKILL.md)。
+For the listing flow of a new trading pair (create aggregator → wire up Pyth → create Market), see [`waterx-contract/.claude/skills/list-perp-asset/SKILL.md`](../waterx-contract/.claude/skills/list-perp-asset/SKILL.md).
 
-## 更新流程
+## Update flow
 
-1. 在 `waterx-contract/<pkg>` 下執行部署或升級，Sui CLI 會更新 `Published.toml`。
-2. 將新地址同步到對應的 `testnet.json` / `mainnet.json`。
-3. 提交變更。
+1. Deploy or upgrade under `waterx-contract/<pkg>`; the Sui CLI updates `Published.toml`.
+2. Sync the new addresses into the corresponding `testnet.json` / `mainnet.json`.
+3. Commit the change.

@@ -1,0 +1,20 @@
+# Cloudflare Pages response header config.
+# Cloudflare purges the edge cache on every deploy, so config updates (push to main) invalidate
+# the edge immediately; the Cache-Control below only affects client / intermediary caches.
+
+# Site-wide: allow cross-origin reads (browsers fetch these directly) and block MIME sniffing.
+/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+  X-Content-Type-Options: nosniff
+
+# Config files: mark explicitly as JSON, with a short TTL + stale-while-revalidate so clients
+# revalidate against the Cloudflare edge (not GitHub) roughly every minute — freshness without
+# hitting rate limits.
+/mainnet.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=60, stale-while-revalidate=600
+
+/testnet.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=60, stale-while-revalidate=600

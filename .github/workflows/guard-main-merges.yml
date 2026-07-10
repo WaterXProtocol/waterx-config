@@ -1,7 +1,7 @@
 name: Guard main merges
 
-# 只有 staging 能 merge 進 main。任何其他來源 branch 的 PR 一律 fail，
-# 配合 main ruleset 把這個 check 設為 required，沒過就無法 merge。
+# Only staging may be merged into main. PRs from any other source branch fail.
+# Mark this check as required in the main ruleset so a failure blocks the merge.
 on:
   pull_request:
     branches: [main]

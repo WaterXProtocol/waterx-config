@@ -372,9 +372,9 @@
       "publish_checkpoint": "343899321"
     },
     "waterx_prediction": {
-      "published_at": "0x160532e7b9f7a05186b2fbd82f28c23d852072a61c32cac7690878025ea8bdce",
+      "published_at": "0x0274cc0502d43d177d9422c0dc4bfa510da83789bfe10e86e73ae1bd04277290",
       "original_id": "0x99be07b27dbbd846eec72213f0ec221b3e7d38c8bfdee3cbf578b9bfa5df3481",
-      "version": 3,
+      "version": 4,
       "upgrade_capability": "0x4455efe909425bf55247b18c8ca744f2c84d79a1e36b82cdf3cd5d20c96702b9",
       "admin_cap": "0x31acc29c6f6171a86ad5583e4610d75bdd9bcc71e16b46b1b994770743cdc782",
       "global_config": "0x3e2d7bfce29e077f13f9feaf68af62410872817be476b2708540a0d5b23c5936",
@@ -505,16 +505,16 @@
       }
     },
     "withdrawal_queue": {
-      "published_at": "0x8750c73636669f50a5e6be2c91ffb71808ac5113cde5e38364fa086e72bf355b",
+      "published_at": "0x4475962d06d4c21aa88276bb5de8d772aaace9fe54a350ad12e7f485f49c44ad",
       "original_id": "0xd9698d972226c1c4f8180a059403fe808b4d92b5f88c878334d0efea830d0886",
-      "version": 2,
+      "version": 4,
       "upgrade_capability": "0x49337f0f96bb4850ad21ed3bd56e7ff6e1373ad71e51518bd181e82c74b386ac",
       "executors": [
         "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
       ],
       "queue": "0x1ffa684735e601fb6454ef6dc3196d6c0bb945ee1b527094789f59027924e366",
-      "publish_digest": "6h4KdDvLqGc7UMuBwc5n7y3yzviwEiE9YJBq4afg2VVC",
-      "publish_checkpoint": "343899434"
+      "publish_digest": "8472ghUvypX6UtLndMsmX6dvpp9gxggyj98wv8W5zBUL",
+      "publish_checkpoint": "358192682"
     },
     "testnet_faucet": {
       "published_at": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
