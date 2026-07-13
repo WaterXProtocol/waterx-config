@@ -547,6 +547,44 @@
         "USDCUSD": { "price": "1000000000" }
       }
     },
+    "pyth_lazer_rule": {
+      "published_at": "0xc192ffd76818fd029ee4493748be7251e3fc51ce0f2803bede8f9970c40a8739",
+      "original_id": "0xc192ffd76818fd029ee4493748be7251e3fc51ce0f2803bede8f9970c40a8739",
+      "version": 1,
+      "upgrade_capability": "0xc45f8b3d0e91de6c52e734fd1e865a4198a856bcae340adf2775cd9ac967e43f",
+      "config": "0x31baf383d1c77350cc2ce9422fa1e2f9e0c65cf3f310401b149ca2498362c92d",
+      "state": "0xe2b9096a5ea341a9f1eef126b2203727e29e73fdb0641ade2e1e32942f97e4d8",
+      "enabled": true,
+      "feeds": {
+        "SUIUSD": 11,
+        "BTCUSD": 1,
+        "ETHUSD": 2,
+        "SOLUSD": 6,
+        "DEEPUSD": 173,
+        "WALUSD": 624,
+        "HYPEUSD": 110,
+        "XRPUSD": 14,
+        "BNBUSD": 15,
+        "ZECUSD": 66,
+        "QQQXUSD": 1837,
+        "SPYXUSD": 1843,
+        "NVDAXUSD": 1833,
+        "TSLAXUSD": 1847,
+        "AAPLXUSD": 1792,
+        "GOOGLXUSD": 1808,
+        "METAXUSD": 1824,
+        "MSTRXUSD": 1827,
+        "COINXUSD": 1796,
+        "HOODXUSD": 1815,
+        "CRCLXUSD": 1798,
+        "NFLXXUSD": 2685,
+        "XAUTUSD": 172,
+        "XAGUSD": 345,
+        "EURUSD": 327,
+        "USDJPY": 340,
+        "USDCUSD": 7
+      }
+    },
     "supra_rule": {
       "published_at": "0x30fbd5dfd842202829fae2a9a2d0a3dcab0f0b81183dff1543967c45d2a33578",
       "original_id": "0x30fbd5dfd842202829fae2a9a2d0a3dcab0f0b81183dff1543967c45d2a33578",
@@ -883,6 +921,20 @@
       "digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
       "checkpoint": "349406324",
       "timestamp": "2026-06-17T05:55:26.306Z"
+    },
+    {
+      "phase": "1.publish:pyth_lazer_rule",
+      "action": "sui client publish waterx_oracle_rule/pyth_lazer_rule",
+      "digest": "EqSfzpFQC7AGJjJzKT4oxnoRSt2KAV2e9b5Rj5xeCDUf",
+      "checkpoint": "359678057",
+      "timestamp": "2026-07-13T07:36:48.941Z"
+    },
+    {
+      "phase": "6.lazer",
+      "action": "set_rule_weight<PythLazerRule> + set_feed_id + set_tolerance_ms (27 tickers)",
+      "digest": "2MnNzy2QK9JgkCAsX12fpTGv73kzWkCexSBiA2bBoTax",
+      "checkpoint": "359678270",
+      "timestamp": "2026-07-13T07:40:12.000Z"
     }
   ]
 }
