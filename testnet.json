@@ -582,7 +582,9 @@
         "XAGUSD": 345,
         "EURUSD": 327,
         "USDJPY": 340,
-        "USDCUSD": 7
+        "USDCUSD": 7,
+        "DOGEUSD": 13,
+        "LITUSD": 2921
       }
     },
     "supra_rule": {
