@@ -410,7 +410,45 @@
       "original_id": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
       "version": 1,
       "publish_digest": "4XuRhPYUqgH26DHhToED3afHiKPJN9HLDXxXutK58VHi",
-      "publish_checkpoint": "336051562"
+      "publish_checkpoint": "336051562",
+      "feeds": {
+        "BTCUSD": {
+          "ticker": "BTCUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "confidence",
+          "kind": "perp"
+        },
+        "ETHUSD": {
+          "ticker": "ETHUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "confidence",
+          "kind": "perp"
+        },
+        "SOLUSD": {
+          "ticker": "SOLUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "SUIUSD": {
+          "ticker": "SUIUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "AAPLX_USD": {
+          "ticker": "AAPLXUSDT",
+          "sources": ["bybit_spot_ws", "okx_spot_ws", "hyperliquid_perp_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "TSLAX_USD": {
+          "ticker": "TSLAXUSDT",
+          "sources": ["bybit_spot_ws", "okx_spot_ws", "hyperliquid_perp_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        }
+      }
     },
     "waterx_staking": {
       "published_at": "0x60518e116d6b824a834a8ad4735f360095ea729fd88680a12670ef95db227aa2",
