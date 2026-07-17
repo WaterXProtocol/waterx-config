@@ -486,73 +486,49 @@
         },
         "AAPLXUSD": {
           "ticker": "AAPLXUSDT",
-          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "TSLAXUSD": {
           "ticker": "TSLAXUSDT",
-          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "COINXUSD": {
           "ticker": "COINXUSDT",
-          "sources": ["bybit_spot_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "CRCLXUSD": {
           "ticker": "CRCLXUSDT",
-          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "GOOGLXUSD": {
           "ticker": "GOOGLXUSDT",
-          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "HOODXUSD": {
           "ticker": "HOODXUSDT",
-          "sources": ["bybit_spot_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "METAXUSD": {
           "ticker": "METAXUSDT",
-          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
-          "method": "median",
-          "kind": "xstock"
-        },
-        "MSTRXUSD": {
-          "ticker": "MSTRXUSDT",
-          "sources": ["okx_spot_ws", "xstock_equity_rest"],
-          "method": "median",
-          "kind": "xstock"
-        },
-        "NFLXXUSD": {
-          "ticker": "NFLXXUSDT",
-          "sources": ["xstock_equity_rest"],
+          "sources": ["bybit_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "NVDAXUSD": {
           "ticker": "NVDAXUSDT",
-          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
-          "method": "median",
-          "kind": "xstock"
-        },
-        "QQQXUSD": {
-          "ticker": "QQQXUSDT",
-          "sources": ["okx_spot_ws", "xstock_equity_rest"],
-          "method": "median",
-          "kind": "xstock"
-        },
-        "SPYXUSD": {
-          "ticker": "SPYXUSDT",
-          "sources": ["okx_spot_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws"],
           "method": "median",
           "kind": "xstock"
         }
