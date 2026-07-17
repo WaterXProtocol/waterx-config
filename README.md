@@ -133,10 +133,12 @@ Source-id vocabulary (enclave string id → on-chain `u64`, a wire contract shar
 | 6 | `xstock_equity_rest` | underlying equity via Alpaca |
 | 7 | `okx_spot_ws` | xStock token price |
 | 8 | `hyperliquid_perp_ws` | xStock token price |
+| 9 | `gateio_spot_ws` | xStock token price |
+| 10 | `kraken_spot_ws` | xStock token price |
 
 Every `sources` entry must be in this vocabulary, and `kind`/`sources`/`method` must match the on-chain `set_perp_feed` config field-for-field — a mismatch makes `waterx_rule` abort during validation.
 
-> **mainnet carries perp feeds only.** The xStock feeds (`kind: "xstock"`, source ids 5–8) are testnet-only until those source ids are registered on-chain on mainnet (WL-1968); enabling them in `mainnet.json` before that would abort validation.
+> **mainnet carries perp feeds only.** The xStock feeds (`kind: "xstock"`, source ids 5–10) are testnet-only until those source ids are registered on-chain on mainnet (WL-1968); enabling them in `mainnet.json` before that would abort validation.
 
 ## Update flow
 
