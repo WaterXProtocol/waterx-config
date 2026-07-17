@@ -486,49 +486,49 @@
         },
         "AAPLXUSD": {
           "ticker": "AAPLXUSDT",
-          "sources": ["bybit_spot_ws"],
+          "sources": ["bybit_spot_ws", "gateio_spot_ws", "kraken_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "TSLAXUSD": {
           "ticker": "TSLAXUSDT",
-          "sources": ["bybit_spot_ws"],
+          "sources": ["bybit_spot_ws", "gateio_spot_ws", "kraken_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "COINXUSD": {
           "ticker": "COINXUSDT",
-          "sources": ["bybit_spot_ws"],
+          "sources": ["bybit_spot_ws", "gateio_spot_ws", "kraken_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "CRCLXUSD": {
           "ticker": "CRCLXUSDT",
-          "sources": ["bybit_spot_ws"],
+          "sources": ["bybit_spot_ws", "gateio_spot_ws", "kraken_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "GOOGLXUSD": {
           "ticker": "GOOGLXUSDT",
-          "sources": ["bybit_spot_ws"],
+          "sources": ["bybit_spot_ws", "gateio_spot_ws", "kraken_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "HOODXUSD": {
           "ticker": "HOODXUSDT",
-          "sources": ["bybit_spot_ws"],
+          "sources": ["bybit_spot_ws", "gateio_spot_ws", "kraken_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "METAXUSD": {
           "ticker": "METAXUSDT",
-          "sources": ["bybit_spot_ws"],
+          "sources": ["bybit_spot_ws", "gateio_spot_ws", "kraken_spot_ws"],
           "method": "median",
           "kind": "xstock"
         },
         "NVDAXUSD": {
           "ticker": "NVDAXUSDT",
-          "sources": ["bybit_spot_ws"],
+          "sources": ["bybit_spot_ws", "gateio_spot_ws", "kraken_spot_ws"],
           "method": "median",
           "kind": "xstock"
         }
