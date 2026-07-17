@@ -462,7 +462,7 @@
         },
         "DEEPUSD": {
           "ticker": "DEEPUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws"],
           "method": "median",
           "kind": "perp"
         },
@@ -474,7 +474,7 @@
         },
         "WALUSD": {
           "ticker": "WALUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws"],
           "method": "median",
           "kind": "perp"
         },
