@@ -436,15 +436,123 @@
           "method": "median",
           "kind": "perp"
         },
-        "AAPLX_USD": {
+        "BNBUSD": {
+          "ticker": "BNBUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "DOGEUSD": {
+          "ticker": "DOGEUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "XRPUSD": {
+          "ticker": "XRPUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "HYPEUSD": {
+          "ticker": "HYPEUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "DEEPUSD": {
+          "ticker": "DEEPUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "LITUSD": {
+          "ticker": "LITUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "WALUSD": {
+          "ticker": "WALUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "ZECUSD": {
+          "ticker": "ZECUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "perp"
+        },
+        "AAPLXUSD": {
           "ticker": "AAPLXUSDT",
-          "sources": ["bybit_spot_ws", "okx_spot_ws", "hyperliquid_perp_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
           "method": "median",
           "kind": "xstock"
         },
-        "TSLAX_USD": {
+        "TSLAXUSD": {
           "ticker": "TSLAXUSDT",
-          "sources": ["bybit_spot_ws", "okx_spot_ws", "hyperliquid_perp_ws", "xstock_equity_rest"],
+          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "COINXUSD": {
+          "ticker": "COINXUSDT",
+          "sources": ["bybit_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "CRCLXUSD": {
+          "ticker": "CRCLXUSDT",
+          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "GOOGLXUSD": {
+          "ticker": "GOOGLXUSDT",
+          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "HOODXUSD": {
+          "ticker": "HOODXUSDT",
+          "sources": ["bybit_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "METAXUSD": {
+          "ticker": "METAXUSDT",
+          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "MSTRXUSD": {
+          "ticker": "MSTRXUSDT",
+          "sources": ["okx_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "NFLXXUSD": {
+          "ticker": "NFLXXUSDT",
+          "sources": ["xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "NVDAXUSD": {
+          "ticker": "NVDAXUSDT",
+          "sources": ["bybit_spot_ws", "okx_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "QQQXUSD": {
+          "ticker": "QQQXUSDT",
+          "sources": ["okx_spot_ws", "xstock_equity_rest"],
+          "method": "median",
+          "kind": "xstock"
+        },
+        "SPYXUSD": {
+          "ticker": "SPYXUSDT",
+          "sources": ["okx_spot_ws", "xstock_equity_rest"],
           "method": "median",
           "kind": "xstock"
         }
