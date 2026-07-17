@@ -14,6 +14,128 @@
       "version": 1,
       "referral_table": "0xbbbfeed8ebdca08e4d43eaf6f2f937ddf193b3d08ee93a4864693dbfa0d0df7b"
     },
+    "waterx_rule": {
+      "feeds": {
+        "BTCUSD": {
+          "ticker": "BTCUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "confidence",
+          "kind": "perp"
+        },
+        "ETHUSD": {
+          "ticker": "ETHUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "confidence",
+          "kind": "perp"
+        },
+        "SOLUSD": {
+          "ticker": "SOLUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "SUIUSD": {
+          "ticker": "SUIUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "BNBUSD": {
+          "ticker": "BNBUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "DOGEUSD": {
+          "ticker": "DOGEUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "XRPUSD": {
+          "ticker": "XRPUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "HYPEUSD": {
+          "ticker": "HYPEUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "DEEPUSD": {
+          "ticker": "DEEPUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "LITUSD": {
+          "ticker": "LITUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "WALUSD": {
+          "ticker": "WALUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        },
+        "ZECUSD": {
+          "ticker": "ZECUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "kind": "perp"
+        }
+      }
+    },
     "pyth_rule": {
       "published_at": "0x00d486565f8bf241035df334322af9d23e8b6b81f21d7702c32f35947958f50a",
       "original_id": "0xff84f40af43336967eecf342b85bbd9b38e78b6be09cda95ec537c31ed6c6438",
