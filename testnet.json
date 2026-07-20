@@ -561,6 +561,30 @@
           "sources": ["bybit_spot_ws", "gateio_spot_ws"],
           "method": "median",
           "kind": "spot"
+        },
+        "XAGUSD": {
+          "ticker": "XAGUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "commodity"
+        },
+        "XAUUSD": {
+          "ticker": "XAUUSDT",
+          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "commodity"
+        },
+        "WTIUSD": {
+          "ticker": "CLUSDT",
+          "sources": ["binance_usdm_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "commodity"
+        },
+        "BRENTUSD": {
+          "ticker": "BZUSDT",
+          "sources": ["binance_usdm_perp_ws", "gateio_usdt_perp_ws"],
+          "method": "median",
+          "kind": "commodity"
         }
       }
     },
