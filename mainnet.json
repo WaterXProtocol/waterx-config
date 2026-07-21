@@ -279,6 +279,41 @@
         }
       }
     },
+    "pyth_lazer_rule": {
+      "state": "0xd0db9c1e9212a98120384bf78d8b8c985d87b9ee6921dffcf9d1394062911573",
+      "enabled": false,
+      "feeds": {
+        "SUIUSD": 11,
+        "BTCUSD": 1,
+        "ETHUSD": 2,
+        "SOLUSD": 6,
+        "DEEPUSD": 173,
+        "WALUSD": 624,
+        "HYPEUSD": 110,
+        "XRPUSD": 14,
+        "BNBUSD": 15,
+        "ZECUSD": 66,
+        "QQQXUSD": 1837,
+        "SPYXUSD": 1843,
+        "NVDAXUSD": 1833,
+        "TSLAXUSD": 1847,
+        "AAPLXUSD": 1792,
+        "GOOGLXUSD": 1808,
+        "METAXUSD": 1824,
+        "MSTRXUSD": 1827,
+        "COINXUSD": 1796,
+        "HOODXUSD": 1815,
+        "CRCLXUSD": 1798,
+        "NFLXXUSD": 2685,
+        "XAUTUSD": 172,
+        "XAGUSD": 345,
+        "EURUSD": 327,
+        "USDJPY": 340,
+        "USDCUSD": 7,
+        "DOGEUSD": 13,
+        "LITUSD": 2921
+      }
+    },
     "pyth_sponsor_rule": {
       "published_at": "0xc60138533ff50b2f649bac1e076c1797f2ec0b4ee52d2f636d3419859bf95f0e",
       "original_id": "0xc60138533ff50b2f649bac1e076c1797f2ec0b4ee52d2f636d3419859bf95f0e",
