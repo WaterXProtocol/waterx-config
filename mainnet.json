@@ -280,8 +280,13 @@
       }
     },
     "pyth_lazer_rule": {
+      "published_at": "0x43e35ef044fb4ff5407cc5e72da6b5b0b471f854865b77c36132d66c864bbec7",
+      "original_id": "0x43e35ef044fb4ff5407cc5e72da6b5b0b471f854865b77c36132d66c864bbec7",
+      "version": 1,
+      "upgrade_capability": "0x71e99cdf2b510e5eb14a42d3650c801a5d9bffb0e6a6183207cd7dc5ff8421a0",
+      "config": "0x2ad942b2c5721cb18464683cdb7454ede045b009f0b682797f132aaedde1a637",
       "state": "0xd0db9c1e9212a98120384bf78d8b8c985d87b9ee6921dffcf9d1394062911573",
-      "enabled": false,
+      "enabled": true,
       "feeds": {
         "SUIUSD": 11,
         "BTCUSD": 1,
