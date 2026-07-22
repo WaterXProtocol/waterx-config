@@ -3,6 +3,14 @@
   "chain_id": "4c78adac",
   "coin_registry": "0xc",
   "packages": {
+    "enclave": {
+      "published_at": "0x28221bbe0ba9351b563d9911e828926e01783fc105870d57a02d73da79a874ae",
+      "original_id": "0x28221bbe0ba9351b563d9911e828926e01783fc105870d57a02d73da79a874ae",
+      "version": 1,
+      "upgrade_capability": "0xf797307f6c211e4b95187a36704e52625245359db9ed35dfd22775744c44ec01",
+      "publish_digest": "HEXXutgaq3QToLQxa1W7cLV7xJjVPbKwzoYQErsWq2tC",
+      "publish_checkpoint": "362988068"
+    },
     "bucket_framework": {
       "published_at": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
       "original_id": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
