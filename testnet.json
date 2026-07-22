@@ -415,11 +415,15 @@
       "publish_checkpoint": "343899334"
     },
     "waterx_rule": {
-      "published_at": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
-      "original_id": "0x1b7b1ae94ede1fab5ab4dbec9bdc277aae095f657117d6332e55e2ffc97db1ef",
+      "published_at": "0xaff5455ed1cc3791f274118aaee67105c006c345fc5f93258abff2865a0ed3f6",
+      "original_id": "0xaff5455ed1cc3791f274118aaee67105c006c345fc5f93258abff2865a0ed3f6",
       "version": 1,
-      "publish_digest": "4XuRhPYUqgH26DHhToED3afHiKPJN9HLDXxXutK58VHi",
-      "publish_checkpoint": "336051562",
+      "upgrade_capability": "0x16708a7f72a6f3980499d22536551aa3c9cb42dffb83eb86caa76f8ddb1d22ff",
+      "config": "0xb810321b537fb8659825acfaee62262afd54fa1646e849ba4c6d201522eeddd0",
+      "enclave_config": "0x6a005f75f0f7c0147e66418a065d01ae19a752c08ff2df432508fab82da7ad40",
+      "enclave_cap": "0xba808e69441ecfff7fa40c101403bfa0b319e26df959cf405d4f64ec871fbff7",
+      "publish_digest": "BbDVKW1XP9pYYLBfmE64DtN34qAjmkLW9LP7E2qb2Ve1",
+      "publish_checkpoint": "363004586",
       "feeds": {
         "BTCUSD": {
           "ticker": "BTCUSDT",
