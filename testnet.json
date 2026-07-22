@@ -196,7 +196,7 @@
       "publish_checkpoint": "343899307"
     },
     "waterx_oracle": {
-      "published_at": "0x08e79bd54ffe2117d7efebf2a9d78604b6a17cbb79597141e92627c5da675e42",
+      "published_at": "0x3833ad543033a3efe82e88a252f6845f22944af42990591a143c1ae7faae7a67",
       "original_id": "0x08e79bd54ffe2117d7efebf2a9d78604b6a17cbb79597141e92627c5da675e42",
       "version": 1,
       "upgrade_capability": "0xe76949d5cf3a377ccdee61b24cd107fc5b249ad68a2fb304bcca2d16330c6ba7",
@@ -235,8 +235,8 @@
         "DOGEUSD": "0xcedcfdfd54e3ee5fad07ed90456667a0c0a3b36d8fe0df1008643729afdddb9c",
         "LITUSD": "0x9603b436956ff0fb81b0f25ac7b6d8c4982d1f4e0862b74dd059698294029a88"
       },
-      "publish_digest": "BqrAvRqe3T7vqJimjcavgHWHGHx1kaHh4PRubTJcRPRv",
-      "publish_checkpoint": "343899296"
+      "publish_digest": "7zLWM2aSLXTV1WPpwAtgrseEuprbimJ2Mx24sUp8tu15",
+      "publish_checkpoint": "362972777"
     },
     "waterx_perp": {
       "published_at": "0x84063a13165f0ba3420c37717d3c594c3ae2244bee1de4abb58764b426ee7010",
@@ -820,6 +820,13 @@
     }
   },
   "deploy_tx_log": [
+    {
+      "phase": "1.upgrade:waterx_oracle",
+      "action": "sui client upgrade waterx_oracle (v1→v2; ABI-compat remove_price_at_timestamp)",
+      "digest": "7zLWM2aSLXTV1WPpwAtgrseEuprbimJ2Mx24sUp8tu15",
+      "checkpoint": "362972777",
+      "timestamp": "2026-07-22T01:39:08.846Z"
+    },
     {
       "phase": "1.publish:waterx_oracle",
       "action": "sui client publish waterx_oracle",
