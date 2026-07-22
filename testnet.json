@@ -12,11 +12,12 @@
       "publish_checkpoint": "362988068"
     },
     "bucket_framework": {
-      "published_at": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
+      "published_at": "0x63dc0d88e834716e564a6aaa1a893b6745f6cb1cb00d9d86a72208e02268873d",
       "original_id": "0x0cdfc09284014fd36bbb19da8ab1c60056ca207d4c866e78dc01ca8e51dac790",
-      "version": 1,
-      "publish_digest": "4e8aXYCKD7Kd3cJTaY3QSCcC4neTZvq1T3yeP3pBxX2a",
-      "publish_checkpoint": "316604001"
+      "version": 3,
+      "upgrade_capability": "0x5dd72d8c231b1c51d07cd9c8bd42fb9c50581e621f744d8df92adc8416ab53f7",
+      "publish_digest": "56SzW7r39Kkz6HBxGP1Lsq5yeiFV6txj7vANWteCm73j",
+      "publish_checkpoint": "363001665"
     },
     "waterx_referral": {
       "published_at": "0x0ab918a0dd576e44b84f14ed4a2329030c6c07e09f44e82c544b23f3ddbf6b7f",
