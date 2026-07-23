@@ -423,6 +423,8 @@
       "config": "0xb810321b537fb8659825acfaee62262afd54fa1646e849ba4c6d201522eeddd0",
       "enclave_config": "0x6a005f75f0f7c0147e66418a065d01ae19a752c08ff2df432508fab82da7ad40",
       "enclave_cap": "0xba808e69441ecfff7fa40c101403bfa0b319e26df959cf405d4f64ec871fbff7",
+      "enclave": "0xeab706cc3fe65b134db46c6cf5e8f130f723864bada3e954c56ab1a37be7793c",
+      "enclave_pubkey": "a26f43490ef5236674cfbc421f6de97e9f34350371c70f39f342dd414b335780",
       "publish_digest": "HLXMB1mpWiCYY5KDDANr4LGu8mCqyMMhmCUxXQ8jAiF5",
       "publish_checkpoint": "363004586",
       "feeds": {
