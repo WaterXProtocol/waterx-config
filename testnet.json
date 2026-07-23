@@ -416,17 +416,17 @@
       "publish_checkpoint": "343899334"
     },
     "waterx_rule": {
-      "published_at": "0x91f26937a5c8db4607d5e1a697a6d5c97ee4f507638c1777fab8c125caf75fd8",
-      "original_id": "0xaff5455ed1cc3791f274118aaee67105c006c345fc5f93258abff2865a0ed3f6",
-      "version": 2,
-      "upgrade_capability": "0x16708a7f72a6f3980499d22536551aa3c9cb42dffb83eb86caa76f8ddb1d22ff",
-      "config": "0xb810321b537fb8659825acfaee62262afd54fa1646e849ba4c6d201522eeddd0",
-      "enclave_config": "0x6a005f75f0f7c0147e66418a065d01ae19a752c08ff2df432508fab82da7ad40",
-      "enclave_cap": "0xba808e69441ecfff7fa40c101403bfa0b319e26df959cf405d4f64ec871fbff7",
-      "enclave": "0xeab706cc3fe65b134db46c6cf5e8f130f723864bada3e954c56ab1a37be7793c",
+      "published_at": "0xa74191aad31907bbbd870626dd251b797a12a3841b0fdaf2af1e1cb5952572fb",
+      "original_id": "0xa74191aad31907bbbd870626dd251b797a12a3841b0fdaf2af1e1cb5952572fb",
+      "version": 1,
+      "upgrade_capability": "0x1449637a6505cae414bd405e0f2023a3f0f327d8ef0ca5063a7151595c9160c5",
+      "config": "0x9589a1f56c631dc8b2b86b8c186e95baa2c1a85b433373a8266fa377137e6e38",
+      "enclave_config": "0xa4ea6c16cd136056e6a77d71185126da6187e7435b91ddf255d8462c95cd501d",
+      "enclave_cap": "0x46b8905816a91bc443ecbe07777ae60805df044cbc850b5364ec372cd0a0c82f",
+      "enclave": "0x1273470e0ade24beae168bd5aa16e50bf54c8c9e33d7b4d105fcb425f9468680",
       "enclave_pubkey": "a26f43490ef5236674cfbc421f6de97e9f34350371c70f39f342dd414b335780",
-      "publish_digest": "HLXMB1mpWiCYY5KDDANr4LGu8mCqyMMhmCUxXQ8jAiF5",
-      "publish_checkpoint": "363004586",
+      "publish_digest": "34cg8dRHm3Y8QNJnT84G1NGMTHsZSiwdKFm76FPoewKy",
+      "publish_checkpoint": "363429536",
       "feeds": {
         "BTCUSD": {
           "ticker": "BTCUSDT",
