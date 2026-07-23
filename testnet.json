@@ -425,180 +425,276 @@
       "enclave_cap": "0x46b8905816a91bc443ecbe07777ae60805df044cbc850b5364ec372cd0a0c82f",
       "enclave": "0x1273470e0ade24beae168bd5aa16e50bf54c8c9e33d7b4d105fcb425f9468680",
       "enclave_pubkey": "a26f43490ef5236674cfbc421f6de97e9f34350371c70f39f342dd414b335780",
+      "enabled": true,
       "publish_digest": "34cg8dRHm3Y8QNJnT84G1NGMTHsZSiwdKFm76FPoewKy",
       "publish_checkpoint": "363429536",
       "feeds": {
         "BTCUSD": {
           "ticker": "BTCUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "confidence",
           "kind": "perp"
         },
         "ETHUSD": {
           "ticker": "ETHUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "confidence",
           "kind": "perp"
         },
         "SOLUSD": {
           "ticker": "SOLUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "SUIUSD": {
           "ticker": "SUIUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "BNBUSD": {
           "ticker": "BNBUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "DOGEUSD": {
           "ticker": "DOGEUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "XRPUSD": {
           "ticker": "XRPUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "HYPEUSD": {
           "ticker": "HYPEUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "DEEPUSD": {
           "ticker": "DEEPUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "LITUSD": {
           "ticker": "LITUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "WALUSD": {
           "ticker": "WALUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "ZECUSD": {
           "ticker": "ZECUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "perp"
         },
         "AAPLXUSD": {
           "ticker": "AAPLXUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "xstock"
         },
         "TSLAXUSD": {
           "ticker": "TSLAXUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "xstock"
         },
         "COINXUSD": {
           "ticker": "COINXUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "xstock"
         },
         "CRCLXUSD": {
           "ticker": "CRCLXUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "xstock"
         },
         "GOOGLXUSD": {
           "ticker": "GOOGLXUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "xstock"
         },
         "HOODXUSD": {
           "ticker": "HOODXUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "xstock"
         },
         "METAXUSD": {
           "ticker": "METAXUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "xstock"
         },
         "NVDAXUSD": {
           "ticker": "NVDAXUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "xstock"
         },
         "MSTRXUSD": {
           "ticker": "MSTRXUSDT",
-          "sources": ["gateio_spot_ws"],
+          "sources": [
+            "gateio_spot_ws"
+          ],
           "method": "direct",
           "kind": "xstock"
         },
         "NFLXXUSD": {
           "ticker": "NFLXXUSDT",
-          "sources": ["gateio_spot_ws"],
+          "sources": [
+            "gateio_spot_ws"
+          ],
           "method": "direct",
           "kind": "xstock"
         },
         "QQQXUSD": {
           "ticker": "QQQXUSDT",
-          "sources": ["gateio_spot_ws"],
+          "sources": [
+            "gateio_spot_ws"
+          ],
           "method": "direct",
           "kind": "xstock"
         },
         "SPYXUSD": {
           "ticker": "SPYXUSDT",
-          "sources": ["gateio_spot_ws"],
+          "sources": [
+            "gateio_spot_ws"
+          ],
           "method": "direct",
           "kind": "xstock"
         },
         "XAUTUSD": {
           "ticker": "XAUTUSDT",
-          "sources": ["bybit_spot_ws", "gateio_spot_ws"],
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
           "method": "median",
           "kind": "spot"
         },
         "XAGUSD": {
           "ticker": "XAGUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "commodity"
         },
         "XAUUSD": {
           "ticker": "XAUUSDT",
-          "sources": ["binance_usdm_perp_ws", "bybit_linear_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "commodity"
         },
         "WTIUSD": {
           "ticker": "CLUSDT",
-          "sources": ["binance_usdm_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "commodity"
         },
         "BRENTUSD": {
           "ticker": "BZUSDT",
-          "sources": ["binance_usdm_perp_ws", "gateio_usdt_perp_ws"],
+          "sources": [
+            "binance_usdm_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
           "method": "median",
           "kind": "commodity"
         }
@@ -736,7 +832,9 @@
       "upgrade_capability": "0xdab514c940b738287d045ed2975a2fdf6e84d7f20206dc24619033eaf0dabb32",
       "config": "0xaa498ceed92217ae2b46d3166f1a1645b56a2954fe884a0bf422e0ce55d10dfd",
       "feeds": {
-        "USDCUSD": { "price": "1000000000" }
+        "USDCUSD": {
+          "price": "1000000000"
+        }
       }
     },
     "pyth_lazer_rule": {
@@ -786,20 +884,48 @@
       "upgrade_capability": "0xe070e8746bb0e4dfad8204a0496abe7aa6bb3e717cd785be49ab578efc2dbe6f",
       "config": "0x33387310c9ecebc465234d3a805e5e50f0aa2f88935a2cb0882b72f5e584989f",
       "feeds": {
-        "SUIUSD": { "pair_id": 90 },
-        "BTCUSD": { "pair_id": 18 },
-        "ETHUSD": { "pair_id": 19 },
-        "SOLUSD": { "pair_id": 10 },
-        "DEEPUSD": { "pair_id": 491 },
-        "WALUSD": { "pair_id": 534 },
-        "HYPEUSD": { "pair_id": 551 },
-        "XRPUSD": { "pair_id": 14 },
-        "BNBUSD": { "pair_id": 49 },
-        "ZECUSD": { "pair_id": 60 },
-        "XAGUSD": { "pair_id": 5501 },
-        "WTIUSD": { "pair_id": 5503 },
-        "EURUSD": { "pair_id": 5000 },
-        "USDJPY": { "pair_id": 5001 }
+        "SUIUSD": {
+          "pair_id": 90
+        },
+        "BTCUSD": {
+          "pair_id": 18
+        },
+        "ETHUSD": {
+          "pair_id": 19
+        },
+        "SOLUSD": {
+          "pair_id": 10
+        },
+        "DEEPUSD": {
+          "pair_id": 491
+        },
+        "WALUSD": {
+          "pair_id": 534
+        },
+        "HYPEUSD": {
+          "pair_id": 551
+        },
+        "XRPUSD": {
+          "pair_id": 14
+        },
+        "BNBUSD": {
+          "pair_id": 49
+        },
+        "ZECUSD": {
+          "pair_id": 60
+        },
+        "XAGUSD": {
+          "pair_id": 5501
+        },
+        "WTIUSD": {
+          "pair_id": 5503
+        },
+        "EURUSD": {
+          "pair_id": 5000
+        },
+        "USDJPY": {
+          "pair_id": 5001
+        }
       },
       "publish_digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
       "publish_checkpoint": "349406324"
@@ -838,7 +964,7 @@
   "deploy_tx_log": [
     {
       "phase": "1.upgrade:waterx_oracle",
-      "action": "sui client upgrade waterx_oracle (v1→v2; ABI-compat remove_price_at_timestamp)",
+      "action": "sui client upgrade waterx_oracle (v1\u2192v2; ABI-compat remove_price_at_timestamp)",
       "digest": "7zLWM2aSLXTV1WPpwAtgrseEuprbimJ2Mx24sUp8tu15",
       "checkpoint": "362972777",
       "timestamp": "2026-07-22T01:39:08.846Z"
