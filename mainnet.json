@@ -30,9 +30,13 @@
       "config": "0x67ee3a737b6dc489a6077698d2ff2c2b5d9a20a14e5d0a38e72818c61ccaa2cd",
       "enclave_config": "0xba1f2058363c68f1ce76a9801e1bd709f5b2400ad91c467e7e269921ff95baec",
       "enclave_cap": "0x3202c262a2d22d8de874ab4884a8c3aa35ec5d126ac6aefb3112fc57d0584c53",
+      "enclave": "0x7c301232fbbabd37db4df7fba843d3ef1914a427afd11d30f3e8135e0e7b28a0",
+      "enclave_pubkey": "b8f5f5b2671cafeda2de770818a1cf335315e515a46022466b64ef5c8b38b520",
       "enabled": false,
       "publish_digest": "CBBJNUmB8QdEtp1RhjAALYvmSNq1zPNsRVX4eUosMWkL",
       "publish_checkpoint": "304657879",
+      "register_digest": "2ezRmoSLRTvpAzkZ2ipoWxo71MTbghLqV3vdg1cGCVnb",
+      "register_checkpoint": "304660405",
       "feeds": {
         "BTCUSD": {
           "ticker": "BTCUSDT",
