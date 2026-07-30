@@ -14,7 +14,25 @@
       "version": 1,
       "referral_table": "0xbbbfeed8ebdca08e4d43eaf6f2f937ddf193b3d08ee93a4864693dbfa0d0df7b"
     },
+    "enclave": {
+      "published_at": "0xbce5b23dc3bca7b514adc36954cd01ac5227d17c2e7764c36e9b3808364c6693",
+      "original_id": "0xbce5b23dc3bca7b514adc36954cd01ac5227d17c2e7764c36e9b3808364c6693",
+      "version": 1,
+      "upgrade_capability": "0x3feabd72d8ae3b4ad29bfb1658a204bc38a265d9f364b412d1db3873b624aea7",
+      "publish_digest": "A2kDr7vmUq1fQo7KmTCvXZFA8X2UqgYevbgi8tDHvRnR",
+      "publish_checkpoint": "304657684"
+    },
     "waterx_rule": {
+      "published_at": "0x1f1207ccde07c5c1c2c7395d0f5771370bf7e8a99acf28f0a341fbd1ed3f3384",
+      "original_id": "0x1f1207ccde07c5c1c2c7395d0f5771370bf7e8a99acf28f0a341fbd1ed3f3384",
+      "version": 1,
+      "upgrade_capability": "0x7c5e7c23895ae73bf8bba06f28d609a3fb7f5f8c09507792a1809ca136885a81",
+      "config": "0x67ee3a737b6dc489a6077698d2ff2c2b5d9a20a14e5d0a38e72818c61ccaa2cd",
+      "enclave_config": "0xba1f2058363c68f1ce76a9801e1bd709f5b2400ad91c467e7e269921ff95baec",
+      "enclave_cap": "0x3202c262a2d22d8de874ab4884a8c3aa35ec5d126ac6aefb3112fc57d0584c53",
+      "enabled": false,
+      "publish_digest": "CBBJNUmB8QdEtp1RhjAALYvmSNq1zPNsRVX4eUosMWkL",
+      "publish_checkpoint": "304657879",
       "feeds": {
         "BTCUSD": {
           "ticker": "BTCUSDT",
