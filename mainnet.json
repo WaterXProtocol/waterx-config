@@ -24,6 +24,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "confidence",
+          "min_sources": 2,
           "kind": "perp"
         },
         "ETHUSD": {
@@ -34,6 +35,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "confidence",
+          "min_sources": 2,
           "kind": "perp"
         },
         "SOLUSD": {
@@ -44,6 +46,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "SUIUSD": {
@@ -54,6 +57,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "BNBUSD": {
@@ -64,6 +68,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "DOGEUSD": {
@@ -74,6 +79,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "XRPUSD": {
@@ -84,6 +90,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "HYPEUSD": {
@@ -94,6 +101,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "DEEPUSD": {
@@ -103,6 +111,7 @@
             "bybit_linear_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "LITUSD": {
@@ -113,6 +122,7 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "WALUSD": {
@@ -122,6 +132,7 @@
             "bybit_linear_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
         },
         "ZECUSD": {
@@ -132,7 +143,176 @@
             "gateio_usdt_perp_ws"
           ],
           "method": "median",
+          "min_sources": 2,
           "kind": "perp"
+        },
+        "AAPLXUSD": {
+          "ticker": "AAPLXUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "TSLAXUSD": {
+          "ticker": "TSLAXUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "COINXUSD": {
+          "ticker": "COINXUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "CRCLXUSD": {
+          "ticker": "CRCLXUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "GOOGLXUSD": {
+          "ticker": "GOOGLXUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "HOODXUSD": {
+          "ticker": "HOODXUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "METAXUSD": {
+          "ticker": "METAXUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "NVDAXUSD": {
+          "ticker": "NVDAXUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "MSTRXUSD": {
+          "ticker": "MSTRXUSDT",
+          "sources": [
+            "gateio_spot_ws"
+          ],
+          "method": "direct",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "NFLXXUSD": {
+          "ticker": "NFLXXUSDT",
+          "sources": [
+            "gateio_spot_ws"
+          ],
+          "method": "direct",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "QQQXUSD": {
+          "ticker": "QQQXUSDT",
+          "sources": [
+            "gateio_spot_ws"
+          ],
+          "method": "direct",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "SPYXUSD": {
+          "ticker": "SPYXUSDT",
+          "sources": [
+            "gateio_spot_ws"
+          ],
+          "method": "direct",
+          "min_sources": 1,
+          "kind": "xstock"
+        },
+        "XAUTUSD": {
+          "ticker": "XAUTUSDT",
+          "sources": [
+            "bybit_spot_ws",
+            "gateio_spot_ws"
+          ],
+          "method": "median",
+          "min_sources": 1,
+          "kind": "spot"
+        },
+        "XAGUSD": {
+          "ticker": "XAGUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "min_sources": 2,
+          "kind": "commodity"
+        },
+        "XAUUSD": {
+          "ticker": "XAUUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "bybit_linear_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "min_sources": 2,
+          "kind": "commodity"
+        },
+        "WTIUSD": {
+          "ticker": "CLUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "min_sources": 2,
+          "kind": "commodity"
+        },
+        "BRENTUSD": {
+          "ticker": "BZUSDT",
+          "sources": [
+            "binance_usdm_perp_ws",
+            "gateio_usdt_perp_ws"
+          ],
+          "method": "median",
+          "min_sources": 2,
+          "kind": "commodity"
         }
       }
     },
@@ -343,7 +523,9 @@
       "upgrade_capability": "0x0cb9d69784aba5a5418813a43ccd61727c9ca4b9a4ddd254b03841464be65e79",
       "config": "0xa3d39ebf2b25c242b4589f54af2cb7e601b1356e5f4e57d93f17d043bf9785f1",
       "feeds": {
-        "USDCUSD": { "price": "1000000000" }
+        "USDCUSD": {
+          "price": "1000000000"
+        }
       }
     },
     "waterx_oracle": {
