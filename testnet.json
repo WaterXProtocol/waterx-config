@@ -249,9 +249,9 @@
       "publish_checkpoint": "362972777"
     },
     "waterx_perp": {
-      "published_at": "0x84063a13165f0ba3420c37717d3c594c3ae2244bee1de4abb58764b426ee7010",
+      "published_at": "0x069cd6e59eb3f700a38a42e09b35d092bcd1fbc5d1d23774962238d2f45a8a07",
       "original_id": "0x505622c7f91372446d9bb5e0b874f3a0746e4abaafdaf8209962bcdb44af2b35",
-      "version": 2,
+      "version": 3,
       "upgrade_capability": "0x8faf7b3b3af5e53d940ea2f9efb6a8aa843a0bf43bb68fd61e4a424356c27872",
       "admin_cap": "0x6085c9f59548ee08b6d83915ea2db5efce8ad3803b697ec70473946816b8d931",
       "global_config": "0xdba1d57604df612460b5252d7ba6c7b5388cc400809778d7150583b9fc34cd32",
@@ -378,8 +378,8 @@
           "config": "0xb3afcf946efc8a921661ab7810a1f039dca8c325a897a90f9c0f04f9581c4530"
         }
       },
-      "publish_digest": "BmNsBbvP3LtyxhAbJ4cE2Wrv6X85J78PCj7tt32C8jC8",
-      "publish_checkpoint": "343899321"
+      "publish_digest": "32f8bUfR3ZgdiFqjWnRAQKH7JguHctfVRP9SAFkKmrpc",
+      "publish_checkpoint": "367394500"
     },
     "waterx_prediction": {
       "published_at": "0x0274cc0502d43d177d9422c0dc4bfa510da83789bfe10e86e73ae1bd04277290",
@@ -408,12 +408,12 @@
       "publish_checkpoint": "347776355"
     },
     "waterx_perp_view": {
-      "published_at": "0x82c988477579606d9ccf609e85296a2c521a024ca4699bfa32596be2391028a5",
+      "published_at": "0xd01bf55e2c29abdc26caa377976f9e7cdc19964453db6e96ee3f6ac9ba99d37c",
       "original_id": "0x82c988477579606d9ccf609e85296a2c521a024ca4699bfa32596be2391028a5",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x6dde87344688df59a7639c65b5c1e1b5bee5c449fcee9baa0fbe840a91505313",
-      "publish_digest": "7LC1qRovUdyd4q2AxACKeApgruCPHkuj52YLRRQuEpvJ",
-      "publish_checkpoint": "343899334"
+      "publish_digest": "47CvwEaJGDaj34kBZ6ik7GNyX3s712bbsWph8Hf9b2mN",
+      "publish_checkpoint": "367394623"
     },
     "waterx_rule": {
       "published_at": "0xe1500e0c522eab37d2487e2d0babb08c48a425474455ba262f0caa339c503524",
