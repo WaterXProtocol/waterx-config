@@ -481,11 +481,11 @@
       }
     },
     "pyth_lazer_rule": {
-      "published_at": null,
-      "original_id": null,
-      "version": null,
-      "upgrade_capability": null,
-      "config": null,
+      "published_at": "0xf9a4656ef1336509636f4d0325543bb723c40b8a127da52b3562528627da5fe9",
+      "original_id": "0xf9a4656ef1336509636f4d0325543bb723c40b8a127da52b3562528627da5fe9",
+      "version": 1,
+      "upgrade_capability": "0x845d43431cb06ed694f873ac1af740703ae7e10d0c7601b84e96344c7e058bc0",
+      "config": "0x923443623006b448f7820197e19463c63ae5d05ab3b7955041c778340bc43cbd",
       "state": "0xd0db9c1e9212a98120384bf78d8b8c985d87b9ee6921dffcf9d1394062911573",
       "feeds": {
         "SUIUSD": 11,
