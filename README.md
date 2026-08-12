@@ -58,11 +58,14 @@ Hosted on Cloudflare Pages, wired to this repo's `main` branch. Pushing to main 
 | `wormhole_bridge` | `bridge`, `wormhole_state`, `emitter_cap`, `personal_burn_cap`, `daily_mint_limit`, `daily_burn_limit`, `max_mint_per_tx`, `max_burn_per_tx` |
 | `mock_usdsui` | `currency`, `treasury_cap`, `metadata_cap` |
 | `supra_rule` | `config`, `feeds` |
+| `waterx_rule` | `feeds` (per-symbol `{ ticker, sources[], method, kind }` — the off-chain quote-service feed registry; see below) |
 | `testnet_faucet` | `faucet`, `whitelist` |
 
 Packages may also carry `publish_checkpoint` / `publish_digest`, recording the checkpoint and transaction digest of the publish. Nearly every `testnet.json` package has them; on `mainnet.json` only a few do.
 
-Testnet-only packages, absent from `mainnet.json`: `mock_sui`, `mock_usdc`, `mock_usdsui` (mainnet uses real CoinTypes), plus `testnet_faucet`, `supra_rule`, and `waterx_rule`. There are no mainnet-only packages.
+Testnet-only packages, absent from `mainnet.json`: `mock_sui`, `mock_usdc`, `mock_usdsui` (mainnet uses real CoinTypes), plus `testnet_faucet` and `supra_rule`. There are no mainnet-only packages.
+
+`waterx_rule` is a special case: its on-chain package (`published_at` / `original_id` / …) is not yet deployed to mainnet (pending WL-1965), but its `feeds` registry — which the off-chain quote-service reads and which is independent of the package addresses — is carried on **both** networks so the service can boot with `NETWORK=mainnet`.
 
 ### Per-ticker maps (`aggregators` / `markets` / `feeds`)
 
@@ -100,6 +103,44 @@ Listing a new trading pair adds one entry to each of these three maps, keyed by 
 `feed_id` is defined by Pyth and is usually **different** between testnet and mainnet (look them up via `hermes-beta.pyth.network` or `hermes.pyth.network`). `price_info_object` is Pyth's actual shared PriceInfoObject on that chain — not the `Field<PriceIdentifier, ID>` wrapper object inside the `price_info` table (that one cannot be passed directly as a transaction input).
 
 For the listing flow of a new trading pair (create aggregator → wire up Pyth → create Market), see [`waterx-contract/.claude/skills/list-perp-asset/SKILL.md`](../waterx-contract/.claude/skills/list-perp-asset/SKILL.md).
+
+### `waterx_rule.feeds` — off-chain quote-service registry
+
+Unlike the Pyth/Supra `feeds` maps (which point at on-chain price objects), `waterx_rule.feeds` is the **feed registry the off-chain quote-service reads** to know which symbols to keep signed & fresh. It mirrors the on-chain `waterx_rule::FeedConfig` and is consumed by `quote-service/src/config.rs` (`load_remote` → `RemoteFeed`) — so the field names here are load-bearing. Keyed by oracle **symbol** (e.g. `"BTCUSD"`, not the exchange ticker). Most symbols happen to be the ticker minus its `USDT` suffix, but that is a coincidence rather than a rule — the crude feeds map `WTIUSD` → `CLUSDT` and `BRENTUSD` → `BZUSDT`, because the venues use the futures root symbols while the oracle key stays readable:
+
+```jsonc
+"waterx_rule": {
+  "feeds": {
+    "BTCUSD": {
+      "ticker":  "BTCUSDT",                              // exchange ticker the enclave fetches
+      "sources": ["binance_usdm_perp_ws", "..."],        // enclave source-id vocabulary (see below)
+      "method":  "direct | median | confidence",          // aggregation method
+      "kind":    "perp | spot | prediction | xstock | commodity"  // drives per-kind publish cadence
+    }
+  }
+}
+```
+
+Source-id vocabulary (enclave string id → on-chain `u64`, a wire contract shared with `waterx_rule.move`; canonical list in `quote-service/src/resolve.rs`):
+
+| id | source | note |
+| --- | --- | --- |
+| 1 | `binance_spot_ws` / `binance_spot_rest` | |
+| 2 | `binance_usdm_perp_ws` | |
+| 3 | `bybit_linear_perp_ws` | |
+| 4 | `gateio_usdt_perp_ws` | |
+| 5 | `bybit_spot_ws` | xStock token price |
+| 6 | `xstock_equity_rest` | underlying equity via Alpaca |
+| 7 | `okx_spot_ws` | xStock token price |
+| 8 | `hyperliquid_perp_ws` | xStock token price |
+| 9 | `gateio_spot_ws` | xStock token price |
+| 10 | `kraken_spot_ws` | xStock token price |
+
+Every `sources` entry must be in this vocabulary, and `sources`/`method` must match the on-chain `set_perp_feed` config field-for-field — a mismatch makes `waterx_rule` abort during validation (`are_perp_sources` / `is_perp_method`). `kind` is **not** an on-chain field: it is never passed to `set_perp_feed` and is read only by the off-chain quote-service to pick a publish cadence, so adding a new `kind` value cannot abort validation.
+
+> **mainnet carries perp feeds only.** The xStock feeds (`kind: "xstock"`, source ids 5–10) are testnet-only until those source ids are registered on-chain on mainnet (WL-1968); enabling them in `mainnet.json` before that would abort validation.
+>
+> The commodity feeds (`kind: "commodity"` — `XAGUSD`/`XAUUSD`/`WTIUSD`/`BRENTUSD`) are a different case: they use only source ids 2–4, which are already registered on mainnet, so they would pass validation there. They are testnet-only as a **product** decision pending a mainnet soak, not a technical block.
 
 ## Update flow
 
