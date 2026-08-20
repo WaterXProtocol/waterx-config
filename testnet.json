@@ -438,6 +438,24 @@
           "min_sources": 2,
           "kind": "perp"
         },
+        "EURUSD": {
+          "ticker": "EURUSD",
+          "sources": [
+            { "name": "hyperliquid_perp_ws", "weight": 1 }
+          ],
+          "method": "confidence",
+          "min_sources": 1,
+          "kind": "fx"
+        },
+        "USDJPY": {
+          "ticker": "USDJPY",
+          "sources": [
+            { "name": "hyperliquid_perp_ws", "weight": 1 }
+          ],
+          "method": "confidence",
+          "min_sources": 1,
+          "kind": "fx"
+        },
         "AAPLXUSD": {
           "ticker": "AAPLXUSDT",
           "sources": [
