@@ -511,23 +511,6 @@
         "LITUSD": 2921
       }
     },
-    "pyth_sponsor_rule": {
-      "published_at": "0xc60138533ff50b2f649bac1e076c1797f2ec0b4ee52d2f636d3419859bf95f0e",
-      "original_id": "0xc60138533ff50b2f649bac1e076c1797f2ec0b4ee52d2f636d3419859bf95f0e",
-      "version": 1,
-      "upgrade_capability": "0xb5e295f7afe0e5ff91c1fcc4fe98daa5632c3703b2e0075aa972afe73b5a7bf5",
-      "pyth_sponsor": "0xf1b5ea5e4e0788be19899b4d72a2285c4385e3af3f1861c6519c7085d8b6abd4",
-      "mvr": {
-        "name": "@waterx-protocol/pyth-sponsor-rule",
-        "package_info_id": "0x4e3bde315bbd92b44dac962bec95461b7babc7234730c749564068f92659b8cd",
-        "app_cap_id": "0x720913ce6b238d7dc0b23ddad6d0fd42c4dfdf1dece004a3c1cedd2f12364e42",
-        "git": {
-          "repo": "https://github.com/WaterXProtocol/waterx-contract",
-          "path": "waterx_oracle_rule/pyth_sponsor_rule",
-          "version": 1
-        }
-      }
-    },
     "constant_rule": {
       "published_at": "0x685dcb32ce65e0eaab691596bab72c6ace4f227f81277f83cc5bd59c6e574d09",
       "original_id": "0x685dcb32ce65e0eaab691596bab72c6ace4f227f81277f83cc5bd59c6e574d09",

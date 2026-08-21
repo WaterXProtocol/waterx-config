@@ -64,15 +64,6 @@
       "publish_digest": "234jQLrJ5mbFwi1To4k6VErLnoPMdDimWRakRpibU24d",
       "publish_checkpoint": "343899359"
     },
-    "pyth_sponsor_rule": {
-      "published_at": "0xaf04822e7f892993611a1260a6cfdcceadc586c1ea2b25b6753615908559850b",
-      "original_id": "0xaf04822e7f892993611a1260a6cfdcceadc586c1ea2b25b6753615908559850b",
-      "version": 1,
-      "upgrade_capability": "0x47d1a9b662b1c0673b3d73c2c3d0f5362dfe8587096c4daf5249ba2707aac3af",
-      "pyth_sponsor": "0x603a4a65002fa64c0f5fcded2568ecc7331250401366e7e4d6b904f0e2de92af",
-      "publish_digest": "49j6anf4RL1Fw1nb7kCEAqrNbjCTrWK6s548oWKDXqee",
-      "publish_checkpoint": "343899372"
-    },
     "waterx_account": {
       "published_at": "0xf5489f5b31ce144749d27ef3293d32b21b24b5cc9be27abad3d2bb93256092a1",
       "original_id": "0xff4afb7305886992843b700a363ebe4ae0dc6a727c4941043b565d0a3a7eb61d",
