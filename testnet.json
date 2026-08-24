@@ -286,9 +286,9 @@
       "publish_checkpoint": "367394623"
     },
     "waterx_rule": {
-      "published_at": "0xe1500e0c522eab37d2487e2d0babb08c48a425474455ba262f0caa339c503524",
+      "published_at": "0x4cbad3b252d9ed25452ebb48977da420e251f0e2029e3e14d1d628c08acca9bf",
       "original_id": "0xa74191aad31907bbbd870626dd251b797a12a3841b0fdaf2af1e1cb5952572fb",
-      "version": 2,
+      "version": 3,
       "upgrade_capability": "0x1449637a6505cae414bd405e0f2023a3f0f327d8ef0ca5063a7151595c9160c5",
       "config": "0x9589a1f56c631dc8b2b86b8c186e95baa2c1a85b433373a8266fa377137e6e38",
       "enclave_config": "0xa4ea6c16cd136056e6a77d71185126da6187e7435b91ddf255d8462c95cd501d",
