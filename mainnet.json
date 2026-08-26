@@ -23,9 +23,9 @@
       "publish_checkpoint": "304657684"
     },
     "waterx_rule": {
-      "published_at": "0x1f1207ccde07c5c1c2c7395d0f5771370bf7e8a99acf28f0a341fbd1ed3f3384",
+      "published_at": "0x0a974d1987f0538c4124da2071642586f06fcc9121b1de51497b568d7906001b",
       "original_id": "0x1f1207ccde07c5c1c2c7395d0f5771370bf7e8a99acf28f0a341fbd1ed3f3384",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x7c5e7c23895ae73bf8bba06f28d609a3fb7f5f8c09507792a1809ca136885a81",
       "config": "0x67ee3a737b6dc489a6077698d2ff2c2b5d9a20a14e5d0a38e72818c61ccaa2cd",
       "enclave_config": "0xba1f2058363c68f1ce76a9801e1bd709f5b2400ad91c467e7e269921ff95baec",
@@ -495,9 +495,9 @@
       }
     },
     "pyth_lazer_rule": {
-      "published_at": "0xf9a4656ef1336509636f4d0325543bb723c40b8a127da52b3562528627da5fe9",
+      "published_at": "0x5435e3b146de4083ecd3de9fb4638a397d1ba44db8f1f77b89f256f05f80cd5f",
       "original_id": "0xf9a4656ef1336509636f4d0325543bb723c40b8a127da52b3562528627da5fe9",
-      "version": 1,
+      "version": 2,
       "upgrade_capability": "0x845d43431cb06ed694f873ac1af740703ae7e10d0c7601b84e96344c7e058bc0",
       "config": "0x923443623006b448f7820197e19463c63ae5d05ab3b7955041c778340bc43cbd",
       "state": "0xd0db9c1e9212a98120384bf78d8b8c985d87b9ee6921dffcf9d1394062911573",
