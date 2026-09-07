@@ -19,15 +19,15 @@ Hosted on Cloudflare Pages, wired to this repo's `main` branch. Pushing to main 
 ## Schema
 
 The canonical, machine-checked schema lives at [`schema/waterx-config.schema.json`](./schema/waterx-config.schema.json);
-the rendered field references are [`docs/FIELDS.md`](./docs/FIELDS.md) (current shape) and [`docs/FIELDS-TARGET.md`](./docs/FIELDS-TARGET.md) (the flip target — see [`docs/FLIP-PLAN.md`](./docs/FLIP-PLAN.md)). Both network
+the rendered field reference is [`docs/FIELDS.md`](./docs/FIELDS.md). Both network
 files are validated against it on every PR, and every keyspace/field difference
 between networks or symbol maps must be declared in
 [`schema/coverage-exceptions.json`](./schema/coverage-exceptions.json) — new,
 undeclared drift fails CI.
 
-**The served format is the consolidated shape (`schema_version: 2`)**: one
-`symbols` universe, uniform `packages` identity, domain-grouped `objects`, and
-a named per-rule `oracle_rules` registry. There is no legacy format.
+**The served format is the consolidated shape (`schema_version: 2`)** — there
+is no legacy format (see [`docs/FLIP-PLAN.md`](./docs/FLIP-PLAN.md) for what
+changed and the old→new path map).
 
 **Do not hand-roll config types in a consuming repo.** Use the generated parsers:
 
@@ -42,12 +42,11 @@ drift); edit the schema, never the generated files.
 ## Listing a feed — read this first
 
 - `oracle_rules.waterx.venue_feeds[].sources[].name` is a **wire vocabulary**
-  shared with `waterx_rule.move`'s on-chain u64 source registry (the full
-  id table is in the schema description / [FIELDS.md](./docs/FIELDS.md)).
-  A source id must be **registered on-chain for the target network** before a
-  feed lists it — mainnet has ids 5–10 unregistered (WL-1968), so
-  xstock/commodity-style feeds are **testnet-only** until then; listing one on
-  mainnet aborts on-chain validation at feed time.
+  shared with `waterx_rule.move`'s on-chain u64 source registry. A source id
+  must be **registered on-chain for the target network** before a feed lists
+  it — an unregistered id aborts on-chain validation at feed time. The id
+  table and details live in the schema description / [FIELDS.md](./docs/FIELDS.md)
+  (registration tracking: WL-1968).
 - `weights` are **off-chain only** (audit I-16): review weight changes as
   trust-surface changes.
 - `oracle_rules.pyth.pyth_price_feeds[].price_info_object` must be the shared
@@ -60,9 +59,3 @@ On-chain state changes in [`waterx-contract`](https://github.com/WaterXProtocol/
 the change lands as a PR. Deploy forensics (publish digests/checkpoints, the
 tx log) live in [`deploys/`](./deploys/) — **not** in the served config —
 so the contract repo's sync scripts must write there.
-
-### Field reference
-
-The full field-by-field reference is generated from the schemas — do not
-document fields by hand here: [`docs/FIELDS.md`](./docs/FIELDS.md) (current
-shape) · [`docs/FIELDS-TARGET.md`](./docs/FIELDS-TARGET.md) (flip target).

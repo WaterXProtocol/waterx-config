@@ -18,8 +18,6 @@
   },
   "devDependencies": {
     "ajv-cli": "5.0.0",
-    "json-schema-to-zod": "2.6.1",
-    "quicktype": "23.2.6",
     "typescript": "^5.7.0"
   },
   "license": "MIT",

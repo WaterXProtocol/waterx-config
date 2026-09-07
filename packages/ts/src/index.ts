@@ -55,6 +55,8 @@ export interface LoadOptions {
   timeoutMs?: number;
   /** Total attempts (default 3, exponential backoff). Minimum 1. */
   attempts?: number;
+  /** Base backoff delay in ms (default 500; attempt i waits base * 2^i). */
+  backoffBaseMs?: number;
 }
 
 /** Statuses worth retrying: server errors, and the rate/timeout pair. */
@@ -87,7 +89,7 @@ export async function loadWaterxConfig(network: Network, opts: LoadOptions = {})
         (e instanceof DOMException && (e.name === "TimeoutError" || e.name === "AbortError")) ||
         (!(e instanceof WaterxConfigError) && e instanceof Error && !(e instanceof TypeError && /json/i.test(e.message)));
       if (!retryable) throw e;
-      if (i < attempts - 1) await new Promise((r) => setTimeout(r, 500 * 2 ** i));
+      if (i < attempts - 1) await new Promise((r) => setTimeout(r, (opts.backoffBaseMs ?? 500) * 2 ** i));
     }
   }
   throw new WaterxConfigError(`failed to load ${url} after ${attempts} attempts`, { cause: lastErr });

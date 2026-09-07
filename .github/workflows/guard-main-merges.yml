@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: guard-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   guard-source-branch:
     name: only-staging-can-merge

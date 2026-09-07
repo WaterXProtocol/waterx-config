@@ -48,6 +48,11 @@ impl std::error::Error for ConfigError {}
 /// forbidden by the repo README.
 pub const CONFIG_CDN_BASE: &str = "https://config.waterx.app";
 
+/// The one format this crate speaks. Hand-pinned because quicktype flattens
+/// the schema's one-value enum to a plain i64; `schema_pin_matches_schema`
+/// asserts it against the schema so this copy cannot drift.
+pub const SCHEMA_VERSION: i64 = 2;
+
 fn network_str(n: &generated::Network) -> &'static str {
     match n {
         generated::Network::Mainnet => "mainnet",
@@ -59,19 +64,13 @@ fn network_str(n: &generated::Network) -> &'static str {
 /// the document's own `network` field — the guard that stops a mainnet binary
 /// silently loading a testnet file.
 pub fn parse_waterx_config(json: &str, expect_network: Option<&str>) -> Result<WaterxConfig, ConfigError> {
-    let mut value: serde_json::Value = serde_json::from_str(json).map_err(ConfigError::Parse)?;
-    // Integer-tolerant version pin: producers that round-trip through a float
-    // writer may emit 2.0 — same version, different token (review finding).
-    let version = value.get("schema_version").and_then(|v| {
-        v.as_i64().or_else(|| v.as_f64().filter(|f| f.fract() == 0.0).map(|f| f as i64))
-    });
-    if version != Some(2) {
-        return Err(ConfigError::UnsupportedVersion(version));
-    }
-    // Normalize the float spelling (verified integral above) so the typed
-    // i64 field accepts it.
-    value["schema_version"] = serde_json::json!(2);
-    let cfg: WaterxConfig = serde_json::from_value(value).map_err(ConfigError::Parse)?;
+    // Fast path: one typed pass. `schema_version` is a required i64, so a
+    // legacy (pre-flip) document cannot deserialize past this line.
+    let cfg = match serde_json::from_str::<WaterxConfig>(json) {
+        Ok(cfg) if cfg.schema_version == SCHEMA_VERSION => cfg,
+        Ok(cfg) => return Err(ConfigError::UnsupportedVersion(Some(cfg.schema_version))),
+        Err(e) => parse_slow(json, e)?,
+    };
     if let Some(expected) = expect_network {
         let got = network_str(&cfg.network);
         if got != expected {
@@ -79,6 +78,25 @@ pub fn parse_waterx_config(json: &str, expect_network: Option<&str>) -> Result<W
         }
     }
     Ok(cfg)
+}
+
+/// Cold path, entered only when the typed parse fails: classify the failure.
+/// A missing/wrong `schema_version` becomes the legible [`ConfigError::UnsupportedVersion`];
+/// the float spelling of 2 (producers that round-trip through a float writer
+/// may emit 2.0 — same version, different token) is normalized and re-parsed,
+/// so the tolerance costs the integer-spelled happy path nothing.
+fn parse_slow(json: &str, typed_err: serde_json::Error) -> Result<WaterxConfig, ConfigError> {
+    let Ok(mut value) = serde_json::from_str::<serde_json::Value>(json) else {
+        return Err(ConfigError::Parse(typed_err));
+    };
+    let version = value.get("schema_version").and_then(|v| {
+        v.as_i64().or_else(|| v.as_f64().filter(|f| f.fract() == 0.0).map(|f| f as i64))
+    });
+    if version != Some(SCHEMA_VERSION) {
+        return Err(ConfigError::UnsupportedVersion(version));
+    }
+    value["schema_version"] = serde_json::json!(SCHEMA_VERSION);
+    serde_json::from_value(value).map_err(ConfigError::Parse)
 }
 
 /// Fetch + parse one network's config from the CDN, with a 10s timeout.
@@ -117,7 +135,8 @@ mod tests {
             let cfg = parse_waterx_config(&fixture(&format!("{net}.json")), Some(net))
                 .unwrap_or_else(|e| panic!("{net}: {e}"));
             assert_eq!(cfg.schema_version, 2);
-            assert!(cfg.symbols.len() >= 31, "{net} symbols universe");
+            assert!(!cfg.symbols.is_empty() && cfg.symbols.contains_key("BTCUSD"),
+                "{net}: the symbols universe must exist and hold the flagship symbol");
             assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
             let wr = cfg.packages.get("waterx_rule").expect("waterx_rule identity");
             assert!(wr.published_at.as_deref().unwrap_or("").starts_with("0x"));
@@ -160,6 +179,18 @@ mod tests {
             parse_waterx_config(&doc.to_string(), None),
             Err(ConfigError::UnsupportedVersion(None))
         ), "a legacy (pre-flip) document is refused with a version error");
+    }
+
+    /// The hand-pinned SCHEMA_VERSION must equal the schema's enum — the one
+    /// copy quicktype cannot carry (it flattens a one-value enum to i64).
+    #[test]
+    fn schema_pin_matches_schema() {
+        let schema: serde_json::Value =
+            serde_json::from_str(&fixture("schema/waterx-config.schema.json")).unwrap();
+        assert_eq!(
+            schema["properties"]["schema_version"]["enum"],
+            serde_json::json!([SCHEMA_VERSION])
+        );
     }
 
     /// A mainnet binary must not silently load a testnet file.

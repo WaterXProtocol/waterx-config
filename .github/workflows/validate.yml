@@ -8,7 +8,7 @@ name: Validate config
 on:
   pull_request:
   push:
-    branches: [main, staging, main-v2, staging-v2]
+    branches: [main, staging]
 
 concurrency:
   group: validate-${{ github.ref }}

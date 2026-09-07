@@ -404,12 +404,12 @@ pub struct VenueFeed {
     pub min_sources: i64,
 
     /// Venue set feeding the aggregate. Source names are a wire vocabulary shared with
-    /// waterx_rule.move's on-chain u64 registry (1 binance_spot, 2 binance_usdm_perp, 3
-    /// bybit_linear_perp, 4 gateio_usdt_perp, 5 bybit_spot, 6 xstock_equity, 7 okx_spot, 8
-    /// hyperliquid_perp, 9 gateio_spot, 10 kraken_spot, 11 pyth_lazer). A source id must be
-    /// REGISTERED ON-CHAIN for the target network before a feed lists it — mainnet has ids 5-10
-    /// unregistered (WL-1968), so xstock/commodity-style feeds using them are testnet-only until
-    /// then; listing one on mainnet aborts on-chain validation at feed time.
+    /// waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws,
+    /// 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4 gateio_usdt_perp_ws, 5 bybit_spot_ws, 6
+    /// xstock_equity_rest, 7 okx_spot_ws, 8 hyperliquid_perp_ws, 9 gateio_spot_ws, 10
+    /// kraken_spot_ws, 11 pyth_lazer_ws). A source id must be REGISTERED ON-CHAIN for the target
+    /// network before a feed lists it — an unregistered id aborts on-chain validation at feed
+    /// time (per-network registration is tracked in WL-1968).
     pub sources: Vec<Source>,
 
     pub ticker: String,
