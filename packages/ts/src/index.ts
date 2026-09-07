@@ -13,9 +13,11 @@
  */
 import waterxConfigSchema from "./schema.ts";
 import waterxConfigSchemaTolerant from "./schema-tolerant.ts";
+import waterxConfigV2Schema from "./schema-v2.ts";
+import waterxConfigV2SchemaTolerant from "./schema-v2-tolerant.ts";
 import type { z } from "zod";
 
-export { waterxConfigSchema, waterxConfigSchemaTolerant };
+export { waterxConfigSchema, waterxConfigSchemaTolerant, waterxConfigV2Schema, waterxConfigV2SchemaTolerant };
 
 /** The full network file, inferred from the generated Zod schema. */
 export type WaterxConfig = z.infer<typeof waterxConfigSchema>;
@@ -26,6 +28,11 @@ export type PythRuleFeed = NonNullable<WaterxPackages["pyth_rule"]>["feeds"][str
 export type PerpMarket = NonNullable<WaterxPackages["waterx_perp"]>["markets"][string];
 
 export type Network = "mainnet" | "testnet";
+
+/** The consolidated v2 document (docs/V2-PROPOSAL.md), served at /v2/<network>.json. */
+export type WaterxConfigV2 = z.infer<typeof waterxConfigV2Schema>;
+export type SymbolsRegistry = WaterxConfigV2["symbols"];
+export type OracleRules = WaterxConfigV2["oracle_rules"];
 
 /**
  * The ONLY sanctioned base URL. raw.githubusercontent.com is rate-limited
@@ -92,6 +99,50 @@ export async function loadWaterxConfig(network: Network, opts: LoadOptions = {})
     }
   }
   throw new WaterxConfigError(`failed to load ${url} after ${attempts} attempts`, lastErr);
+}
+
+/** Fetch + parse one network's v2 config from the CDN (/v2/<network>.json). */
+export async function loadWaterxConfigV2(network: Network, opts: LoadOptions = {}): Promise<WaterxConfigV2> {
+  const base = (opts.baseUrl ?? CONFIG_CDN_BASE).replace(/\/+$/, "");
+  if (/raw\.githubusercontent\.com/.test(base)) {
+    throw new WaterxConfigError("raw.githubusercontent.com is not a config source. Use the CDN.");
+  }
+  const url = `${base}/v2/${network}.json`;
+  const doFetch = opts.fetchImpl ?? fetch;
+  const attempts = opts.attempts ?? 3;
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), opts.timeoutMs ?? 10_000);
+      try {
+        const res = await doFetch(url, { signal: ctrl.signal });
+        if (!res.ok) throw new WaterxConfigError(`GET ${url}: HTTP ${res.status}`);
+        return parseWaterxConfigV2(await res.json(), network, opts);
+      } finally {
+        clearTimeout(timer);
+      }
+    } catch (e) {
+      lastErr = e;
+      if (e instanceof WaterxConfigError && !/HTTP 5|abort/i.test(String(e.message))) throw e;
+      if (i < attempts - 1) await new Promise((r) => setTimeout(r, 500 * 2 ** i));
+    }
+  }
+  throw new WaterxConfigError(`failed to load ${url} after ${attempts} attempts`, lastErr);
+}
+
+/** Parse an already-fetched v2 document. Tolerant by default — see ParseOptions.strict. */
+export function parseWaterxConfigV2(doc: unknown, expectNetwork?: Network, opts: ParseOptions = {}): WaterxConfigV2 {
+  const schema = opts.strict ? waterxConfigV2Schema : waterxConfigV2SchemaTolerant;
+  const parsed = schema.safeParse(doc);
+  if (!parsed.success) {
+    const issues = parsed.error.issues.slice(0, 5).map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+    throw new WaterxConfigError(`v2 config failed schema validation: ${issues}`);
+  }
+  if (expectNetwork && parsed.data.network !== expectNetwork) {
+    throw new WaterxConfigError(`network mismatch: asked for ${expectNetwork}, document says ${parsed.data.network}`);
+  }
+  return parsed.data as WaterxConfigV2;
 }
 
 /** Parse an already-fetched document (pinned file, test fixture). Tolerant of

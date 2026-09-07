@@ -10,7 +10,9 @@
 //! where data and schema always move together.
 
 pub mod generated;
+pub mod generated_v2;
 pub use generated::*;
+pub use generated_v2::WaterxConfigV2;
 
 #[derive(Debug)]
 pub enum ConfigError {
@@ -38,8 +40,13 @@ impl std::error::Error for ConfigError {}
 /// forbidden by the repo README.
 pub const CONFIG_CDN_BASE: &str = "https://config.waterx.app";
 
-/// Strictly parse an already-fetched document.
+/// Parse an already-fetched v1 document (unknown fields tolerated).
 pub fn parse_waterx_config(json: &str) -> Result<WaterxConfig, ConfigError> {
+    serde_json::from_str(json).map_err(ConfigError::Parse)
+}
+
+/// Parse an already-fetched v2 document (/v2/<network>.json; unknown fields tolerated).
+pub fn parse_waterx_config_v2(json: &str) -> Result<WaterxConfigV2, ConfigError> {
     serde_json::from_str(json).map_err(ConfigError::Parse)
 }
 
@@ -69,6 +76,18 @@ mod tests {
 
     fn fixture(name: &str) -> String {
         std::fs::read_to_string(format!("{}/../../{name}.json", env!("CARGO_MANIFEST_DIR"))).unwrap()
+    }
+
+    /// v2: both derived instances must parse, and the consolidated shape holds.
+    #[test]
+    fn both_v2_networks_parse() {
+        for net in ["mainnet", "testnet"] {
+            let json = std::fs::read_to_string(format!("{}/../../v2/{net}.json", env!("CARGO_MANIFEST_DIR"))).unwrap();
+            let cfg = parse_waterx_config_v2(&json).unwrap_or_else(|e| panic!("v2 {net}: {e}"));
+            assert_eq!(cfg.schema_version as i64, 2, "schema_version pin");
+            assert!(cfg.symbols.len() >= 31, "{net} symbols universe");
+            assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
+        }
     }
 
     /// The schema↔data↔parser triangle: both live instances MUST parse.
