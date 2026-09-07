@@ -1,0 +1,29 @@
+name: Codegen freshness
+
+# The parsers and docs are GENERATED from the schema. This job regenerates them
+# and fails on any diff — so a schema change cannot merge without its generated
+# artifacts, and nobody can hand-edit a generated file and have it stick.
+on:
+  pull_request:
+    paths: [schema/**, packages/ts/src/schema.ts, packages/rust/src/generated.rs, docs/FIELDS.md, scripts/**]
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Regenerate TS parser
+        run: |
+          node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/schema-deref.json
+          npx --yes json-schema-to-zod@2 -i /tmp/schema-deref.json -o packages/ts/src/schema.ts
+      - name: Regenerate Rust types
+        run: |
+          npx --yes quicktype@23 --src-lang schema --src schema/waterx-config.schema.json \
+            --lang rust --visibility public --derive-debug --derive-clone -o packages/rust/src/generated.rs
+          node scripts/patch-generated-rust.mjs
+      - name: Regenerate field docs
+        run: node scripts/gen-fields-doc.mjs
+      - name: Generated artifacts must match the schema
+        run: git diff --exit-code -- packages/ts/src/schema.ts packages/rust/src/generated.rs docs/FIELDS.md
