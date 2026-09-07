@@ -18,6 +18,8 @@ jobs:
         run: |
           node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/schema-deref.json
           npx --yes json-schema-to-zod@2 -i /tmp/schema-deref.json -o packages/ts/src/schema.ts
+          node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/schema-deref-tolerant.json --tolerant
+          npx --yes json-schema-to-zod@2 -i /tmp/schema-deref-tolerant.json -o packages/ts/src/schema-tolerant.ts
       - name: Regenerate Rust types
         run: |
           npx --yes quicktype@23 --src-lang schema --src schema/waterx-config.schema.json \
@@ -26,4 +28,4 @@ jobs:
       - name: Regenerate field docs
         run: node scripts/gen-fields-doc.mjs
       - name: Generated artifacts must match the schema
-        run: git diff --exit-code -- packages/ts/src/schema.ts packages/rust/src/generated.rs docs/FIELDS.md
+        run: git diff --exit-code -- packages/ts/src/schema.ts packages/ts/src/schema-tolerant.ts packages/rust/src/generated.rs docs/FIELDS.md

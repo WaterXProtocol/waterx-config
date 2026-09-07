@@ -3,6 +3,7 @@
 // derefed copy; schema/waterx-config.schema.json stays the canonical, ref'd SSOT.
 import { readFileSync, writeFileSync } from "node:fs";
 const schema = JSON.parse(readFileSync(process.argv[2], "utf8"));
+const tolerant = process.argv[4] === "--tolerant";
 const defs = schema.$defs ?? {};
 function deref(node) {
   if (Array.isArray(node)) return node.map(deref);
@@ -13,7 +14,10 @@ function deref(node) {
       const { $ref, ...rest } = node;
       return { ...deref(defs[name]), ...deref(rest) };
     }
-    return Object.fromEntries(Object.entries(node).map(([k, v]) => [k, k === "$defs" ? v : deref(v)]));
+    const entries = Object.entries(node)
+      .filter(([k, v]) => !(tolerant && k === "additionalProperties" && v === false))
+      .map(([k, v]) => [k, k === "$defs" ? v : deref(v)]);
+    return Object.fromEntries(entries);
   }
   return node;
 }
