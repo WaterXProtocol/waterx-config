@@ -18,6 +18,27 @@ Hosted on Cloudflare Pages, wired to this repo's `main` branch. Pushing to main 
 
 ## Schema
 
+The canonical, machine-checked schema lives at [`schema/waterx-config.schema.json`](./schema/waterx-config.schema.json);
+the rendered field references are [`docs/FIELDS.md`](./docs/FIELDS.md) (current shape) and [`docs/FIELDS-TARGET.md`](./docs/FIELDS-TARGET.md) (the flip target — see [`docs/FLIP-PLAN.md`](./docs/FLIP-PLAN.md)). Both network
+files are validated against it on every PR, and every keyspace/field difference
+between networks or symbol maps must be declared in
+[`schema/coverage-exceptions.json`](./schema/coverage-exceptions.json) — new,
+undeclared drift fails CI.
+
+**Do not hand-roll config types in a consuming repo.** Use the generated parsers:
+
+- TypeScript: [`packages/ts`](./packages/ts) — `@waterx-protocol/config` (Zod
+  validator + CDN loader; refuses raw.githubusercontent).
+- Rust: [`packages/rust`](./packages/rust) — `waterx-config` crate
+  (`deny_unknown_fields` serde types, optional `fetch` feature).
+
+Both are **generated from the schema** (`codegen.yml` fails any PR where they
+drift); edit the schema, never the generated files.
+
+### Legacy schema sketch
+
+
+
 ```jsonc
 {
   "network": "testnet | mainnet",

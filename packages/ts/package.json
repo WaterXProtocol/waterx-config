@@ -1,0 +1,22 @@
+{
+  "name": "@waterx-protocol/config",
+  "version": "0.1.0",
+  "description": "Typed loader for waterx-config network files: one consolidated shape, legacy documents lifted transparently until flip day. Generated from the canonical JSON Schemas.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "node --test --experimental-strip-types test/*.test.ts"
+  },
+  "dependencies": {
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "license": "MIT"
+}

@@ -16,8 +16,8 @@ jobs:
           SOURCE_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
           SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
-          if [ "$SOURCE_REPOSITORY" != "WaterXProtocol/waterx-config" ] || [ "$SOURCE_BRANCH" != "staging" ]; then
-            echo "::error::Only WaterXProtocol/waterx-config:staging may be merged into main. This PR is from $SOURCE_REPOSITORY:$SOURCE_BRANCH."
+          if [ "$SOURCE_REPOSITORY" != "WaterXProtocol/waterx-config" ] || { [ "$SOURCE_BRANCH" != "staging" ] && [ "$SOURCE_BRANCH" != "main-v2" ]; }; then
+            echo "::error::Only WaterXProtocol/waterx-config:staging (ongoing flow) or :main-v2 (the schema/format flip) may be merged into main. This PR is from $SOURCE_REPOSITORY:$SOURCE_BRANCH."
             exit 1
           fi
           echo "Source branch $SOURCE_REPOSITORY:$SOURCE_BRANCH is allowed."

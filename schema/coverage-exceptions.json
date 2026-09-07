@@ -1,0 +1,35 @@
+{
+  "_comment": "Declared, reviewed exceptions. Keyspace exceptions are keyed by the map's LEGACY path from schema/map-paths.json (the registry translates for target-shape files, so this list survives the flip). Shrink over time (audit P2/P4).",
+  "mainnet": {
+    "packages/constant_rule/feeds": [
+      "USDCUSD"
+    ],
+    "packages/waterx_oracle/aggregators": [
+      "USDCUSD"
+    ]
+  },
+  "testnet": {
+    "packages/constant_rule/feeds": [
+      "USDCUSD"
+    ],
+    "packages/waterx_oracle/aggregators": [
+      "USDCUSD"
+    ]
+  },
+  "field_drift": [
+    "bucket_framework.upgrade_capability",
+    "native_custody.mvr",
+    "pyth_rule.mvr",
+    "waterx_account.mvr",
+    "waterx_credit.mvr",
+    "waterx_oracle.mvr",
+    "waterx_perp.mvr",
+    "waterx_perp_view.mvr",
+    "waterx_prediction.mvr",
+    "waterx_referral.upgrade_capability",
+    "waterx_staking.mvr",
+    "withdrawal_queue.mvr",
+    "withdrawal_queue.executors",
+    "wormhole_bridge.mvr"
+  ]
+}
