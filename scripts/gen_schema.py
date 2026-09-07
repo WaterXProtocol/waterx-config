@@ -151,11 +151,11 @@ top_props = {
         infer(t["coin_registry"], "coin_registry") if "coin_registry" in t else None,
     ) or {},
     "packages": {"type": "object", "properties": packages, "additionalProperties": False},
-    "evm": merge(infer(m["evm"], "evm"), infer(t["evm"], "evm") if "evm" in t else None),
-    "deploy_tx_log": merge(infer(m["deploy_tx_log"], "deploy_tx_log"),
-                           infer(t["deploy_tx_log"], "deploy_tx_log") if "deploy_tx_log" in t else None),
+    "evm": merge(infer(m["evm"], "evm") if "evm" in m else None,
+                 infer(t["evm"], "evm") if "evm" in t else None),
 }
 
+top_props = {k: v for k, v in top_props.items() if v}  # drop absent optional blocks
 schema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://config.waterx.app/schema/waterx-config.schema.json",

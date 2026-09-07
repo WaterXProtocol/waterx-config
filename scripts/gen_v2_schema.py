@@ -1,6 +1,6 @@
 import json
-exec(open('scripts/gen_schema_lib.py').read().replace("m = json.load(open('mainnet.json'))","m = json.load(open('v2/mainnet.json'))").replace("t = json.load(open('testnet.json'))","t = json.load(open('wxconfig/v2/testnet.json'))"))
-m = json.load(open('v2/mainnet.json')); t = json.load(open('wxconfig/v2/testnet.json'))
+exec(open('scripts/gen_schema_lib.py').read().replace("m = json.load(open('mainnet.json'))","m = json.load(open('v2/mainnet.json'))").replace("t = json.load(open('testnet.json'))","t = json.load(open('v2/testnet.json'))"))
+m = json.load(open('v2/mainnet.json')); t = json.load(open('v2/testnet.json'))
 def both(key):
     return merge(infer(m[key], key) if key in m else None,
                  infer(t[key], key) if key in t else None)

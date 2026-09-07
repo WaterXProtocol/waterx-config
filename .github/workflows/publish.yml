@@ -1,0 +1,38 @@
+name: Publish packages
+
+# Publishes @waterx-protocol/config to npm on a version tag (v*). The Rust
+# crate needs no registry step: Cargo consumes it straight from the git tag
+# (subdirectory packages are supported natively) —
+#   waterx-config = { git = "https://github.com/WaterXProtocol/waterx-config", tag = "v0.1.0" }
+#
+# Requires the NPM_TOKEN repo secret (org automation token with publish rights
+# on @waterx-protocol). Until it exists this workflow fails with a clear
+# message rather than half-publishing.
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, registry-url: "https://registry.npmjs.org" }
+      - name: Refuse to publish without a token
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "::error::NPM_TOKEN secret is not set — create an org automation token with publish rights on @waterx-protocol and add it to this repo's secrets."
+            exit 1
+          fi
+      - name: Tag must match package version
+        run: |
+          PKG=$(node -p "require('./packages/ts/package.json').version")
+          TAG="${GITHUB_REF_NAME#v}"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::tag v$TAG != packages/ts version $PKG — bump package.json in the same PR as the tag."
+            exit 1
+          fi
+      - run: cd packages/ts && npm ci && npm test && npm run build
+      - run: cd packages/ts && npm publish --access public
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
