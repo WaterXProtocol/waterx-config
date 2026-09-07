@@ -183,8 +183,14 @@ const v2 = {
   ...(v1.coin_registry !== undefined && { coin_registry: v1.coin_registry }),
   ...(v1.evm !== undefined && { evm: v1.evm }),
 };
-const forensics = {
-  network: v1.network,
+mkdirSync(new URL("v2", root), { recursive: true });
+mkdirSync(new URL("deploys", root), { recursive: true });
+writeFileSync(new URL(`v2/${net}.json`, root), JSON.stringify(v2, null, 2) + "\n");
+// deploys/<net>.json is the PRIMARY home of deploy forensics (Phase 2 moved
+// them out of the hot-path document). Seed it from v1 only while v1 still
+// carries legacy forensics fields; once v1 is clean, deploy/register tooling
+// appends here directly and this script must not touch the file.
+const legacy = {
   deploy_tx_log: v1.deploy_tx_log ?? [],
   package_publish: Object.fromEntries(
     Object.entries(P)
@@ -192,8 +198,9 @@ const forensics = {
       .filter(([, v]) => Object.keys(v).length),
   ),
 };
-mkdirSync(new URL("v2", root), { recursive: true });
-mkdirSync(new URL("deploys", root), { recursive: true });
-writeFileSync(new URL(`v2/${net}.json`, root), JSON.stringify(v2, null, 2) + "\n");
-writeFileSync(new URL(`deploys/${net}.json`, root), JSON.stringify(forensics, null, 2) + "\n");
-console.log(`v2/${net}.json + deploys/${net}.json derived; 0 leftover fields`);
+if (legacy.deploy_tx_log.length || Object.keys(legacy.package_publish).length) {
+  writeFileSync(new URL(`deploys/${net}.json`, root), JSON.stringify({ network: v1.network, ...legacy }, null, 2) + "\n");
+  console.log(`v2/${net}.json derived + deploys/${net}.json seeded from legacy v1 forensics; 0 leftover fields`);
+} else {
+  console.log(`v2/${net}.json derived; deploys/${net}.json untouched (primary); 0 leftover fields`);
+}

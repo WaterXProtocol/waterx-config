@@ -26,27 +26,11 @@ pub struct WaterxConfig {
     /// Short-form Sui address/object id.
     pub coin_registry: Option<String>,
 
-    pub deploy_tx_log: Option<Vec<DeployTxLog>>,
-
     pub evm: Option<Evm>,
 
     pub network: Network,
 
     pub packages: Packages,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct DeployTxLog {
-    pub action: String,
-
-    pub checkpoint: String,
-
-    pub digest: String,
-
-    pub phase: String,
-
-    pub timestamp: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -151,10 +135,6 @@ pub struct BucketFramework {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -207,10 +187,6 @@ pub struct Enclave {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: String,
-
-    pub publish_digest: String,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -227,10 +203,6 @@ pub struct MockSui {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
     pub original_id: Option<String>,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: Option<String>,
@@ -249,10 +221,6 @@ pub struct MockUsdc {
     /// (<original_id>::module::Type).
     pub original_id: Option<String>,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: Option<String>,
 
@@ -270,10 +238,6 @@ pub struct MockUsdsui {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
     pub original_id: Option<String>,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: Option<String>,
@@ -299,10 +263,6 @@ pub struct NativeCustody {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -318,11 +278,6 @@ pub struct NativeCustody {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Asset {
-    /// Inline comment carried in DATA (audit P5). Migrates into schema descriptions in the
-    /// Phase-2 cleanup; do not add new ones.
-    #[serde(rename = "_comment")]
-    pub comment: Option<String>,
-
     pub burn_fee_scaled: String,
 
     pub decimal: i64,
@@ -400,10 +355,6 @@ pub struct PythRule {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -456,10 +407,6 @@ pub struct SupraRule {
     /// (<original_id>::module::Type).
     pub original_id: Option<String>,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: Option<String>,
 
@@ -485,10 +432,6 @@ pub struct TestnetFaucet {
     /// (<original_id>::module::Type).
     pub original_id: Option<String>,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: Option<String>,
 
@@ -509,10 +452,6 @@ pub struct Usd {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
     pub original_id: String,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
@@ -538,10 +477,6 @@ pub struct WaterxAccount {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
     pub original_id: String,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
@@ -589,10 +524,6 @@ pub struct WaterxCredit {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
     pub original_id: String,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
@@ -644,10 +575,6 @@ pub struct WaterxOracle {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
     pub original_id: String,
-
-    pub publish_checkpoint: String,
-
-    pub publish_digest: String,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
@@ -702,10 +629,6 @@ pub struct WaterxPerp {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -757,10 +680,6 @@ pub struct WaterxPerpView {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -810,10 +729,6 @@ pub struct WaterxPrediction {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
     pub original_id: String,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
@@ -874,10 +789,6 @@ pub struct WaterxPredictionGift {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: String,
-
-    pub publish_digest: String,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -894,10 +805,6 @@ pub struct WaterxReferral {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
     pub original_id: String,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
@@ -939,16 +846,8 @@ pub struct WaterxRule {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: String,
-
-    pub publish_digest: String,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
-
-    pub register_checkpoint: Option<String>,
-
-    pub register_digest: Option<String>,
 
     /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
     pub upgrade_capability: String,
@@ -993,10 +892,6 @@ pub struct WaterxStaking {
     pub original_id: String,
 
     pub pools: Pools,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
@@ -1067,10 +962,6 @@ pub struct WithdrawalQueue {
     /// (<original_id>::module::Type).
     pub original_id: String,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -1119,10 +1010,6 @@ pub struct Wlp {
 
     pub pool_tokens: PoolTokens,
 
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
-
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,
 
@@ -1166,10 +1053,6 @@ pub struct WormholeBridge {
     pub original_id: String,
 
     pub personal_burn_cap: PersonalBurnCap,
-
-    pub publish_checkpoint: Option<String>,
-
-    pub publish_digest: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
     pub published_at: String,

@@ -18,9 +18,7 @@
       "published_at": "0xbce5b23dc3bca7b514adc36954cd01ac5227d17c2e7764c36e9b3808364c6693",
       "original_id": "0xbce5b23dc3bca7b514adc36954cd01ac5227d17c2e7764c36e9b3808364c6693",
       "version": 1,
-      "upgrade_capability": "0x3feabd72d8ae3b4ad29bfb1658a204bc38a265d9f364b412d1db3873b624aea7",
-      "publish_digest": "A2kDr7vmUq1fQo7KmTCvXZFA8X2UqgYevbgi8tDHvRnR",
-      "publish_checkpoint": "304657684"
+      "upgrade_capability": "0x3feabd72d8ae3b4ad29bfb1658a204bc38a265d9f364b412d1db3873b624aea7"
     },
     "waterx_rule": {
       "published_at": "0x0a974d1987f0538c4124da2071642586f06fcc9121b1de51497b568d7906001b",
@@ -32,17 +30,22 @@
       "enclave_cap": "0x3202c262a2d22d8de874ab4884a8c3aa35ec5d126ac6aefb3112fc57d0584c53",
       "enclave": "0x7c301232fbbabd37db4df7fba843d3ef1914a427afd11d30f3e8135e0e7b28a0",
       "enclave_pubkey": "b8f5f5b2671cafeda2de770818a1cf335315e515a46022466b64ef5c8b38b520",
-      "publish_digest": "CBBJNUmB8QdEtp1RhjAALYvmSNq1zPNsRVX4eUosMWkL",
-      "publish_checkpoint": "304657879",
-      "register_digest": "2ezRmoSLRTvpAzkZ2ipoWxo71MTbghLqV3vdg1cGCVnb",
-      "register_checkpoint": "304660405",
       "feeds": {
         "BTCUSD": {
           "ticker": "BTCUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "confidence",
           "min_sources": 2,
@@ -51,9 +54,18 @@
         "ETHUSD": {
           "ticker": "ETHUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "confidence",
           "min_sources": 2,
@@ -62,9 +74,18 @@
         "SOLUSD": {
           "ticker": "SOLUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -73,9 +94,18 @@
         "SUIUSD": {
           "ticker": "SUIUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -84,9 +114,18 @@
         "BNBUSD": {
           "ticker": "BNBUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -95,9 +134,18 @@
         "DOGEUSD": {
           "ticker": "DOGEUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -106,9 +154,18 @@
         "XRPUSD": {
           "ticker": "XRPUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -117,9 +174,18 @@
         "HYPEUSD": {
           "ticker": "HYPEUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -128,8 +194,14 @@
         "DEEPUSD": {
           "ticker": "DEEPUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -138,9 +210,18 @@
         "LITUSD": {
           "ticker": "LITUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -149,8 +230,14 @@
         "WALUSD": {
           "ticker": "WALUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -159,9 +246,18 @@
         "ZECUSD": {
           "ticker": "ZECUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -170,7 +266,10 @@
         "EURUSD": {
           "ticker": "EURUSD",
           "sources": [
-            { "name": "hyperliquid_perp_ws", "weight": 1 }
+            {
+              "name": "hyperliquid_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "confidence",
           "min_sources": 1,
@@ -179,7 +278,10 @@
         "USDJPY": {
           "ticker": "USDJPY",
           "sources": [
-            { "name": "hyperliquid_perp_ws", "weight": 1 }
+            {
+              "name": "hyperliquid_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "confidence",
           "min_sources": 1,
@@ -188,8 +290,14 @@
         "AAPLXUSD": {
           "ticker": "AAPLXUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -198,8 +306,14 @@
         "TSLAXUSD": {
           "ticker": "TSLAXUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -208,8 +322,14 @@
         "COINXUSD": {
           "ticker": "COINXUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -218,8 +338,14 @@
         "CRCLXUSD": {
           "ticker": "CRCLXUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -228,8 +354,14 @@
         "GOOGLXUSD": {
           "ticker": "GOOGLXUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -238,8 +370,14 @@
         "HOODXUSD": {
           "ticker": "HOODXUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -248,8 +386,14 @@
         "METAXUSD": {
           "ticker": "METAXUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -258,8 +402,14 @@
         "NVDAXUSD": {
           "ticker": "NVDAXUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -268,7 +418,10 @@
         "MSTRXUSD": {
           "ticker": "MSTRXUSDT",
           "sources": [
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "direct",
           "min_sources": 1,
@@ -277,7 +430,10 @@
         "NFLXXUSD": {
           "ticker": "NFLXXUSDT",
           "sources": [
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "direct",
           "min_sources": 1,
@@ -286,7 +442,10 @@
         "QQQXUSD": {
           "ticker": "QQQXUSDT",
           "sources": [
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "direct",
           "min_sources": 1,
@@ -295,7 +454,10 @@
         "SPYXUSD": {
           "ticker": "SPYXUSDT",
           "sources": [
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "direct",
           "min_sources": 1,
@@ -304,8 +466,14 @@
         "XAUTUSD": {
           "ticker": "XAUTUSDT",
           "sources": [
-            { "name": "bybit_spot_ws", "weight": 1 },
-            { "name": "gateio_spot_ws", "weight": 1 }
+            {
+              "name": "bybit_spot_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_spot_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 1,
@@ -314,9 +482,18 @@
         "XAGUSD": {
           "ticker": "XAGUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -325,9 +502,18 @@
         "XAUUSD": {
           "ticker": "XAUUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "bybit_linear_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "bybit_linear_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -336,8 +522,14 @@
         "WTIUSD": {
           "ticker": "CLUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -346,8 +538,14 @@
         "BRENTUSD": {
           "ticker": "BZUSDT",
           "sources": [
-            { "name": "binance_usdm_perp_ws", "weight": 1 },
-            { "name": "gateio_usdt_perp_ws", "weight": 1 }
+            {
+              "name": "binance_usdm_perp_ws",
+              "weight": 1
+            },
+            {
+              "name": "gateio_usdt_perp_ws",
+              "weight": 1
+            }
           ],
           "method": "median",
           "min_sources": 2,
@@ -581,8 +779,6 @@
       "upgrade_capability": "0x00a94e9ea3c4b283e2ebbe8610eb027432e150f2988fd1d786e3c0b515451d1d",
       "oracle": "0x53cb392436aa9c1a1ae59350e3426e5c22126e9e140a9967f6a897829d00e151",
       "listing_cap": "0xfaa03cc36b34c8ffa54cb351d849bead0bfdee65fa94968d163e63131163a68c",
-      "publish_digest": "27BUEDeitk52L3czDkRmYnfe7QnmN36tLYWHoC5Tfp8J",
-      "publish_checkpoint": "282565926",
       "mvr": {
         "name": "@waterx-protocol/oracle",
         "package_info_id": "0x333f47bd6f464f45198bf28d7e48e40e9a32c10db13c8dd60c6103b354e52dff",
@@ -842,7 +1038,6 @@
       "vault": "0xf27ebfd21ea4ea759beefb1c4385825e02ab6c50f57305abec601ea4522d04bd",
       "assets": [
         {
-          "_comment": "Phase 14b custody_vault::add_asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled Float (0=no fee; 1_000_000=0.1%; 1_000_000_000=100%). min_burn_amount is the dust floor in the asset's smallest unit.",
           "name": "USDC",
           "type": "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC",
           "decimal": 6,
@@ -951,9 +1146,7 @@
       "version": 3,
       "claimable_link_config": "0x97e49c1f0abe8a09867698d99dd8cde18b75f085bd6615644f74f9165cbc9cd9",
       "upgrade_capability": "0xdb55427e26d4642a462d69aebce48b6973b7c090ba8793b89667dc931c97c06a",
-      "admin_cap": "0x5493191ef3a5cfaa859f1a07b9ef277e75aa3d41edfcc9569aba8eae02c6655c",
-      "publish_digest": "DHPAvyfvN9PiXiYvAFQ2rFksdMyR59VVqCrLd2W5NiFq",
-      "publish_checkpoint": "286567975"
+      "admin_cap": "0x5493191ef3a5cfaa859f1a07b9ef277e75aa3d41edfcc9569aba8eae02c6655c"
     }
   },
   "evm": {
@@ -1009,168 +1202,5 @@
         }
       }
     }
-  },
-  "deploy_tx_log": [
-    {
-      "phase": "1.publish:waterx_oracle",
-      "action": "sui client publish waterx_oracle",
-      "digest": "27BUEDeitk52L3czDkRmYnfe7QnmN36tLYWHoC5Tfp8J",
-      "checkpoint": "282565926",
-      "timestamp": "2026-06-03T07:22:08.527Z"
-    },
-    {
-      "phase": "2",
-      "action": "whitelist_protocol<WaterXPerp>",
-      "digest": "4wipM2HahXCz1zE2Pob89qD4n5YhNaC5qMzq1dcdryWS",
-      "checkpoint": "282577150",
-      "timestamp": "2026-06-03T08:03:14.638Z"
-    },
-    {
-      "phase": "3",
-      "action": "allow_protocol_asset + register_deposit/withdraw_policy",
-      "digest": "6NNLhPfGRKn9aq1ZWckNgFyKHViUcW5y51ysWEekGwc6",
-      "checkpoint": "282577158",
-      "timestamp": "2026-06-03T08:03:16.134Z"
-    },
-    {
-      "phase": "6",
-      "action": "add_aggregator + Pyth wiring (per ticker)",
-      "digest": "j3uhXGNrBJWWqq2cmfhXmNZ1v4Y2eryRKawHJpnnYtp",
-      "checkpoint": "282577165",
-      "timestamp": "2026-06-03T08:03:17.775Z"
-    },
-    {
-      "phase": "7a",
-      "action": "create_wlp_pool",
-      "digest": "6FT5c82uZgj66uBqjKwH5RrG5QLsGpcVqYcSNQWHe2j3",
-      "checkpoint": "282577172",
-      "timestamp": "2026-06-03T08:03:20.235Z"
-    },
-    {
-      "phase": "7b",
-      "action": "lp_pool::add_token (per token)",
-      "digest": "AKGUzMne3z5NqFPc8oz6We23LW5UWZ6Z2TBargpu3MGg",
-      "checkpoint": "282577183",
-      "timestamp": "2026-06-03T08:03:21.901Z"
-    },
-    {
-      "phase": "7c",
-      "action": "create_aum<WLP> + share",
-      "digest": "DNDKwxuoFrX3u4yoE7odUT7ins2EVKfT4HU7eB2VrYMD",
-      "checkpoint": "282577190",
-      "timestamp": "2026-06-03T08:03:23.475Z"
-    },
-    {
-      "phase": "8a",
-      "action": "create_market_registry<WLP>",
-      "digest": "E6xCS8dGawDK2xtiNdUx6J9wdoAMA4cfRgj9mCoBe5JU",
-      "checkpoint": "282577197",
-      "timestamp": "2026-06-03T08:03:25.112Z"
-    },
-    {
-      "phase": "8b",
-      "action": "create_market + add_market (per ticker)",
-      "digest": "5iqZwmA5tuCAwcuf4WBGoFFUqgCyjUBfBfwzNMWJUQBm",
-      "checkpoint": "282577585",
-      "timestamp": "2026-06-03T08:04:54.307Z"
-    },
-    {
-      "phase": "8c",
-      "action": "add_request_rule + update_market_config",
-      "digest": "FbbPsYzi4Xd3ELeFneNG7wGaYbdEJSTwAkMLffLtrDHQ",
-      "checkpoint": "282577607",
-      "timestamp": "2026-06-03T08:04:58.712Z"
-    },
-    {
-      "phase": "9",
-      "action": "pyth_sponsor_rule::supply",
-      "digest": "AaTcQLuMjrbeXHS5wiPWWxjhBxhj1jh3LSmD8Sc2tdjT",
-      "checkpoint": "282577615",
-      "timestamp": "2026-06-03T08:05:00.682Z"
-    },
-    {
-      "phase": "10a",
-      "action": "allow_protocol_asset + waterx_staking::default<STAKE>",
-      "digest": "EiE4v4eyggZPhvGYNkGhJyaKZPogLyDuzqp3fSmD11Ya",
-      "checkpoint": "282577624",
-      "timestamp": "2026-06-03T08:05:02.572Z"
-    },
-    {
-      "phase": "10b",
-      "action": "add_rewarder (+ optional deposit_to_source)",
-      "digest": "2bZybckL7yBWXtRSMEGvsS2G7Zpp9w9P8UDK1N29oa4M",
-      "checkpoint": "282577632",
-      "timestamp": "2026-06-03T08:05:04.326Z"
-    },
-    {
-      "phase": "11",
-      "action": "usd::create_credit_registry",
-      "digest": "DWYyT6cq976QVgLUMUSiDwW3vtzdmPk9hmUZCL8XAfPL",
-      "checkpoint": "282577640",
-      "timestamp": "2026-06-03T08:05:06.113Z"
-    },
-    {
-      "phase": "12",
-      "action": "credit wxa whitelist + USD/backing policies",
-      "digest": "541kH3Ht1C9Mi2q67oquP8KcDJ3Ty7kUWN4B6WWiWnz1",
-      "checkpoint": "282577647",
-      "timestamp": "2026-06-03T08:05:07.586Z"
-    },
-    {
-      "phase": "13",
-      "action": "credit_registry::add_version + set_supply_limit (+ burn caps)",
-      "digest": "GMu5Rgw31T5hoV4KDBe7H1sDN53oxtYqhXJJtVGzpZKL",
-      "checkpoint": "282578512",
-      "timestamp": "2026-06-03T08:08:20.007Z"
-    },
-    {
-      "phase": "14a",
-      "action": "custody_vault::create_vault<USD>",
-      "digest": "2P8UXy8mGhEZfX6CaNz4dPoPxk8cCgaXT6sqADfSPFdm",
-      "checkpoint": "282578522",
-      "timestamp": "2026-06-03T08:08:22.064Z"
-    },
-    {
-      "phase": "14b",
-      "action": "custody_vault::add_asset (per backing T)",
-      "digest": "EdLQNcnHg78NW4DassFZEMdjnoMYMWgj3M7fJxbcApL2",
-      "checkpoint": "282578529",
-      "timestamp": "2026-06-03T08:08:23.693Z"
-    },
-    {
-      "phase": "15a",
-      "action": "wormhole_bridge::init_bridge",
-      "digest": "FhMtVAVa5niib91JWd9iGnSQ1TCTYjKx6ske2QAGbEso",
-      "checkpoint": "282578539",
-      "timestamp": "2026-06-03T08:08:27.030Z"
-    },
-    {
-      "phase": "16a",
-      "action": "withdrawal_queue::create_queue<USD>",
-      "digest": "2cSHqo9Q79yZQfMFpYjCn2xFRd8h4YAp4bNMZHiS5g47",
-      "checkpoint": "282578559",
-      "timestamp": "2026-06-03T08:08:30.302Z"
-    },
-    {
-      "phase": "17",
-      "action": "whitelist_protocol<WaterXPrediction> + allow_protocol_asset",
-      "digest": "3N7vD8h33WcdaGDRhLNx9wj1FuPL2NcpvUpAiVB5aFit",
-      "checkpoint": "282578574",
-      "timestamp": "2026-06-03T08:08:33.394Z"
-    },
-    {
-      "phase": "18a",
-      "action": "create_market_registry<USD>",
-      "digest": "FokCGbcEMqh4z1LpXdoEEx3TPD8JsKrqecUdKSqTD1uT",
-      "checkpoint": "282578584",
-      "timestamp": "2026-06-03T08:08:35.672Z"
-    },
-    {
-      "phase": "mvr.register",
-      "action": "MVR registration of @waterx-protocol/* (12 apps) — single M1 PTB",
-      "digest": "RCD2qayFvDYgC3iG1D36xxtt7BemSfqQuUycuuaMrzc",
-      "checkpoint": "285451733",
-      "timestamp": "2026-06-10T17:10:16.986Z"
-    }
-  ]
+  }
 }

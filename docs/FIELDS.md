@@ -10,7 +10,6 @@
 | `chain_id` | string |  |
 | `coin_registry` | string | Short-form Sui address/object id. |
 | `evm` | object |  |
-| `deploy_tx_log` | array<object> |  |
 
 ## Packages
 
@@ -19,8 +18,6 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId |  | UpgradeCap object id. Deploy-time artifact; no runtime consumer. · present only on testnet today |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -41,8 +38,6 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString | ✓ |  |
-| `publish_digest` | string | ✓ |  |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -54,8 +49,6 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `original_id` | suiId |  | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). · present only on testnet today |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId |  | Package id of the current latest version — the tx-call target. Changes on every upgrade. · present only on testnet today |
 | `upgrade_capability` | suiId |  | UpgradeCap object id. Deploy-time artifact; no runtime consumer. · present only on testnet today |
 | `version` | integer |  | On-chain package version: 1 at first publish, +1 per upgrade. · present only on testnet today |
@@ -67,8 +60,6 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `original_id` | suiId |  | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). · present only on testnet today |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId |  | Package id of the current latest version — the tx-call target. Changes on every upgrade. · present only on testnet today |
 | `version` | integer |  | On-chain package version: 1 at first publish, +1 per upgrade. · present only on testnet today |
 
@@ -81,8 +72,6 @@
 | `currency` | suiId |  | present only on testnet today |
 | `metadata_cap` | suiId |  | present only on testnet today |
 | `original_id` | suiId |  | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). · present only on testnet today |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId |  | Package id of the current latest version — the tx-call target. Changes on every upgrade. · present only on testnet today |
 | `treasury_cap` | suiId |  | present only on testnet today |
 | `upgrade_capability` | suiId |  | UpgradeCap object id. Deploy-time artifact; no runtime consumer. · present only on testnet today |
@@ -95,8 +84,6 @@
 | `assets` | array<object> | ✓ |  |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `vault` | suiId | ✓ |  |
@@ -124,8 +111,6 @@
 | `feeds` | map<string, object> | ✓ | Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes). |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -139,8 +124,6 @@
 | `config` | suiId |  | present only on testnet today |
 | `feeds` | map<string, object> |  | present only on testnet today |
 | `original_id` | suiId |  | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). · present only on testnet today |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId |  | Package id of the current latest version — the tx-call target. Changes on every upgrade. · present only on testnet today |
 | `upgrade_capability` | suiId |  | UpgradeCap object id. Deploy-time artifact; no runtime consumer. · present only on testnet today |
 | `version` | integer |  | On-chain package version: 1 at first publish, +1 per upgrade. · present only on testnet today |
@@ -153,8 +136,6 @@
 |---|---|---|---|
 | `faucet` | suiId |  | present only on testnet today |
 | `original_id` | suiId |  | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). · present only on testnet today |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId |  | Package id of the current latest version — the tx-call target. Changes on every upgrade. · present only on testnet today |
 | `upgrade_capability` | suiId |  | UpgradeCap object id. Deploy-time artifact; no runtime consumer. · present only on testnet today |
 | `version` | integer |  | On-chain package version: 1 at first publish, +1 per upgrade. · present only on testnet today |
@@ -166,8 +147,6 @@
 |---|---|---|---|
 | `metadata_cap` | suiId | ✓ |  |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -180,8 +159,6 @@
 | `admin_cap` | suiId | ✓ | Admin capability object id. |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -194,8 +171,6 @@
 | `credit_type` | suiType | ✓ |  |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -209,8 +184,6 @@
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `oracle` | suiId | ✓ |  |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString | ✓ |  |
-| `publish_digest` | string | ✓ |  |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -225,8 +198,6 @@
 | `markets` | map<string, object> | ✓ | Per-symbol perp market: market + config object ids. |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -237,8 +208,6 @@
 |---|---|---|---|
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -252,8 +221,6 @@
 | `market_registries` | object | ✓ |  |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `settlement_coin_types` | object | ✓ |  |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
@@ -266,8 +233,6 @@
 | `admin_cap` | suiId | ✓ | Admin capability object id. |
 | `claimable_link_config` | suiId | ✓ |  |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString | ✓ |  |
-| `publish_digest` | string | ✓ |  |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -277,8 +242,6 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `referral_table` | suiId | ✓ |  |
 | `upgrade_capability` | suiId |  | UpgradeCap object id. Deploy-time artifact; no runtime consumer. · present only on testnet today |
@@ -296,11 +259,7 @@
 | `enclave_pubkey` | string | ✓ | Registered enclave ed25519 pubkey (hex, no 0x). Duplicated in packages.enclave.enclave_pubkey — keep both in sync until R4 deduplicates. |
 | `feeds` | map<string, object> | ✓ | QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY: waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of weights, so a weight change moves the signed price via a parameter no on-chain check can see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface change. |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString | ✓ |  |
-| `publish_digest` | string | ✓ |  |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
-| `register_checkpoint` | decString |  | present only on mainnet today |
-| `register_digest` | string |  | present only on mainnet today |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
 
@@ -312,8 +271,6 @@
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
 | `pools` | object | ✓ |  |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `rewarders` | object | ✓ |  |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
@@ -326,8 +283,6 @@
 | `executors` | array<suiId> |  | present only on testnet today |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `queue` | suiId | ✓ |  |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
@@ -341,8 +296,6 @@
 | `metadata_cap` | suiId | ✓ |  |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
 | `pool_tokens` | object | ✓ |  |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
@@ -362,8 +315,6 @@
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
 | `personal_burn_cap` | object | ✓ |  |
-| `publish_checkpoint` | decString |  | present only on testnet today |
-| `publish_digest` | string |  | present only on testnet today |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |

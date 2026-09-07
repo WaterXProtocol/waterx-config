@@ -30,14 +30,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -121,12 +113,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString"
-            },
-            "publish_digest": {
-              "type": "string"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -143,8 +129,6 @@
           "additionalProperties": false,
           "required": [
             "original_id",
-            "publish_checkpoint",
-            "publish_digest",
             "published_at",
             "upgrade_capability",
             "version"
@@ -156,14 +140,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type).",
-              "$comment": "present only on testnet today"
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
               "$comment": "present only on testnet today"
             },
             "published_at": {
@@ -191,14 +167,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type).",
-              "$comment": "present only on testnet today"
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
               "$comment": "present only on testnet today"
             },
             "published_at": {
@@ -229,14 +197,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type).",
-              "$comment": "present only on testnet today"
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
               "$comment": "present only on testnet today"
             },
             "published_at": {
@@ -270,11 +230,6 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "_comment": {
-                    "type": "string",
-                    "deprecated": true,
-                    "description": "Inline comment carried in DATA (audit P5). Migrates into schema descriptions in the Phase-2 cleanup; do not add new ones."
-                  },
                   "name": {
                     "type": "string"
                   },
@@ -294,7 +249,6 @@
                     "$ref": "#/$defs/decString"
                   }
                 },
-                "additionalProperties": false,
                 "required": [
                   "burn_fee_scaled",
                   "decimal",
@@ -302,7 +256,8 @@
                   "mint_fee_scaled",
                   "name",
                   "type"
-                ]
+                ],
+                "additionalProperties": false
               }
             },
             "mvr": {
@@ -351,14 +306,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
             },
             "published_at": {
               "$ref": "#/$defs/suiId",
@@ -502,14 +449,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -561,14 +500,6 @@
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type).",
               "$comment": "present only on testnet today"
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade.",
@@ -598,14 +529,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type).",
-              "$comment": "present only on testnet today"
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
               "$comment": "present only on testnet today"
             },
             "published_at": {
@@ -643,14 +566,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
             },
             "published_at": {
               "$ref": "#/$defs/suiId",
@@ -731,14 +646,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -817,14 +724,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
             },
             "published_at": {
               "$ref": "#/$defs/suiId",
@@ -912,12 +811,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString"
-            },
-            "publish_digest": {
-              "type": "string"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -937,8 +830,6 @@
             "listing_cap",
             "oracle",
             "original_id",
-            "publish_checkpoint",
-            "publish_digest",
             "published_at",
             "upgrade_capability",
             "version"
@@ -1024,14 +915,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -1106,14 +989,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
             },
             "published_at": {
               "$ref": "#/$defs/suiId",
@@ -1205,14 +1080,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -1264,12 +1131,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString"
-            },
-            "publish_digest": {
-              "type": "string"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -1288,8 +1149,6 @@
             "admin_cap",
             "claimable_link_config",
             "original_id",
-            "publish_checkpoint",
-            "publish_digest",
             "published_at",
             "upgrade_capability",
             "version"
@@ -1301,14 +1160,6 @@
             "original_id": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
             },
             "published_at": {
               "$ref": "#/$defs/suiId",
@@ -1410,23 +1261,9 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString"
-            },
-            "publish_digest": {
-              "type": "string"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "register_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on mainnet today"
-            },
-            "register_digest": {
-              "type": "string",
-              "$comment": "present only on mainnet today"
             },
             "upgrade_capability": {
               "$ref": "#/$defs/suiId",
@@ -1446,8 +1283,6 @@
             "enclave_pubkey",
             "feeds",
             "original_id",
-            "publish_checkpoint",
-            "publish_digest",
             "published_at",
             "upgrade_capability",
             "version"
@@ -1518,14 +1353,6 @@
                 "WLP"
               ],
               "additionalProperties": false
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
             },
             "published_at": {
               "$ref": "#/$defs/suiId",
@@ -1662,14 +1489,6 @@
               "$ref": "#/$defs/suiId",
               "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -1719,14 +1538,6 @@
                 "USDCUSD"
               ],
               "additionalProperties": false
-            },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
             },
             "published_at": {
               "$ref": "#/$defs/suiId",
@@ -1844,14 +1655,6 @@
               ],
               "additionalProperties": false
             },
-            "publish_checkpoint": {
-              "$ref": "#/$defs/decString",
-              "$comment": "present only on testnet today"
-            },
-            "publish_digest": {
-              "type": "string",
-              "$comment": "present only on testnet today"
-            },
             "published_at": {
               "$ref": "#/$defs/suiId",
               "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
@@ -1966,37 +1769,6 @@
       "required": [
         "bridge"
       ]
-    },
-    "deploy_tx_log": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "phase": {
-            "type": "string"
-          },
-          "action": {
-            "type": "string"
-          },
-          "digest": {
-            "type": "string"
-          },
-          "checkpoint": {
-            "$ref": "#/$defs/decString"
-          },
-          "timestamp": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false,
-        "required": [
-          "action",
-          "checkpoint",
-          "digest",
-          "phase",
-          "timestamp"
-        ]
-      }
     }
   },
   "required": [
