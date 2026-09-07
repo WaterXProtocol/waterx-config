@@ -1,7 +1,7 @@
 {
   "name": "@waterx-protocol/config",
   "version": "0.1.0",
-  "description": "Typed loader for waterx-config network files: one consolidated shape, legacy documents lifted transparently until flip day. Generated from the canonical JSON Schemas.",
+  "description": "Typed loader for waterx-config network files (the consolidated shape), generated from the canonical JSON Schema.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc -p .",
-    "test": "node --test --experimental-strip-types test/*.test.ts"
+    "test": "node --test --experimental-strip-types test/*.test.ts",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "zod": "^3.23.0"
@@ -28,5 +29,13 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
+  },
+  "engines": {
+    "node": ">=22.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WaterXProtocol/waterx-config.git",
+    "directory": "packages/ts"
   }
 }

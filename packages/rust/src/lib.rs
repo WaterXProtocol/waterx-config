@@ -1,27 +1,26 @@
 //! waterx-config — the official typed reader for WaterX network files.
 //!
-//! ONE public shape: the consolidated target format (docs/FLIP-PLAN.md).
-//! Until flip day the CDN serves the legacy layout; [`parse_waterx_config`]
-//! detects the shape (`schema_version`) and lifts a legacy document via
-//! [`lift`] — the same mapping flip day itself uses — so consumers migrate
-//! once and never see two formats.
+//! The CDN serves ONE format: the consolidated shape (`schema_version` 2).
+//! Types in [`generated`] are produced from `schema/waterx-config.schema.json`
+//! by quicktype (see the codegen workflow); do not edit by hand.
 //!
-//! Types in [`generated`] are produced from the target schema by quicktype
-//! (see the codegen workflow); do not edit by hand.
 //! Unknown fields are TOLERATED (serde default): live CDN data can gain fields
 //! before a deployed consumer's pinned crate does. The strict reject-unknowns
-//! check is the repo's own ajv CI gate.
+//! and pattern checks are the repo's own ajv CI gate, where schema and data
+//! move together; this crate enforces structure, types, the version pin, and
+//! (when asked) the network.
 
 pub mod generated;
-pub mod lift;
 
 pub use generated::WaterxConfig;
 
 #[derive(Debug)]
+#[non_exhaustive]
 pub enum ConfigError {
     Parse(serde_json::Error),
-    Lift(lift::LiftError),
-    #[cfg(feature = "fetch")]
+    /// The document does not declare `schema_version` 2 — either a pre-flip
+    /// legacy file or a future format this crate version does not speak.
+    UnsupportedVersion(Option<i64>),
     NetworkMismatch { expected: String, got: String },
     #[cfg(feature = "fetch")]
     Http(reqwest::Error),
@@ -31,8 +30,10 @@ impl std::fmt::Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ConfigError::Parse(e) => write!(f, "config failed schema-derived parsing: {e}"),
-            ConfigError::Lift(e) => write!(f, "{e}"),
-            #[cfg(feature = "fetch")]
+            ConfigError::UnsupportedVersion(v) => write!(
+                f,
+                "unsupported config schema_version {v:?} — this crate speaks version 2 only"
+            ),
             ConfigError::NetworkMismatch { expected, got } => {
                 write!(f, "network mismatch: asked for {expected}, document says {got}")
             }
@@ -47,29 +48,50 @@ impl std::error::Error for ConfigError {}
 /// forbidden by the repo README.
 pub const CONFIG_CDN_BASE: &str = "https://config.waterx.app";
 
-/// Parse an already-fetched document into the target shape, lifting a
-/// legacy-shape document (no `schema_version`) transparently.
-pub fn parse_waterx_config(json: &str) -> Result<WaterxConfig, ConfigError> {
-    let value: serde_json::Value = serde_json::from_str(json).map_err(ConfigError::Parse)?;
-    let is_target = value
-        .get("schema_version")
-        .and_then(serde_json::Value::as_i64)
-        .is_some_and(|v| v >= 2);
-    let target = if is_target {
-        value
-    } else {
-        // strict:false — a consumer must tolerate a legacy field added after
-        // its pinned crate version; flip completeness is repo CI's job.
-        lift::lift_to_target(&value, false).map_err(ConfigError::Lift)?
-    };
-    serde_json::from_value(target).map_err(ConfigError::Parse)
+fn network_str(n: &generated::Network) -> &'static str {
+    match n {
+        generated::Network::Mainnet => "mainnet",
+        generated::Network::Testnet => "testnet",
+    }
 }
 
-/// Fetch + parse one network's config from the CDN.
+/// Parse an already-fetched document. `expect_network`, when given, must match
+/// the document's own `network` field — the guard that stops a mainnet binary
+/// silently loading a testnet file.
+pub fn parse_waterx_config(json: &str, expect_network: Option<&str>) -> Result<WaterxConfig, ConfigError> {
+    let mut value: serde_json::Value = serde_json::from_str(json).map_err(ConfigError::Parse)?;
+    // Integer-tolerant version pin: producers that round-trip through a float
+    // writer may emit 2.0 — same version, different token (review finding).
+    let version = value.get("schema_version").and_then(|v| {
+        v.as_i64().or_else(|| v.as_f64().filter(|f| f.fract() == 0.0).map(|f| f as i64))
+    });
+    if version != Some(2) {
+        return Err(ConfigError::UnsupportedVersion(version));
+    }
+    // Normalize the float spelling (verified integral above) so the typed
+    // i64 field accepts it.
+    value["schema_version"] = serde_json::json!(2);
+    let cfg: WaterxConfig = serde_json::from_value(value).map_err(ConfigError::Parse)?;
+    if let Some(expected) = expect_network {
+        let got = network_str(&cfg.network);
+        if got != expected {
+            return Err(ConfigError::NetworkMismatch { expected: expected.into(), got: got.into() });
+        }
+    }
+    Ok(cfg)
+}
+
+/// Fetch + parse one network's config from the CDN, with a 10s timeout.
 #[cfg(feature = "fetch")]
 pub async fn load_waterx_config(network: &str) -> Result<WaterxConfig, ConfigError> {
     let url = format!("{CONFIG_CDN_BASE}/{network}.json");
-    let body = reqwest::get(&url)
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .build()
+        .map_err(ConfigError::Http)?;
+    let body = client
+        .get(&url)
+        .send()
         .await
         .map_err(ConfigError::Http)?
         .error_for_status()
@@ -77,15 +99,7 @@ pub async fn load_waterx_config(network: &str) -> Result<WaterxConfig, ConfigErr
         .text()
         .await
         .map_err(ConfigError::Http)?;
-    let cfg = parse_waterx_config(&body)?;
-    let got = match cfg.network {
-        generated::Network::Mainnet => "mainnet",
-        generated::Network::Testnet => "testnet",
-    };
-    if got != network {
-        return Err(ConfigError::NetworkMismatch { expected: network.into(), got: got.into() });
-    }
-    Ok(cfg)
+    parse_waterx_config(&body, Some(network))
 }
 
 #[cfg(test)]
@@ -96,13 +110,13 @@ mod tests {
         std::fs::read_to_string(format!("{}/../../{rel}", env!("CARGO_MANIFEST_DIR"))).unwrap()
     }
 
-    /// The LIVE legacy files must lift + parse into the target shape, with the
-    /// identity fields surviving at the same path (the flip-immunity guarantee).
+    /// The schema↔data↔parser triangle: both live instances MUST parse.
     #[test]
-    fn legacy_files_lift_and_parse() {
+    fn both_networks_parse() {
         for net in ["mainnet", "testnet"] {
-            let cfg = parse_waterx_config(&fixture(&format!("{net}.json")))
+            let cfg = parse_waterx_config(&fixture(&format!("{net}.json")), Some(net))
                 .unwrap_or_else(|e| panic!("{net}: {e}"));
+            assert_eq!(cfg.schema_version, 2);
             assert!(cfg.symbols.len() >= 31, "{net} symbols universe");
             assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
             let wr = cfg.packages.get("waterx_rule").expect("waterx_rule identity");
@@ -110,46 +124,50 @@ mod tests {
         }
     }
 
-    /// A natively-target document parses identically (flip-day behavior).
+    /// Forward-compat: unknown fields and NEW packages are tolerated/visible.
     #[test]
-    fn native_target_round_trips() {
-        let legacy: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
-        let lifted = lift::lift_to_target(&legacy, true).unwrap();
-        let cfg = parse_waterx_config(&lifted.to_string()).unwrap();
-        assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
-    }
-
-    /// Forward-compat (same policy as the TS parser): unknown fields are
-    /// tolerated on BOTH shapes at parse time — a consumer must survive a
-    /// config addition made after its pinned version. Flip completeness is
-    /// enforced by the STRICT lift, which repo CI runs (derive-target).
-    #[test]
-    fn unknown_field_is_tolerated_by_parser_but_caught_by_strict_lift() {
+    fn unknown_fields_tolerated_and_new_packages_visible() {
         let mut doc: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
-        doc["packages"]["waterx_rule"]["surprise"] = serde_json::json!(1);
-        assert!(parse_waterx_config(&doc.to_string()).is_ok(), "parser must tolerate");
-        assert!(lift::lift_to_target(&doc, true).is_err(), "strict lift must catch");
-        let legacy: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
-        let mut lifted = lift::lift_to_target(&legacy, true).unwrap();
-        lifted["surprise_top"] = serde_json::json!(1);
-        assert!(parse_waterx_config(&lifted.to_string()).is_ok());
+        doc["oracle_rules"]["waterx"]["surprise"] = serde_json::json!(1);
+        doc["packages"]["brand_new_pkg"] = serde_json::json!({
+            "published_at": format!("0x{}", "a".repeat(64)),
+            "original_id": format!("0x{}", "b".repeat(64)),
+            "version": 1
+        });
+        let cfg = parse_waterx_config(&doc.to_string(), None).unwrap();
+        assert!(cfg.packages.contains_key("brand_new_pkg"), "uniform map keeps new packages visible");
     }
 
-    /// Cross-language drift guard: this port must produce EXACTLY what the
-    /// canonical node lift (packages/ts/src/lift.mjs) produced. Run
-    /// `node scripts/derive-target.mjs emit .build-target` first (CI does).
+    /// The version pin accepts the float spelling of 2 and nothing else.
     #[test]
-    fn lift_matches_node_lift() {
-        for net in ["mainnet", "testnet"] {
-            let path = format!("{}/../../.build-target/{net}.json", env!("CARGO_MANIFEST_DIR"));
-            let node_out = std::fs::read_to_string(&path).unwrap_or_else(|_| {
-                panic!("{path} missing — run `node scripts/derive-target.mjs emit .build-target` first; \
-                        this test is the ONLY cross-language lift coupling and must not silently skip")
-            });
-            let node_val: serde_json::Value = serde_json::from_str(&node_out).unwrap();
-            let legacy: serde_json::Value = serde_json::from_str(&fixture(&format!("{net}.json"))).unwrap();
-            let rust_val = lift::lift_to_target(&legacy, true).unwrap();
-            assert_eq!(rust_val, node_val, "{net}: rust lift drifted from node lift");
+    fn version_pin() {
+        let base: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
+        for (v, ok) in [
+            (serde_json::json!(2), true),
+            (serde_json::json!(2.0), true),
+            (serde_json::json!(3), false),
+            (serde_json::json!(2.5), false),
+            (serde_json::json!("2"), false),
+        ] {
+            let mut doc = base.clone();
+            doc["schema_version"] = v.clone();
+            let r = parse_waterx_config(&doc.to_string(), None);
+            assert_eq!(r.is_ok(), ok, "schema_version {v} → {r:?}");
         }
+        let mut doc = base;
+        doc.as_object_mut().unwrap().remove("schema_version");
+        assert!(matches!(
+            parse_waterx_config(&doc.to_string(), None),
+            Err(ConfigError::UnsupportedVersion(None))
+        ), "a legacy (pre-flip) document is refused with a version error");
+    }
+
+    /// A mainnet binary must not silently load a testnet file.
+    #[test]
+    fn network_mismatch_rejected() {
+        assert!(matches!(
+            parse_waterx_config(&fixture("mainnet.json"), Some("testnet")),
+            Err(ConfigError::NetworkMismatch { .. })
+        ));
     }
 }

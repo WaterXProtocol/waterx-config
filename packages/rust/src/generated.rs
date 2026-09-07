@@ -14,15 +14,14 @@
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 
-/// The consolidated post-flip shape (docs/FLIP-PLAN.md): one symbol universe, uniform
+/// One WaterX network deployment in the consolidated shape: one symbol universe, uniform
 /// package identity, domain-grouped shared objects, and a named per-rule oracle registry.
-/// Until flip day this validates the LIFTED form of the served files; on flip day it becomes
-/// the schema of mainnet.json/testnet.json themselves.
+/// See docs/FIELDS.md.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WaterxConfig {
     pub chain_id: String,
 
-    /// Short-form Sui address/object id.
+    /// 0x-prefixed hex id/address (Sui short-form or EVM).
     pub coin_registry: Option<String>,
 
     pub evm: Option<Evm>,
@@ -35,7 +34,9 @@ pub struct WaterxConfig {
 
     pub packages: HashMap<String, Package>,
 
-    pub schema_version: f64,
+    /// Format discriminator. This repo serves only version 2 (the consolidated shape); parsers
+    /// reject anything else.
+    pub schema_version: i64,
 
     /// The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map
     /// elsewhere must reference a key from here (CI-enforced).
@@ -58,36 +59,18 @@ pub struct Chain {
 
     pub chain_id: i64,
 
-    /// Short-form Sui address/object id.
+    /// 0x-prefixed hex id/address (Sui short-form or EVM).
     pub deposit_vault: String,
 
-    pub tokens: Tokens,
+    pub tokens: HashMap<String, String>,
 
     pub wormhole_chain_id: i64,
 
-    /// Short-form Sui address/object id.
+    /// 0x-prefixed hex id/address (Sui short-form or EVM).
     pub wormhole_core: String,
 
-    /// Short-form Sui address/object id.
+    /// 0x-prefixed hex id/address (Sui short-form or EVM).
     pub wormhole_executor: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub struct Tokens {
-    /// Short-form Sui address/object id.
-    #[serde(rename = "tUSDC")]
-    pub t_usdc: Option<String>,
-
-    /// Short-form Sui address/object id.
-    #[serde(rename = "tUSDT")]
-    pub t_usdt: Option<String>,
-
-    /// Short-form Sui address/object id.
-    pub usdc: Option<String>,
-
-    /// Short-form Sui address/object id.
-    pub usdt: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -131,6 +114,7 @@ pub struct Objects {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Account {
+    /// Admin capability object id.
     pub admin_cap: String,
 
     pub registry: String,
@@ -176,6 +160,9 @@ pub struct Credit {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Custody {
+    /// Native-custody asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled (0 = no
+    /// fee; 1_000_000 = 0.1%; 1_000_000_000 = 100%). min_burn_amount is the dust floor in the
+    /// asset's smallest unit.
     pub assets: Vec<Asset>,
 
     pub vault: String,
@@ -215,6 +202,8 @@ pub struct MockUsdsui {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Oracle {
+    /// Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation
+    /// point.
     pub aggregators: HashMap<String, String>,
 
     pub listing_cap: String,
@@ -224,12 +213,14 @@ pub struct Oracle {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Perp {
+    /// Admin capability object id.
     pub admin_cap: String,
 
     pub global_config: String,
 
     pub market_registry_wlp: String,
 
+    /// Per-symbol perp market: market + config object ids.
     pub markets: HashMap<String, Market>,
 }
 
@@ -242,6 +233,7 @@ pub struct Market {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Prediction {
+    /// Admin capability object id.
     pub admin_cap: String,
 
     pub claimable_link_config: String,
@@ -262,43 +254,16 @@ pub struct Referral {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Staking {
+    /// Admin capability object id.
     pub admin_cap: String,
 
     pub pools: HashMap<String, String>,
 
-    pub rewarders: HashMap<String, Rewarder>,
+    pub rewarders: HashMap<String, HashMap<String, Rewarder>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub struct Rewarder {
-    pub deep: Option<Deep>,
-
-    pub mock_deep: Option<MockDeep>,
-
-    pub usdc: Option<Usdc>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Deep {
-    pub coin_type: String,
-
-    pub decimals: i64,
-
-    pub rewarder_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MockDeep {
-    pub coin_type: String,
-
-    pub decimals: i64,
-
-    pub rewarder_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Usdc {
     pub coin_type: String,
 
     pub decimals: i64,
@@ -346,6 +311,7 @@ pub struct OracleRules {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Constant {
+    /// Per-symbol constant price, 1e9-scaled decimal string (e.g. "1000000000" = 1.0).
     pub constant_prices: HashMap<String, ConstantPrice>,
 
     pub package: String,
@@ -364,13 +330,18 @@ pub struct Pyth {
 
     pub pyth_config_object: String,
 
+    /// Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper
+    /// refreshes).
     pub pyth_price_feeds: HashMap<String, PythPriceFeed>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PythPriceFeed {
+    /// Pyth price-feed identifier (32-byte hex). NOT a Sui object id.
     pub feed_id: String,
 
+    /// The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object;
+    /// passing the wrapper is the classic mistake.
     pub price_info_object: String,
 }
 
@@ -378,6 +349,7 @@ pub struct PythPriceFeed {
 pub struct PythLazer {
     pub lazer_config_object: String,
 
+    /// Per-symbol Pyth Lazer numeric feed id, as used by the keeper's Lazer WS subscription.
     pub lazer_feed_ids: HashMap<String, i64>,
 
     pub lazer_state_object: String,
@@ -403,8 +375,11 @@ pub struct Waterx {
 
     pub rule_config_object: String,
 
-    /// QC feed registry (was packages.waterx_rule.feeds). `weights` remain OFF-CHAIN ONLY —
-    /// audit-scope I-16 trust surface.
+    /// QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY:
+    /// waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of
+    /// weights, so a weight change moves the signed price via a parameter no on-chain check can
+    /// see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface
+    /// change.
     pub venue_feeds: HashMap<String, VenueFeed>,
 }
 
@@ -417,6 +392,8 @@ pub struct Enclave {
 
     pub object: String,
 
+    /// Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an
+    /// independent env copy by design (boot-without-enclave).
     pub pubkey: String,
 }
 
@@ -426,6 +403,13 @@ pub struct VenueFeed {
 
     pub min_sources: i64,
 
+    /// Venue set feeding the aggregate. Source names are a wire vocabulary shared with
+    /// waterx_rule.move's on-chain u64 registry (1 binance_spot, 2 binance_usdm_perp, 3
+    /// bybit_linear_perp, 4 gateio_usdt_perp, 5 bybit_spot, 6 xstock_equity, 7 okx_spot, 8
+    /// hyperliquid_perp, 9 gateio_spot, 10 kraken_spot, 11 pyth_lazer). A source id must be
+    /// REGISTERED ON-CHAIN for the target network before a feed lists it — mainnet has ids 5-10
+    /// unregistered (WL-1968), so xstock/commodity-style feeds using them are testnet-only until
+    /// then; listing one on mainnet aborts on-chain validation at feed time.
     pub sources: Vec<Source>,
 
     pub ticker: String,

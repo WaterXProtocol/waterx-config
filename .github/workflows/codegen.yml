@@ -1,13 +1,12 @@
 name: Codegen freshness
 
-# Schemas, parsers and docs are GENERATED. This job regenerates all of them
-# and fails on any diff — a schema/data change cannot merge without its
-# generated artifacts, and generated files cannot be hand-edited. The
-# generator tools are devDependencies of packages/ts, so the npm cache
-# covers them (quicktype is the heavy one).
+# The schema, parsers and docs are GENERATED. This job regenerates all of them
+# and fails on any difference — including newly created untracked outputs — so
+# a data/schema change cannot merge without its generated artifacts and
+# generated files cannot be hand-edited.
 on:
   pull_request:
-    paths: [schema/**, scripts/**, packages/**, docs/FIELDS*.md, mainnet.json, testnet.json]
+    paths: [schema/**, scripts/**, packages/**, docs/FIELDS.md, mainnet.json, testnet.json, .github/workflows/codegen.yml]
 
 concurrency:
   group: codegen-${{ github.ref }}
@@ -21,20 +20,17 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json }
       - run: cd packages/ts && npm ci
-      - name: Regenerate everything (schemas → parsers → docs)
+      - name: Regenerate everything (schema → parsers → docs)
         run: |
           export PATH="$PWD/packages/ts/node_modules/.bin:$PATH"
           python3 scripts/gen_schema.py
-          node scripts/derive-target.mjs emit .build-target
-          python3 scripts/gen_target_schema.py
-          for pair in "waterx-config.schema.json:schema-legacy.ts" "waterx-config-target.schema.json:schema.ts"; do
-            node scripts/deref-schema.mjs "schema/${pair%%:*}" /tmp/deref.json
-            json-schema-to-zod -i /tmp/deref.json -o "packages/ts/src/${pair##*:}"
-          done
-          quicktype --src-lang schema --src schema/waterx-config-target.schema.json --lang rust \
+          node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/deref.json
+          json-schema-to-zod -i /tmp/deref.json -o packages/ts/src/schema.ts
+          quicktype --src-lang schema --src schema/waterx-config.schema.json --lang rust \
             --visibility public --derive-debug --derive-clone --top-level WaterxConfig \
             -o packages/rust/src/generated.rs
           node scripts/gen-fields-doc.mjs
-          node scripts/gen-fields-doc.mjs target
-      - name: Generated artifacts must match their sources
-        run: git diff --exit-code -- schema/*.json packages/ts/src packages/rust/src docs/FIELDS.md docs/FIELDS-TARGET.md
+      - name: Generated artifacts must match their sources (tracked AND new files)
+        run: |
+          git add -A -- schema packages/ts/src packages/rust/src docs/FIELDS.md
+          git diff --cached --exit-code -- schema packages/ts/src packages/rust/src docs/FIELDS.md

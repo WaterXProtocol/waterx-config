@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2021"
 description = "Typed reader for waterx-config network files, generated from the canonical JSON Schema"
 license = "MIT"
+repository = "https://github.com/WaterXProtocol/waterx-config"
+rust-version = "1.75"
+publish = false  # consumed via git tag; crates.io publishing is a deliberate future decision
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

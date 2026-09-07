@@ -1,35 +1,11 @@
 {
-  "_comment": "Declared, reviewed exceptions. Keyspace exceptions are keyed by the map's stable `id` from schema/map-paths.json (survives the flip). check-consistency FAILS on a stale exception (excepted symbol no longer present in its map), so this list can only shrink. field_drift applies to the legacy shape only.",
+  "_comment": "Declared, reviewed exceptions to the symbol-universe rule, keyed by the map's stable `id` from schema/map-paths.json. check-consistency FAILS on a stale exception (excepted symbol no longer present in its map), so this list can only shrink.",
   "mainnet": {
-    "constant_prices": [
-      "USDCUSD"
-    ],
-    "aggregators": [
-      "USDCUSD"
-    ]
+    "constant_prices": ["USDCUSD"],
+    "aggregators": ["USDCUSD"]
   },
   "testnet": {
-    "constant_prices": [
-      "USDCUSD"
-    ],
-    "aggregators": [
-      "USDCUSD"
-    ]
-  },
-  "field_drift": [
-    "bucket_framework.upgrade_capability",
-    "native_custody.mvr",
-    "pyth_rule.mvr",
-    "waterx_account.mvr",
-    "waterx_credit.mvr",
-    "waterx_oracle.mvr",
-    "waterx_perp.mvr",
-    "waterx_perp_view.mvr",
-    "waterx_prediction.mvr",
-    "waterx_referral.upgrade_capability",
-    "waterx_staking.mvr",
-    "withdrawal_queue.mvr",
-    "withdrawal_queue.executors",
-    "wormhole_bridge.mvr"
-  ]
+    "constant_prices": ["USDCUSD"],
+    "aggregators": ["USDCUSD"]
+  }
 }

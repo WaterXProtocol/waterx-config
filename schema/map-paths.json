@@ -1,83 +1,22 @@
 {
-  "_comment": "Declared open-keyed maps (map-ness is a schema fact, never inferred from instance key counts). `id` is the STABLE key \u2014 exceptions and future per-map metadata key off it, so nothing breaks when the legacy path disappears at flip. base:'symbols' maps are checked \u2286 the symbol universe.",
+  "_comment": "Declared open-keyed maps (map-ness is a schema fact, never inferred from instance key counts). `path` may contain '*' segments (each matches exactly one segment) so maps nested inside map items are declarable — a new bridge token or reward coin must extend the DATA, not the schema. base:'symbols' maps are checked ⊆ the symbol universe by check-consistency.mjs (their paths are concrete); base:'open' maps are unconstrained keyspaces.",
   "maps": [
-    {
-      "id": "venue_feeds",
-      "legacy": "packages/waterx_rule/feeds",
-      "target": "oracle_rules/waterx/venue_feeds",
-      "base": "symbols"
-    },
-    {
-      "id": "pyth_price_feeds",
-      "legacy": "packages/pyth_rule/feeds",
-      "target": "oracle_rules/pyth/pyth_price_feeds",
-      "base": "symbols"
-    },
-    {
-      "id": "lazer_feed_ids",
-      "legacy": "packages/pyth_lazer_rule/feeds",
-      "target": "oracle_rules/pyth_lazer/lazer_feed_ids",
-      "base": "symbols"
-    },
-    {
-      "id": "supra_pair_ids",
-      "legacy": "packages/supra_rule/feeds",
-      "target": "oracle_rules/supra/pair_ids",
-      "base": "symbols"
-    },
-    {
-      "id": "constant_prices",
-      "legacy": "packages/constant_rule/feeds",
-      "target": "oracle_rules/constant/constant_prices",
-      "base": "symbols"
-    },
-    {
-      "id": "aggregators",
-      "legacy": "packages/waterx_oracle/aggregators",
-      "target": "objects/oracle/aggregators",
-      "base": "symbols"
-    },
-    {
-      "id": "perp_markets",
-      "legacy": "packages/waterx_perp/markets",
-      "target": "objects/perp/markets",
-      "base": "symbols"
-    },
-    {
-      "id": "wlp_pool_tokens",
-      "legacy": "packages/wlp/pool_tokens",
-      "target": "objects/wlp/pool_tokens",
-      "base": "open"
-    },
-    {
-      "id": "staking_pools",
-      "legacy": "packages/waterx_staking/pools",
-      "target": "objects/staking/pools",
-      "base": "open"
-    },
-    {
-      "id": "staking_rewarders",
-      "legacy": "packages/waterx_staking/rewarders",
-      "target": "objects/staking/rewarders",
-      "base": "open"
-    },
-    {
-      "id": "prediction_market_registries",
-      "legacy": "packages/waterx_prediction/market_registries",
-      "target": "objects/prediction/market_registries",
-      "base": "open"
-    },
-    {
-      "id": "prediction_settlement_coin_types",
-      "legacy": "packages/waterx_prediction/settlement_coin_types",
-      "target": "objects/prediction/settlement_coin_types",
-      "base": "open"
-    },
-    {
-      "id": "evm_bridge_chains",
-      "legacy": "evm/bridge/chains",
-      "target": "evm/bridge/chains",
-      "base": "open"
-    }
+    { "id": "venue_feeds",        "path": "oracle_rules/waterx/venue_feeds",        "base": "symbols" },
+    { "id": "pyth_price_feeds",   "path": "oracle_rules/pyth/pyth_price_feeds",     "base": "symbols" },
+    { "id": "lazer_feed_ids",     "path": "oracle_rules/pyth_lazer/lazer_feed_ids", "base": "symbols" },
+    { "id": "supra_pair_ids",     "path": "oracle_rules/supra/pair_ids",            "base": "symbols" },
+    { "id": "constant_prices",    "path": "oracle_rules/constant/constant_prices",  "base": "symbols" },
+    { "id": "aggregators",        "path": "objects/oracle/aggregators",             "base": "symbols" },
+    { "id": "perp_markets",       "path": "objects/perp/markets",                   "base": "symbols" },
+    { "id": "symbols",            "path": "symbols",                                "base": "open" },
+    { "id": "packages",           "path": "packages",                               "base": "open" },
+    { "id": "wlp_pool_tokens",    "path": "objects/wlp/pool_tokens",                "base": "open" },
+    { "id": "staking_pools",      "path": "objects/staking/pools",                  "base": "open" },
+    { "id": "staking_rewarders",  "path": "objects/staking/rewarders",              "base": "open" },
+    { "id": "staking_rewarder_coins", "path": "objects/staking/rewarders/*",        "base": "open" },
+    { "id": "prediction_market_registries", "path": "objects/prediction/market_registries", "base": "open" },
+    { "id": "prediction_settlement_coin_types", "path": "objects/prediction/settlement_coin_types", "base": "open" },
+    { "id": "evm_bridge_chains",  "path": "evm/bridge/chains",                      "base": "open" },
+    { "id": "evm_chain_tokens",   "path": "evm/bridge/chains/*/tokens",             "base": "open" }
   ]
 }
