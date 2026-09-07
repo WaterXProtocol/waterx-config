@@ -46,3 +46,22 @@ test("a corrupted object id is rejected even in tolerant mode", () => {
   doc.packages.waterx_oracle.oracle = "0xnot-an-id";
   assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
 });
+
+import { parseWaterxConfigV2 } from "../src/index.ts";
+
+for (const net of ["mainnet", "testnet"] as const) {
+  test(`v2/${net}.json parses (tolerant and strict)`, () => {
+    const doc = JSON.parse(readFileSync(new URL(`../../../v2/${net}.json`, import.meta.url), "utf8"));
+    const cfg = parseWaterxConfigV2(doc, net);
+    assert.equal(cfg.schema_version, 2);
+    assert.ok(Object.keys(cfg.symbols).length >= 31);
+    assert.ok(cfg.oracle_rules.waterx?.venue_feeds["BTCUSD"]);
+    parseWaterxConfigV2(doc, net, { strict: true }); // must also hold strictly
+  });
+}
+
+test("v2: corrupted aggregator id rejected even in tolerant mode", () => {
+  const doc = JSON.parse(readFileSync(new URL("../../../v2/mainnet.json", import.meta.url), "utf8"));
+  doc.objects.oracle.aggregators.BTCUSD = "0xnope";
+  assert.throws(() => parseWaterxConfigV2(doc), WaterxConfigError);
+});

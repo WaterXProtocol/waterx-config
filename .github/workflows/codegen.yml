@@ -14,6 +14,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
       - name: Regenerate TS parser
         run: |
           node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/schema-deref.json
@@ -25,7 +27,18 @@ jobs:
           npx --yes quicktype@23 --src-lang schema --src schema/waterx-config.schema.json \
             --lang rust --visibility public --derive-debug --derive-clone -o packages/rust/src/generated.rs
           node scripts/patch-generated-rust.mjs
+      - name: Regenerate v2 (derivation, schema, parsers)
+        run: |
+          node scripts/derive-v2.mjs mainnet && node scripts/derive-v2.mjs testnet
+          python3 scripts/gen_v2_schema.py
+          node scripts/deref-schema.mjs schema/v2/waterx-config-v2.schema.json /tmp/v2-strict.json
+          npx --yes json-schema-to-zod@2 -i /tmp/v2-strict.json -o packages/ts/src/schema-v2.ts
+          node scripts/deref-schema.mjs schema/v2/waterx-config-v2.schema.json /tmp/v2-tolerant.json --tolerant
+          npx --yes json-schema-to-zod@2 -i /tmp/v2-tolerant.json -o packages/ts/src/schema-v2-tolerant.ts
+          npx --yes quicktype@23 --src-lang schema --src schema/v2/waterx-config-v2.schema.json \
+            --lang rust --visibility public --derive-debug --derive-clone --top-level WaterxConfigV2 \
+            -o packages/rust/src/generated_v2.rs
       - name: Regenerate field docs
-        run: node scripts/gen-fields-doc.mjs
+        run: node scripts/gen-fields-doc.mjs && node scripts/gen-fields-doc.mjs v2
       - name: Generated artifacts must match the schema
-        run: git diff --exit-code -- packages/ts/src/schema.ts packages/ts/src/schema-tolerant.ts packages/rust/src/generated.rs docs/FIELDS.md
+        run: git diff --exit-code -- packages/ts/src packages/rust/src/generated.rs packages/rust/src/generated_v2.rs docs/FIELDS.md docs/FIELDS-V2.md v2/ schema/v2/
