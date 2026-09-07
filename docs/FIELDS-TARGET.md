@@ -6,7 +6,7 @@
 
 | field | type | notes |
 |---|---|---|
-| `schema_version` | any |  |
+| `schema_version` | 2 |  |
 | `network` | "mainnet" \| "testnet" |  |
 | `chain_id` | string |  |
 | `symbols` | map<string, object> | The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map elsewhere must reference a key from here (CI-enforced). |
@@ -36,16 +36,16 @@
 |---|---|---|---|
 | `oracle` | suiId | ✓ |  |
 | `listing_cap` | suiId | ✓ |  |
-| `aggregators` | map<string, suiId> | ✓ |  |
+| `aggregators` | map<string, suiId> | ✓ | Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation point. |
 
 ### `objects.perp`
 
 | field | type | required | notes |
 |---|---|---|---|
 | `global_config` | suiId | ✓ |  |
-| `admin_cap` | suiId | ✓ |  |
+| `admin_cap` | suiId | ✓ | Admin capability object id. |
 | `market_registry_wlp` | suiId | ✓ |  |
-| `markets` | map<string, object> | ✓ |  |
+| `markets` | map<string, object> | ✓ | Per-symbol perp market: market + config object ids. |
 
 ### `objects.wlp`
 
@@ -61,7 +61,7 @@
 
 | field | type | required | notes |
 |---|---|---|---|
-| `admin_cap` | suiId | ✓ |  |
+| `admin_cap` | suiId | ✓ | Admin capability object id. |
 | `pools` | map<string, suiId> | ✓ |  |
 | `rewarders` | map<string, object> | ✓ |  |
 
@@ -70,7 +70,7 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `registry` | suiId | ✓ |  |
-| `admin_cap` | suiId | ✓ |  |
+| `admin_cap` | suiId | ✓ | Admin capability object id. |
 
 ### `objects.referral`
 
@@ -113,7 +113,7 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `global_config` | suiId | ✓ |  |
-| `admin_cap` | suiId | ✓ |  |
+| `admin_cap` | suiId | ✓ | Admin capability object id. |
 | `market_registries` | map<string, suiId> | ✓ |  |
 | `settlement_coin_types` | map<string, suiType> | ✓ |  |
 | `claimable_link_config` | suiId | ✓ |  |
@@ -158,7 +158,7 @@
 |---|---|---|---|
 | `package` | string | ✓ |  |
 | `pyth_config_object` | suiId | ✓ |  |
-| `pyth_price_feeds` | map<string, object> | ✓ |  |
+| `pyth_price_feeds` | map<string, object> | ✓ | Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes). |
 
 ### `oracle_rules.pyth_lazer`
 
@@ -167,7 +167,7 @@
 | `package` | string | ✓ |  |
 | `lazer_state_object` | suiId | ✓ |  |
 | `lazer_config_object` | suiId | ✓ |  |
-| `lazer_feed_ids` | map<string, integer> | ✓ |  |
+| `lazer_feed_ids` | map<string, integer> | ✓ | Per-symbol Pyth Lazer numeric feed id, as used by the keeper's Lazer WS subscription. |
 
 ### `oracle_rules.constant`
 
@@ -175,7 +175,7 @@
 |---|---|---|---|
 | `package` | string | ✓ |  |
 | `rule_config_object` | suiId | ✓ |  |
-| `constant_prices` | map<string, object> | ✓ |  |
+| `constant_prices` | map<string, object> | ✓ | Per-symbol constant price, 1e9-scaled decimal string (e.g. "1000000000" = 1.0). |
 
 ### `oracle_rules.supra`
 

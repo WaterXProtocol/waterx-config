@@ -1,9 +1,10 @@
-// Inline every #/$defs/* $ref so codegen tools that don't resolve refs
+// Inline every #/$defs/* $ref (and strip additionalProperties:false — the
+// generated runtime validators are deliberately tolerant; ajv in repo CI is
+// the strict gate) so codegen tools that don't resolve refs
 // (json-schema-to-zod) still see the full constraint. CI feeds codegen the
 // derefed copy; schema/waterx-config.schema.json stays the canonical, ref'd SSOT.
 import { readFileSync, writeFileSync } from "node:fs";
 const schema = JSON.parse(readFileSync(process.argv[2], "utf8"));
-const tolerant = process.argv[4] === "--tolerant";
 const defs = schema.$defs ?? {};
 function deref(node) {
   if (Array.isArray(node)) return node.map(deref);
@@ -15,7 +16,7 @@ function deref(node) {
       return { ...deref(defs[name]), ...deref(rest) };
     }
     const entries = Object.entries(node)
-      .filter(([k, v]) => !(tolerant && k === "additionalProperties" && v === false))
+      .filter(([k, v]) => !(k === "additionalProperties" && v === false))
       .map(([k, v]) => [k, k === "$defs" ? v : deref(v)]);
     return Object.fromEntries(entries);
   }

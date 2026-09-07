@@ -12,6 +12,7 @@ const typ = (s) => {
   if (!s || typeof s !== "object") return "any";
   if (s.$ref) return s.$ref.split("/").pop();
   if (s.enum) return s.enum.map((e) => JSON.stringify(e)).join(" \\| ");
+  if ("const" in s) return JSON.stringify(s.const);
   if (s.type === "object" && s.additionalProperties && typeof s.additionalProperties === "object")
     return `map<string, ${typ(s.additionalProperties)}>`;
   if (s.type === "object") return "object";
@@ -28,29 +29,28 @@ lines.push("", "## Packages", "");
 for (const [pkg, ps] of Object.entries(schema.properties.packages.properties ?? { "(any package)": schema.properties.packages.additionalProperties })) {
   lines.push(`### \`${pkg}\``, "");
   if (ps.$comment) lines.push(`> ${ps.$comment}`, "");
+  propsTable(ps);
+}
+/** Render one node's properties as the standard 4-column table. */
+function propsTable(node) {
   lines.push("| field | type | required | notes |", "|---|---|---|---|");
-  const req = new Set(ps.required ?? []);
-  for (const [k, s] of Object.entries(ps.properties ?? {})) {
+  const req = new Set(node.required ?? []);
+  for (const [k, s] of Object.entries(node.properties ?? {})) {
     const note = [s.description, s.$comment, s.deprecated ? "**deprecated**" : ""].filter(Boolean).join(" · ");
     lines.push(`| \`${k}\` | ${typ(s)} | ${req.has(k) ? "✓" : ""} | ${esc(note)} |`);
   }
   lines.push("");
 }
-// v2: the domain trees are the document's substance — render each domain/rule
-// as its own section, same shape as Packages.
+
+// target shape: the domain trees are the document's substance — render each
+// domain/rule as its own section, same shape as Packages.
 for (const section of ["objects", "oracle_rules"]) {
   const ss = schema.properties[section];
   if (!ss?.properties) continue;
   lines.push("", `## ${section}`, "");
   for (const [domain, ds] of Object.entries(ss.properties)) {
     lines.push(`### \`${section}.${domain}\``, "");
-    lines.push("| field | type | required | notes |", "|---|---|---|---|");
-    const req = new Set(ds.required ?? []);
-    for (const [k, fs] of Object.entries(ds.properties ?? {})) {
-      const note = [fs.description, fs.$comment].filter(Boolean).join(" · ");
-      lines.push(`| \`${k}\` | ${typ(fs)} | ${req.has(k) ? "✓" : ""} | ${esc(note)} |`);
-    }
-    lines.push("");
+    propsTable(ds);
   }
 }
 

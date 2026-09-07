@@ -8,7 +8,7 @@ import json
 import sys, os
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from gen_schema_lib import DEC_STR, SUI_ID, build_schema  # noqa: E402
+from gen_schema_lib import SUI_ID, assert_descriptions_used, build_schema, save_descriptions_used  # noqa: E402
 
 m = json.load(open(".build-target/mainnet.json"))
 t = json.load(open(".build-target/testnet.json"))
@@ -21,7 +21,7 @@ _MVR = {"type": "object", "properties": {
     "required": ["name", "package_info_id", "app_cap_id"], "additionalProperties": False}
 
 
-def top_extra(m, t, maps):
+def top_extra(_m, _t, _maps):
     return {
         "schema_version": {"const": 2},
         "network": {"enum": ["mainnet", "testnet"]},
@@ -48,4 +48,8 @@ schema = build_schema(
     required=["schema_version", "network", "chain_id", "symbols", "packages", "objects", "oracle_rules"],
 )
 json.dump(schema, open("schema/waterx-config-target.schema.json", "w"), indent=2, ensure_ascii=False)
+save_descriptions_used("target")
 print("schema/waterx-config-target.schema.json written")
+# Runs after gen_schema.py in every pipeline, so by now every authored
+# description key must have matched a path in one of the two shapes.
+assert_descriptions_used()

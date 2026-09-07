@@ -57,7 +57,8 @@
               "type": "object",
               "additionalProperties": {
                 "$ref": "#/$defs/suiId"
-              }
+              },
+              "description": "Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation point."
             }
           },
           "required": [
@@ -74,7 +75,8 @@
               "$ref": "#/$defs/suiId"
             },
             "admin_cap": {
-              "$ref": "#/$defs/suiId"
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
             },
             "market_registry_wlp": {
               "$ref": "#/$defs/suiId"
@@ -96,7 +98,8 @@
                   "market"
                 ],
                 "additionalProperties": false
-              }
+              },
+              "description": "Per-symbol perp market: market + config object ids."
             }
           },
           "required": [
@@ -142,7 +145,8 @@
           "type": "object",
           "properties": {
             "admin_cap": {
-              "$ref": "#/$defs/suiId"
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
             },
             "pools": {
               "type": "object",
@@ -234,7 +238,8 @@
               "$ref": "#/$defs/suiId"
             },
             "admin_cap": {
-              "$ref": "#/$defs/suiId"
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
             }
           },
           "required": [
@@ -406,7 +411,8 @@
               "$ref": "#/$defs/suiId"
             },
             "admin_cap": {
-              "$ref": "#/$defs/suiId"
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
             },
             "market_registries": {
               "type": "object",
@@ -530,7 +536,8 @@
                   "$ref": "#/$defs/suiId"
                 },
                 "pubkey": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an independent env copy by design (boot-without-enclave)."
                 }
               },
               "required": [
@@ -621,7 +628,8 @@
                   "price_info_object"
                 ],
                 "additionalProperties": false
-              }
+              },
+              "description": "Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes)."
             }
           },
           "additionalProperties": false,
@@ -647,7 +655,8 @@
               "type": "object",
               "additionalProperties": {
                 "type": "integer"
-              }
+              },
+              "description": "Per-symbol Pyth Lazer numeric feed id, as used by the keeper's Lazer WS subscription."
             }
           },
           "required": [
@@ -680,7 +689,8 @@
                   "price"
                 ],
                 "additionalProperties": false
-              }
+              },
+              "description": "Per-symbol constant price, 1e9-scaled decimal string (e.g. \"1000000000\" = 1.0)."
             }
           },
           "required": [

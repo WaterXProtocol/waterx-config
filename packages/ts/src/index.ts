@@ -22,7 +22,6 @@ import waterxConfigSchema from "./schema.ts";
 import legacySchema from "./schema-legacy.ts";
 // The flip mapping — single implementation shared with scripts/derive-target.mjs.
 // Plain JS module (compiled via allowJs) so repo scripts can import it directly.
-// @ts-expect-error untyped internal module
 import { liftToTarget } from "./lift.mjs";
 import type { z } from "zod";
 
@@ -113,7 +112,9 @@ export function parseWaterxConfig(doc: unknown, expectNetwork?: Network): Waterx
       throw new WaterxConfigError(`legacy config failed schema validation: ${zodIssues(legacy.error)}`);
     }
     try {
-      candidate = liftToTarget(legacy.data).doc;
+      // strict:false — a consumer must tolerate a legacy field added after its
+      // pinned version; flip completeness is enforced by repo CI (derive-target).
+      candidate = liftToTarget(legacy.data, { strict: false });
     } catch (e) {
       throw new WaterxConfigError(`legacy config could not be lifted to the target shape: ${String(e)}`, e);
     }
@@ -125,5 +126,5 @@ export function parseWaterxConfig(doc: unknown, expectNetwork?: Network): Waterx
   if (expectNetwork && parsed.data.network !== expectNetwork) {
     throw new WaterxConfigError(`network mismatch: asked for ${expectNetwork}, document says ${parsed.data.network}`);
   }
-  return parsed.data as WaterxConfig;
+  return parsed.data;
 }

@@ -40,8 +40,22 @@ def _load(name):
         return json.load(f)
 
 
-DESCRIPTIONS = {k: v for k, v in _load("descriptions.json").items() if k != "_comment"}
 _MAPS = _load("map-paths.json")["maps"]
+
+def _expand_descriptions(raw):
+    """One text serves both shapes: a key written against either path of a
+    registered map is mirrored to the other path (prefix rewrite), so prose
+    like the I-16 weights warning survives the flip without duplication."""
+    out = dict(raw)
+    for m in _MAPS:
+        for a, b in ((m["legacy"], m["target"]), (m["target"], m["legacy"])):
+            for k, v in raw.items():
+                if k == a or k.startswith(a + "/"):
+                    out.setdefault(b + k[len(a):], v)
+    return out
+
+DESCRIPTIONS = _expand_descriptions({k: v for k, v in _load("descriptions.json").items() if k != "_comment"})
+DESCRIPTIONS_USED = set()
 
 
 def map_paths(shape):
@@ -50,15 +64,53 @@ def map_paths(shape):
 
 
 def describe(path):
-    """Description for a /-joined path, honoring single-segment '*' wildcards."""
+    """Description for a /-joined path. '*' in a registry key matches exactly
+    one segment; annotate() also uses the literal segment '*' for map ITEMS,
+    so `packages/*/published_at` covers both every named package and a
+    uniform-map item — first match (exact, then declaration order) wins."""
     if path in DESCRIPTIONS:
+        DESCRIPTIONS_USED.add(path)
         return DESCRIPTIONS[path]
     parts = path.split("/")
     for key, text in DESCRIPTIONS.items():
         kp = key.split("/")
         if len(kp) == len(parts) and all(a == "*" or a == b for a, b in zip(kp, parts)):
+            DESCRIPTIONS_USED.add(key)
             return text
     return None
+
+
+_USED_DIR = os.path.join(_HERE, "..", ".build-target")
+
+
+def save_descriptions_used(run_name):
+    """Persist this generator run's matched keys — the two generators are
+    separate processes, so the stale-key gate unions their files."""
+    os.makedirs(_USED_DIR, exist_ok=True)
+    with open(os.path.join(_USED_DIR, f"desc-used-{run_name}.json"), "w") as f:
+        json.dump(sorted(DESCRIPTIONS_USED), f)
+
+
+def assert_descriptions_used(runs=("legacy", "target")):
+    """Stale-key gate: every authored description key must have matched at
+    least once across the generator runs (directly or via its registry
+    mirror). Call after BOTH generators have run (save_descriptions_used)."""
+    used = set(DESCRIPTIONS_USED)
+    for r in runs:
+        p = os.path.join(_USED_DIR, f"desc-used-{r}.json")
+        if os.path.exists(p):
+            with open(p) as f:
+                used |= set(json.load(f))
+    raw = {k for k in _load("descriptions.json") if k != "_comment"}
+    mirror_of = {}
+    for m in _MAPS:
+        for a, b in ((m["legacy"], m["target"]), (m["target"], m["legacy"])):
+            for k in raw:
+                if k == a or k.startswith(a + "/"):
+                    mirror_of.setdefault(k, set()).add(b + k[len(a):])
+    stale = {k for k in raw if not (({k} | mirror_of.get(k, set())) & used)}
+    if stale:
+        raise SystemExit(f"stale description key(s) — no schema path matched them in either shape: {sorted(stale)}")
 
 
 def leaf_schema(v):

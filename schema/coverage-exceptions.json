@@ -1,18 +1,18 @@
 {
-  "_comment": "Declared, reviewed exceptions. Keyspace exceptions are keyed by the map's LEGACY path from schema/map-paths.json (the registry translates for target-shape files, so this list survives the flip). Shrink over time (audit P2/P4).",
+  "_comment": "Declared, reviewed exceptions. Keyspace exceptions are keyed by the map's stable `id` from schema/map-paths.json (survives the flip). check-consistency FAILS on a stale exception (excepted symbol no longer present in its map), so this list can only shrink. field_drift applies to the legacy shape only.",
   "mainnet": {
-    "packages/constant_rule/feeds": [
+    "constant_prices": [
       "USDCUSD"
     ],
-    "packages/waterx_oracle/aggregators": [
+    "aggregators": [
       "USDCUSD"
     ]
   },
   "testnet": {
-    "packages/constant_rule/feeds": [
+    "constant_prices": [
       "USDCUSD"
     ],
-    "packages/waterx_oracle/aggregators": [
+    "aggregators": [
       "USDCUSD"
     ]
   },
