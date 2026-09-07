@@ -22,8 +22,10 @@ pub struct WaterxConfig {
     pub chain_id: String,
 
     /// 0x-prefixed hex id/address (Sui short-form or EVM).
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub coin_registry: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub evm: Option<Evm>,
 
     pub network: Network,
@@ -59,14 +61,14 @@ pub struct Chain {
 
     pub chain_id: i64,
 
-    /// 0x-prefixed hex id/address (Sui short-form or EVM).
+    /// Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex).
     pub deposit_vault: String,
 
     pub tokens: HashMap<String, String>,
 
     pub wormhole_chain_id: i64,
 
-    /// 0x-prefixed hex id/address (Sui short-form or EVM).
+    /// Wormhole core contract address on this EVM chain (20-byte, 0x + 40 hex).
     pub wormhole_core: String,
 
     /// 0x-prefixed hex id/address (Sui short-form or EVM).
@@ -91,8 +93,10 @@ pub struct Objects {
 
     pub custody: Custody,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub faucet: Option<Faucet>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mock_usdsui: Option<MockUsdsui>,
 
     pub oracle: Oracle,
@@ -278,6 +282,7 @@ pub struct Usd {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WithdrawalQueue {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub executors: Option<Vec<String>>,
 
     pub queue: String,
@@ -302,8 +307,10 @@ pub struct OracleRules {
 
     pub pyth: Pyth,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pyth_lazer: Option<PythLazer>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub supra: Option<Supra>,
 
     pub waterx: Waterx,
@@ -404,12 +411,13 @@ pub struct VenueFeed {
     pub min_sources: i64,
 
     /// Venue set feeding the aggregate. Source names are a wire vocabulary shared with
-    /// waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws,
-    /// 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4 gateio_usdt_perp_ws, 5 bybit_spot_ws, 6
-    /// xstock_equity_rest, 7 okx_spot_ws, 8 hyperliquid_perp_ws, 9 gateio_spot_ws, 10
-    /// kraken_spot_ws, 11 pyth_lazer_ws). A source id must be REGISTERED ON-CHAIN for the target
-    /// network before a feed lists it — an unregistered id aborts on-chain validation at feed
-    /// time (per-network registration is tracked in WL-1968).
+    /// waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws
+    /// / binance_spot [REST], 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4
+    /// gateio_usdt_perp_ws, 5 bybit_spot_ws, 6 xstock_equity_rest, 7 okx_spot_ws, 8
+    /// hyperliquid_perp_ws, 9 gateio_spot_ws, 10 kraken_spot_ws, 11 pyth_lazer_ws). A source id
+    /// must be REGISTERED ON-CHAIN for the target network before a feed lists it — an
+    /// unregistered id aborts on-chain validation at feed time (per-network registration is
+    /// tracked in WL-1968).
     pub sources: Vec<Source>,
 
     pub ticker: String,
@@ -425,20 +433,22 @@ pub struct Source {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Package {
     /// Move Registry (MVR) registration for this package. Mainnet only today.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mvr: Option<Mvr>,
 
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
-    pub original_id: Option<String>,
+    pub original_id: String,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: Option<String>,
+    pub published_at: String,
 
     /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub upgrade_capability: Option<String>,
 
     /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: Option<i64>,
+    pub version: i64,
 }
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
@@ -446,6 +456,7 @@ pub struct Package {
 pub struct Mvr {
     pub app_cap_id: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub git: Option<Git>,
 
     pub name: String,

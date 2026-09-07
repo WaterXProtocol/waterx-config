@@ -21,9 +21,9 @@ Every package carries the same identity block (the map is uniform — new packag
 
 | field | type | required | notes |
 |---|---|---|---|
-| `published_at` | suiId |  | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
-| `original_id` | suiId |  | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `version` | integer |  | On-chain package version: 1 at first publish, +1 per upgrade. |
+| `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
+| `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
+| `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
 | `upgrade_capability` | suiId |  | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. |
 
@@ -46,6 +46,13 @@ Every package carries the same identity block (the map is uniform — new packag
 | `admin_cap` | suiId | ✓ | Admin capability object id. |
 | `market_registry_wlp` | suiId | ✓ |  |
 | `markets` | map<string, object> | ✓ | Per-symbol perp market: market + config object ids. |
+
+#### `objects.perp.markets` — each entry
+
+| field | type | required | notes |
+|---|---|---|---|
+| `market` | suiId | ✓ |  |
+| `config` | suiId | ✓ |  |
 
 ### `objects.wlp`
 
@@ -152,6 +159,15 @@ Every package carries the same identity block (the map is uniform — new packag
 | `enclave` | object | ✓ | The ONE home for enclave identity (object, cap, config, pubkey). |
 | `venue_feeds` | map<string, object> | ✓ | QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY: waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of weights, so a weight change moves the signed price via a parameter no on-chain check can see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface change. |
 
+#### `oracle_rules.waterx.venue_feeds` — each entry
+
+| field | type | required | notes |
+|---|---|---|---|
+| `ticker` | string | ✓ |  |
+| `sources` | array<object> | ✓ | Venue set feeding the aggregate. Source names are a wire vocabulary shared with waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws / binance_spot [REST], 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4 gateio_usdt_perp_ws, 5 bybit_spot_ws, 6 xstock_equity_rest, 7 okx_spot_ws, 8 hyperliquid_perp_ws, 9 gateio_spot_ws, 10 kraken_spot_ws, 11 pyth_lazer_ws). A source id must be REGISTERED ON-CHAIN for the target network before a feed lists it — an unregistered id aborts on-chain validation at feed time (per-network registration is tracked in WL-1968). |
+| `method` | string | ✓ |  |
+| `min_sources` | integer | ✓ |  |
+
 ### `oracle_rules.pyth`
 
 | field | type | required | notes |
@@ -159,6 +175,13 @@ Every package carries the same identity block (the map is uniform — new packag
 | `package` | string | ✓ |  |
 | `pyth_config_object` | suiId | ✓ |  |
 | `pyth_price_feeds` | map<string, object> | ✓ | Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes). |
+
+#### `oracle_rules.pyth.pyth_price_feeds` — each entry
+
+| field | type | required | notes |
+|---|---|---|---|
+| `feed_id` | suiId | ✓ | Pyth price-feed identifier (32-byte hex). NOT a Sui object id. |
+| `price_info_object` | suiId | ✓ | The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object; passing the wrapper is the classic mistake. |
 
 ### `oracle_rules.pyth_lazer`
 
@@ -176,6 +199,12 @@ Every package carries the same identity block (the map is uniform — new packag
 | `package` | string | ✓ |  |
 | `rule_config_object` | suiId | ✓ |  |
 | `constant_prices` | map<string, object> | ✓ | Per-symbol constant price, 1e9-scaled decimal string (e.g. "1000000000" = 1.0). |
+
+#### `oracle_rules.constant.constant_prices` — each entry
+
+| field | type | required | notes |
+|---|---|---|---|
+| `price` | decString | ✓ |  |
 
 ### `oracle_rules.supra`
 

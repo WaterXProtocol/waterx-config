@@ -1,49 +1,48 @@
 name: Publish packages
 
-# Publishes @waterx-protocol/config to npm on a version tag (v*). The Rust
-# crate needs no registry step: Cargo consumes it straight from the git tag
-# (subdirectory packages are supported natively) —
-#   waterx-config = { git = "https://github.com/WaterXProtocol/waterx-config", tag = "v0.1.0" }
+# Publishes @waterx/config to npm on a version tag (v*), via GitHub OIDC
+# trusted publishing with provenance — the same model as @waterx/sdk; no
+# long-lived token. ONE-TIME SETUP an npm org admin must do before the first
+# publish: on npmjs.com, add this repo + workflow as a Trusted Publisher for
+# @waterx/config. Until then the publish step fails with a clear npm error.
 #
-# Requires the NPM_TOKEN repo secret (org automation token with publish rights
-# on @waterx-protocol). Until it exists this workflow fails with a clear
-# message rather than half-publishing.
+# The Rust crate needs no registry step: Cargo consumes it straight from the
+# git tag (subdirectory packages are supported natively) —
+#   waterx-config = { git = "https://github.com/WaterXProtocol/waterx-config", tag = "v0.1.0" }
 on:
   push:
     tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write # OIDC token for npm trusted publishing
 
 jobs:
   npm:
     runs-on: ubuntu-latest
     steps:
-      - name: Refuse to publish without a token
-        run: |
-          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
-            echo "::error::NPM_TOKEN secret is not set — create an org automation token with publish rights on @waterx-protocol and add it to this repo's secrets."
-            exit 1
-          fi
       # Full history for the ancestry gate below, but no blobs — merge-base
       # only needs the commit graph.
       - uses: actions/checkout@v4
         with: { fetch-depth: 0, filter: "blob:none" }
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json, registry-url: "https://registry.npmjs.org" }
+        with: { node-version: 24, cache: npm, cache-dependency-path: packages/ts/package-lock.json, registry-url: "https://registry.npmjs.org" }
       - name: Tag commit must be on main (no publishing unmerged code)
         run: |
           if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
             echo "::error::tag $GITHUB_REF_NAME points at a commit not on main — merge first, then tag."
             exit 1
           fi
-      - name: Tag must match package version
+      - name: Tag must match BOTH package versions (npm and crate)
         run: |
           PKG=$(node -p "require('./packages/ts/package.json').version")
+          CRATE=$(sed -n 's/^version = "\(.*\)"/\1/p' packages/rust/Cargo.toml | head -1)
           TAG="${GITHUB_REF_NAME#v}"
-          if [ "$PKG" != "$TAG" ]; then
-            echo "::error::tag v$TAG != packages/ts version $PKG — bump package.json in the same PR as the tag."
+          if [ "$PKG" != "$TAG" ] || [ "$CRATE" != "$TAG" ]; then
+            echo "::error::tag v$TAG != packages/ts $PKG or packages/rust $CRATE — bump both in the same PR as the tag (git-tag consumers of the crate see Cargo.toml's version)."
             exit 1
           fi
-      # tests already gated the merge (validate.yml); the tag gate above is the
-      # publish gate. No explicit build: `npm publish` runs prepack, which builds.
+      # tests already gated the merge (validate.yml); the tag gates above are
+      # the publish gate. No explicit build: `npm publish` runs prepack.
       - run: cd packages/ts && npm ci
-      - run: cd packages/ts && npm publish --access public
-        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+      - run: cd packages/ts && npm publish --provenance --access public
