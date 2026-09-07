@@ -9,7 +9,8 @@
     "rootDir": "src",
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true
+    "rewriteRelativeImportExtensions": true,
+    "allowJs": true
   },
   "include": [
     "src"

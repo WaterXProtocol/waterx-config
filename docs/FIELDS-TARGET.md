@@ -1,6 +1,6 @@
-# waterx-config v2 field reference
+# waterx-config field reference (flip target)
 
-> Generated from [`schema/v2/waterx-config-v2.schema.json`](../schema/v2/waterx-config-v2.schema.json) by `scripts/gen-fields-doc.mjs v2` — do not edit by hand.
+> Generated from [`schema/waterx-config-target.schema.json`](../schema/waterx-config-target.schema.json) by `scripts/gen-fields-doc.mjs target` — do not edit by hand.
 
 ## Top level
 
@@ -21,11 +21,11 @@
 
 | field | type | required | notes |
 |---|---|---|---|
-| `published_at` | suiId |  |  |
-| `original_id` | suiId |  |  |
-| `version` | integer |  |  |
-| `upgrade_capability` | suiId |  |  |
-| `mvr` | object |  |  |
+| `published_at` | suiId |  | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
+| `original_id` | suiId |  | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
+| `version` | integer |  | On-chain package version: 1 at first publish, +1 per upgrade. |
+| `upgrade_capability` | suiId |  | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
+| `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. |
 
 
 ## objects
@@ -55,15 +55,15 @@
 | `aum` | suiId | ✓ |  |
 | `currency_type` | suiId | ✓ |  |
 | `metadata_cap` | suiId | ✓ |  |
-| `pool_tokens` | object | ✓ |  |
+| `pool_tokens` | map<string, suiType> | ✓ |  |
 
 ### `objects.staking`
 
 | field | type | required | notes |
 |---|---|---|---|
 | `admin_cap` | suiId | ✓ |  |
-| `pools` | object | ✓ |  |
-| `rewarders` | object | ✓ |  |
+| `pools` | map<string, suiId> | ✓ |  |
+| `rewarders` | map<string, object> | ✓ |  |
 
 ### `objects.account`
 
@@ -114,8 +114,8 @@
 |---|---|---|---|
 | `global_config` | suiId | ✓ |  |
 | `admin_cap` | suiId | ✓ |  |
-| `market_registries` | object | ✓ |  |
-| `settlement_coin_types` | object | ✓ |  |
+| `market_registries` | map<string, suiId> | ✓ |  |
+| `settlement_coin_types` | map<string, suiType> | ✓ |  |
 | `claimable_link_config` | suiId | ✓ |  |
 | `gift_admin_cap` | suiId | ✓ |  |
 
@@ -149,8 +149,8 @@
 |---|---|---|---|
 | `package` | string | ✓ |  |
 | `rule_config_object` | suiId | ✓ |  |
-| `enclave` | object | ✓ |  |
-| `venue_feeds` | map<string, object> | ✓ |  |
+| `enclave` | object | ✓ | The ONE home for enclave identity (object, cap, config, pubkey). |
+| `venue_feeds` | map<string, object> | ✓ | QC feed registry (was packages.waterx_rule.feeds). `weights` remain OFF-CHAIN ONLY — audit-scope I-16 trust surface. |
 
 ### `oracle_rules.pyth`
 
@@ -175,7 +175,7 @@
 |---|---|---|---|
 | `package` | string | ✓ |  |
 | `rule_config_object` | suiId | ✓ |  |
-| `constant_prices` | object | ✓ |  |
+| `constant_prices` | map<string, object> | ✓ |  |
 
 ### `oracle_rules.supra`
 
@@ -191,4 +191,4 @@
 |---|---|---|
 | `suiId` | `^0x[0-9a-fA-F]{64}$` | 32-byte Sui object/package id. |
 | `suiType` | `^0x[0-9a-fA-F]{1,64}::[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*$` | Fully-qualified Move type tag. |
-| `decString` | `^[0-9]+$` | Unsigned integer as a decimal string (u64/u128-safe). |
+| `decString` | `^[0-9]+$` | Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices). |

@@ -1,71 +1,60 @@
-// Cross-map + cross-network consistency gate (audit P2/P4).
-// Every symbol-keyed map is diffed against waterx_rule.feeds; every diff must
-// be declared in schema/coverage-exceptions.json or the check fails. Same for
-// fields present on only one network.
-import { readFileSync } from "node:fs";
+// Keyspace + cross-network consistency gate (audit P2/P4).
+//
+// The symbol-keyed map inventory comes from schema/map-paths.json — the ONE
+// registry (also consumed by the schema generators), so a new map is declared
+// once and checked everywhere. Works on both shapes: each network file is
+// checked against the map paths of the shape it declares, so this gate
+// survives the flip unchanged. Exceptions stay keyed by the map's LEGACY path
+// in schema/coverage-exceptions.json (the registry translates), so the
+// reviewed exception list survives the flip too.
+import { existsSync, readFileSync } from "node:fs";
+
 const root = new URL("..", import.meta.url);
 const read = (p) => JSON.parse(readFileSync(new URL(p, root), "utf8"));
-const m = read("mainnet.json"), t = read("testnet.json");
+const registry = read("schema/map-paths.json").maps;
 const exceptions = read("schema/coverage-exceptions.json");
+
 let failures = 0;
 const fail = (msg) => { console.error(`FAIL ${msg}`); failures++; };
 const ok = (msg) => console.log(`  ok ${msg}`);
 
-for (const [net, doc] of [["mainnet", m], ["testnet", t]]) {
-  const P = doc.packages;
-  const base = new Set(Object.keys(P.waterx_rule?.feeds ?? {}));
-  const maps = {
-    "pyth_rule.feeds": P.pyth_rule?.feeds,
-    "pyth_lazer_rule.feeds": P.pyth_lazer_rule?.feeds,
-    "supra_rule.feeds": P.supra_rule?.feeds,
-    "constant_rule.feeds": P.constant_rule?.feeds,
-    "waterx_oracle.aggregators": P.waterx_oracle?.aggregators,
-    "waterx_perp.markets": P.waterx_perp?.markets,
-  };
-  for (const [name, map] of Object.entries(maps)) {
-    if (!map) continue;
-    const allowed = new Set(exceptions[net]?.[name] ?? []);
-    const extra = Object.keys(map).filter((s) => !base.has(s) && !allowed.has(s));
-    if (extra.length) fail(`${net}: ${name} has symbols outside waterx_rule.feeds and not excepted: ${extra.join(", ")}`);
-    else ok(`${net}: ${name} keyspace ⊆ waterx_rule.feeds (+${allowed.size} excepted)`);
-  }
-}
+const dig = (doc, path) => path.split("/").reduce((o, k) => o?.[k], doc);
 
-// cross-network field drift: every field on one side only must be excepted
-const driftAllow = new Set(exceptions.field_drift ?? []);
-for (const p of Object.keys(m.packages).filter((p) => p in t.packages)) {
-  const a = new Set(Object.keys(m.packages[p] ?? {}));
-  const b = new Set(Object.keys(t.packages[p] ?? {}));
-  for (const f of [...a].filter((x) => !b.has(x)))
-    if (!driftAllow.has(`${p}.${f}`)) fail(`field drift not excepted: ${p}.${f} (mainnet only)`);
-  for (const f of [...b].filter((x) => !a.has(x)))
-    if (!driftAllow.has(`${p}.${f}`)) fail(`field drift not excepted: ${p}.${f} (testnet only)`);
-}
-if (!failures) console.log("v1 consistency: all green");
-
-// v2 (when derived files exist): every symbol-keyed map must be ⊆ symbols.
-import { existsSync } from "node:fs";
 for (const net of ["mainnet", "testnet"]) {
-  const p = new URL(`v2/${net}.json`, root);
-  if (!existsSync(p)) continue;
-  const v2 = JSON.parse(readFileSync(p, "utf8"));
-  const universe = new Set(Object.keys(v2.symbols ?? {}));
-  const v2maps = {
-    "objects.oracle.aggregators": v2.objects?.oracle?.aggregators,
-    "objects.perp.markets": v2.objects?.perp?.markets,
-    "oracle_rules.waterx.venue_feeds": v2.oracle_rules?.waterx?.venue_feeds,
-    "oracle_rules.pyth.pyth_price_feeds": v2.oracle_rules?.pyth?.pyth_price_feeds,
-    "oracle_rules.pyth_lazer.lazer_feed_ids": v2.oracle_rules?.pyth_lazer?.lazer_feed_ids,
-    "oracle_rules.constant.constant_prices": v2.oracle_rules?.constant?.constant_prices,
-    "oracle_rules.supra.pair_ids": v2.oracle_rules?.supra?.pair_ids,
-  };
-  const allowed = new Set(exceptions[net] ? Object.values(exceptions[net]).flat() : []);
-  for (const [name, map] of Object.entries(v2maps)) {
+  const doc = read(`${net}.json`);
+  const target = (doc.schema_version ?? 1) >= 2;
+  const shape = target ? "target" : "legacy";
+  const base = new Set(Object.keys(
+    target ? (doc.symbols ?? {}) : (doc.packages?.waterx_rule?.feeds ?? {}),
+  ));
+  for (const entry of registry) {
+    if (entry.base !== "symbols") continue;
+    const map = dig(doc, entry[shape]);
     if (!map) continue;
-    const extra = Object.keys(map).filter((s) => !universe.has(s) && !allowed.has(s));
-    if (extra.length) fail(`v2 ${net}: ${name} has symbols outside the universe: ${extra.join(", ")}`);
-    else ok(`v2 ${net}: ${name} ⊆ symbols`);
+    const allowed = new Set(exceptions[net]?.[entry.legacy] ?? []);
+    const extra = Object.keys(map).filter((s) => !base.has(s) && !allowed.has(s));
+    if (extra.length) fail(`${net} (${shape}): ${entry[shape]} has symbols outside the universe and not excepted: ${extra.join(", ")}`);
+    else ok(`${net} (${shape}): ${entry[shape]} ⊆ universe (+${allowed.size} excepted)`);
+  }
+
+  // cross-network field drift only applies to the legacy shape's free-form
+  // packages; the target shape's packages are uniform by schema.
+}
+
+// field drift between networks (legacy shape only — target packages are uniform)
+const m = read("mainnet.json");
+const t = read("testnet.json");
+if ((m.schema_version ?? 1) < 2 && (t.schema_version ?? 1) < 2) {
+  const driftAllow = new Set(exceptions.field_drift ?? []);
+  for (const p of Object.keys(m.packages).filter((p) => p in t.packages)) {
+    const a = new Set(Object.keys(m.packages[p] ?? {}));
+    const b = new Set(Object.keys(t.packages[p] ?? {}));
+    for (const f of [...a].filter((x) => !b.has(x)))
+      if (!driftAllow.has(`${p}.${f}`)) fail(`field drift not excepted: ${p}.${f} (mainnet only)`);
+    for (const f of [...b].filter((x) => !a.has(x)))
+      if (!driftAllow.has(`${p}.${f}`)) fail(`field drift not excepted: ${p}.${f} (testnet only)`);
   }
 }
-if (!failures) console.log("v2 consistency: all green");
+
+console.log(failures ? `consistency: ${failures} failure(s)` : "consistency: all green");
 process.exit(failures ? 1 : 0);

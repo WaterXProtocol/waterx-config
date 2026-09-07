@@ -1,18 +1,18 @@
 {
-  "_comment": "Declared, reviewed exceptions to keyspace/field consistency. Every entry is a decision, not an accident: shrink this file over time (audit P2/P4).",
+  "_comment": "Declared, reviewed exceptions. Keyspace exceptions are keyed by the map's LEGACY path from schema/map-paths.json (the registry translates for target-shape files, so this list survives the flip). Shrink over time (audit P2/P4).",
   "mainnet": {
-    "constant_rule.feeds": [
+    "packages/constant_rule/feeds": [
       "USDCUSD"
     ],
-    "waterx_oracle.aggregators": [
+    "packages/waterx_oracle/aggregators": [
       "USDCUSD"
     ]
   },
   "testnet": {
-    "constant_rule.feeds": [
+    "packages/constant_rule/feeds": [
       "USDCUSD"
     ],
-    "waterx_oracle.aggregators": [
+    "packages/waterx_oracle/aggregators": [
       "USDCUSD"
     ]
   },

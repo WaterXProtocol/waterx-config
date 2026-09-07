@@ -1,0 +1,18 @@
+{
+  "_comment": "Declared open-keyed maps (map-ness is a schema fact, never inferred from instance key counts — a single-entry map must NOT become a closed struct; audit finding). base:'symbols' entries are checked ⊆ the symbol universe by check-consistency.mjs; legacy/target give each map's path in both shapes so exceptions and checks survive the flip.",
+  "maps": [
+    { "legacy": "packages/waterx_rule/feeds",      "target": "oracle_rules/waterx/venue_feeds",       "base": "symbols" },
+    { "legacy": "packages/pyth_rule/feeds",        "target": "oracle_rules/pyth/pyth_price_feeds",    "base": "symbols" },
+    { "legacy": "packages/pyth_lazer_rule/feeds",  "target": "oracle_rules/pyth_lazer/lazer_feed_ids","base": "symbols" },
+    { "legacy": "packages/supra_rule/feeds",       "target": "oracle_rules/supra/pair_ids",           "base": "symbols" },
+    { "legacy": "packages/constant_rule/feeds",    "target": "oracle_rules/constant/constant_prices", "base": "symbols" },
+    { "legacy": "packages/waterx_oracle/aggregators","target": "objects/oracle/aggregators",          "base": "symbols" },
+    { "legacy": "packages/waterx_perp/markets",    "target": "objects/perp/markets",                  "base": "symbols" },
+    { "legacy": "packages/wlp/pool_tokens",        "target": "objects/wlp/pool_tokens",               "base": "open" },
+    { "legacy": "packages/waterx_staking/pools",   "target": "objects/staking/pools",                 "base": "open" },
+    { "legacy": "packages/waterx_staking/rewarders","target": "objects/staking/rewarders",            "base": "open" },
+    { "legacy": "packages/waterx_prediction/market_registries", "target": "objects/prediction/market_registries", "base": "open" },
+    { "legacy": "packages/waterx_prediction/settlement_coin_types", "target": "objects/prediction/settlement_coin_types", "base": "open" },
+    { "legacy": "evm/bridge/chains",               "target": "evm/bridge/chains",                     "base": "open" }
+  ]
+}

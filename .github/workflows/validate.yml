@@ -1,13 +1,16 @@
 name: Validate config
 
-# Every PR: both instances must satisfy the schema, every keyspace/field drift
-# must be declared in schema/coverage-exceptions.json, and both generated
-# parsers must still parse both instances. Mark all three jobs required in the
-# branch ruleset — this is what makes the schema the SSOT instead of a wish.
+# Every PR: instances must satisfy the schema of the shape they declare, the
+# lift must stay lossless, keyspace/field drift must be declared, and both
+# parsers must parse both instances. Mark these jobs required in the ruleset.
 on:
   pull_request:
   push:
-    branches: [main, staging]
+    branches: [main, staging, main-v2, staging-v2]
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   schema:
@@ -17,17 +20,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - run: npx --yes ajv-cli@5 validate --spec=draft2020 -s schema/waterx-config.schema.json -d mainnet.json
-      - run: npx --yes ajv-cli@5 validate --spec=draft2020 -s schema/waterx-config.schema.json -d testnet.json
-      - name: Keyspace + drift consistency (v1 + v2)
-        run: node scripts/check-consistency.mjs
-      - name: v2 derivation is lossless and valid
+      - name: Install ajv once
+        run: npm i -g ajv-cli@5
+      - name: Current files match their shape's schema
+        run: ajv validate --spec=draft2020 -s schema/waterx-config.schema.json -d mainnet.json -d testnet.json
+      - name: Lift is lossless and its output matches the target schema
         run: |
-          node scripts/derive-v2.mjs mainnet
-          node scripts/derive-v2.mjs testnet
-          git diff --exit-code -- v2/ deploys/
-          npx --yes ajv-cli@5 validate --spec=draft2020 -s schema/v2/waterx-config-v2.schema.json -d v2/mainnet.json
-          npx --yes ajv-cli@5 validate --spec=draft2020 -s schema/v2/waterx-config-v2.schema.json -d v2/testnet.json
+          node scripts/derive-target.mjs emit .build-target
+          ajv validate --spec=draft2020 -s schema/waterx-config-target.schema.json -d ".build-target/*.json"
+      - name: Keyspace + drift consistency
+        run: node scripts/check-consistency.mjs
 
   ts-parser:
     name: ts-parser-parses-instances
@@ -35,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22 }
+        with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json }
       - run: cd packages/ts && npm ci && npm test && npx tsc -p .
 
   rust-parser:
@@ -44,4 +46,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with: { workspaces: packages/rust }
+      - name: Emit node lift output for the cross-language drift guard
+        run: node scripts/derive-target.mjs emit .build-target
       - run: cd packages/rust && cargo test

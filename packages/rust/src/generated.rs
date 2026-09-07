@@ -4,20 +4,20 @@
 // extern crate serde_derive;
 // extern crate serde_json;
 //
-// use generated_module::generated;
+// use generated_module::WaterxConfig;
 //
 // fn main() {
 //     let json = r#"{"answer": 42}"#;
-//     let model: generated = serde_json::from_str(&json).unwrap();
+//     let model: WaterxConfig = serde_json::from_str(&json).unwrap();
 // }
 
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 
-/// One WaterX network deployment: package ids, shared objects, and the oracle feed registry.
-/// WaterxConfig from the 2026-09-07 audit describing the CURRENT instances; fields present on
-/// only one network carry a $comment and are optional. See docs/FIELDS.md for the rendered
-/// reference.
+/// The consolidated post-flip shape (docs/FLIP-PLAN.md): one symbol universe, uniform
+/// package identity, domain-grouped shared objects, and a named per-rule oracle registry.
+/// Until flip day this validates the LIFTED form of the served files; on flip day it becomes
+/// the schema of mainnet.json/testnet.json themselves.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WaterxConfig {
     pub chain_id: String,
@@ -29,16 +29,26 @@ pub struct WaterxConfig {
 
     pub network: Network,
 
-    pub packages: Packages,
+    pub objects: Objects,
+
+    pub oracle_rules: OracleRules,
+
+    pub packages: HashMap<String, Package>,
+
+    pub schema_version: f64,
+
+    /// The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map
+    /// elsewhere must reference a key from here (CI-enforced).
+    pub symbols: HashMap<String, Symbol>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Evm {
-    pub bridge: Bridge,
+    pub bridge: EvmBridge,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Bridge {
+pub struct EvmBridge {
     pub chains: HashMap<String, Chain>,
 }
 
@@ -51,7 +61,7 @@ pub struct Chain {
     /// Short-form Sui address/object id.
     pub deposit_vault: String,
 
-    pub tokens: HashMap<String, String>,
+    pub tokens: Tokens,
 
     pub wormhole_chain_id: i64,
 
@@ -63,6 +73,24 @@ pub struct Chain {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub struct Tokens {
+    /// Short-form Sui address/object id.
+    #[serde(rename = "tUSDC")]
+    pub t_usdc: Option<String>,
+
+    /// Short-form Sui address/object id.
+    #[serde(rename = "tUSDT")]
+    pub t_usdt: Option<String>,
+
+    /// Short-form Sui address/object id.
+    pub usdc: Option<String>,
+
+    /// Short-form Sui address/object id.
+    pub usdt: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Network {
     Mainnet,
@@ -71,195 +99,86 @@ pub enum Network {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Packages {
-    pub bucket_framework: Option<BucketFramework>,
+pub struct Objects {
+    pub account: Account,
 
-    pub constant_rule: Option<ConstantRule>,
+    pub bridge: ObjectsBridge,
 
-    pub enclave: Option<Enclave>,
+    pub credit: Credit,
 
-    pub mock_sui: Option<MockSui>,
+    pub custody: Custody,
 
-    pub mock_usdc: Option<MockUsdc>,
+    pub faucet: Option<Faucet>,
 
     pub mock_usdsui: Option<MockUsdsui>,
 
-    pub native_custody: Option<NativeCustody>,
+    pub oracle: Oracle,
 
-    pub pyth_lazer_rule: Option<PythLazerRule>,
+    pub perp: Perp,
 
-    pub pyth_rule: Option<PythRule>,
+    pub prediction: Prediction,
 
-    pub supra_rule: Option<SupraRule>,
+    pub referral: Referral,
 
-    pub testnet_faucet: Option<TestnetFaucet>,
+    pub staking: Staking,
 
-    pub usd: Option<Usd>,
+    pub usd: Usd,
 
-    pub waterx_account: Option<WaterxAccount>,
+    pub withdrawal_queue: WithdrawalQueue,
 
-    pub waterx_credit: Option<WaterxCredit>,
-
-    pub waterx_oracle: Option<WaterxOracle>,
-
-    pub waterx_perp: Option<WaterxPerp>,
-
-    pub waterx_perp_view: Option<WaterxPerpView>,
-
-    pub waterx_prediction: Option<WaterxPrediction>,
-
-    pub waterx_prediction_gift: Option<WaterxPredictionGift>,
-
-    pub waterx_referral: Option<WaterxReferral>,
-
-    pub waterx_rule: Option<WaterxRule>,
-
-    pub waterx_staking: Option<WaterxStaking>,
-
-    pub withdrawal_queue: Option<WithdrawalQueue>,
-
-    pub wlp: Option<Wlp>,
-
-    pub wormhole_bridge: Option<WormholeBridge>,
+    pub wlp: Wlp,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BucketFramework {
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
+pub struct Account {
+    pub admin_cap: String,
 
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: Option<String>,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
+    pub registry: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ConstantRule {
-    pub config: String,
+pub struct ObjectsBridge {
+    pub emitter_cap: String,
 
-    /// Per-symbol constant price, 1e9-scaled decimal string (e.g. "1000000000" = 1.0).
-    pub feeds: Feeds,
+    pub limits: Limits,
 
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
+    pub state: String,
 
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-}
-
-/// Per-symbol constant price, 1e9-scaled decimal string (e.g. "1000000000" = 1.0).
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub struct Feeds {
-    pub usdcusd: Usdcusd,
+    pub wormhole_state: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Usdcusd {
-    pub price: String,
+pub struct Limits {
+    pub daily_burn: String,
+
+    pub daily_mint: String,
+
+    pub max_burn_per_tx: String,
+
+    pub max_mint_per_tx: String,
+
+    pub personal_burn: PersonalBurn,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Enclave {
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
+pub struct PersonalBurn {
+    pub cap_amount: String,
 
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
+    pub window_ms: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MockSui {
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: Option<String>,
+pub struct Credit {
+    pub credit_type: String,
 
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: Option<String>,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: Option<String>,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: Option<i64>,
+    pub registry: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MockUsdc {
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: Option<String>,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: Option<String>,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: Option<i64>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MockUsdsui {
-    pub currency: Option<String>,
-
-    pub metadata_cap: Option<String>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: Option<String>,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: Option<String>,
-
-    pub treasury_cap: Option<String>,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: Option<String>,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: Option<i64>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NativeCustody {
+pub struct Custody {
     pub assets: Vec<Asset>,
 
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<NativeCustodyMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
     pub vault: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -278,330 +197,40 @@ pub struct Asset {
     pub asset_type: String,
 }
 
-/// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NativeCustodyMvr {
-    pub app_cap_id: String,
+pub struct Faucet {
+    pub faucet: String,
 
-    pub git: PurpleGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
+    pub whitelist: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PurpleGit {
-    pub path: String,
+pub struct MockUsdsui {
+    pub currency_type: String,
 
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PythLazerRule {
-    pub config: Option<String>,
-
-    /// Per-symbol Pyth Lazer numeric feed id, as used by the keeper's Lazer WS subscription.
-    pub feeds: Option<HashMap<String, i64>>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: Option<String>,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: Option<String>,
-
-    pub state: Option<String>,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: Option<String>,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: Option<i64>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PythRule {
-    pub config: String,
-
-    /// Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper
-    /// refreshes).
-    pub feeds: HashMap<String, PythRuleFeed>,
-
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<PythRuleMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PythRuleFeed {
-    pub feed_id: String,
-
-    pub price_info_object: String,
-}
-
-/// Move Registry (MVR) registration for this package. Mainnet only today.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PythRuleMvr {
-    pub app_cap_id: String,
-
-    pub git: FluffyGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FluffyGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SupraRule {
-    pub config: Option<String>,
-
-    pub feeds: Option<HashMap<String, SupraRuleFeed>>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: Option<String>,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: Option<String>,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: Option<String>,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: Option<i64>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SupraRuleFeed {
-    pub pair_id: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TestnetFaucet {
-    pub faucet: Option<String>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: Option<String>,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: Option<String>,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: Option<String>,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: Option<i64>,
-
-    pub whitelist: Option<Vec<String>>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Usd {
     pub metadata_cap: String,
 
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
+    pub treasury_cap: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxAccount {
-    pub account_registry: String,
-
-    /// Admin capability object id.
-    pub admin_cap: String,
-
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WaterxAccountMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-}
-
-/// Move Registry (MVR) registration for this package. Mainnet only today.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxAccountMvr {
-    pub app_cap_id: String,
-
-    pub git: TentacledGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TentacledGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxCredit {
-    pub credit_registry: String,
-
-    pub credit_type: String,
-
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WaterxCreditMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-}
-
-/// Move Registry (MVR) registration for this package. Mainnet only today.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxCreditMvr {
-    pub app_cap_id: String,
-
-    pub git: StickyGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StickyGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxOracle {
-    /// Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation
-    /// point.
+pub struct Oracle {
     pub aggregators: HashMap<String, String>,
 
     pub listing_cap: String,
 
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WaterxOracleMvr>,
-
     pub oracle: String,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-}
-
-/// Move Registry (MVR) registration for this package. Mainnet only today.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxOracleMvr {
-    pub app_cap_id: String,
-
-    pub git: IndigoGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct IndigoGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxPerp {
-    /// Admin capability object id.
+pub struct Perp {
     pub admin_cap: String,
 
     pub global_config: String,
 
     pub market_registry_wlp: String,
 
-    /// Per-symbol perp market: market + config object ids.
     pub markets: HashMap<String, Market>,
-
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WaterxPerpMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -611,207 +240,188 @@ pub struct Market {
     pub market: String,
 }
 
-/// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxPerpMvr {
-    pub app_cap_id: String,
-
-    pub git: IndecentGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct IndecentGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxPerpView {
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WaterxPerpViewMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-}
-
-/// Move Registry (MVR) registration for this package. Mainnet only today.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxPerpViewMvr {
-    pub app_cap_id: String,
-
-    pub git: HilariousGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct HilariousGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxPrediction {
-    /// Admin capability object id.
-    pub admin_cap: String,
-
-    pub global_config: String,
-
-    pub market_registries: MarketRegistries,
-
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WaterxPredictionMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    pub settlement_coin_types: SettlementCoinTypes,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub struct MarketRegistries {
-    pub usd: String,
-}
-
-/// Move Registry (MVR) registration for this package. Mainnet only today.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxPredictionMvr {
-    pub app_cap_id: String,
-
-    pub git: AmbitiousGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AmbitiousGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub struct SettlementCoinTypes {
-    pub usd: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxPredictionGift {
-    /// Admin capability object id.
+pub struct Prediction {
     pub admin_cap: String,
 
     pub claimable_link_config: String,
 
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
+    pub gift_admin_cap: String,
 
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
+    pub global_config: String,
 
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
+    pub market_registries: HashMap<String, String>,
 
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
+    pub settlement_coin_types: HashMap<String, String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxReferral {
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    pub referral_table: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: Option<String>,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
+pub struct Referral {
+    pub table: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxRule {
+pub struct Staking {
+    pub admin_cap: String,
+
+    pub pools: HashMap<String, String>,
+
+    pub rewarders: HashMap<String, Rewarder>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub struct Rewarder {
+    pub deep: Option<Deep>,
+
+    pub mock_deep: Option<MockDeep>,
+
+    pub usdc: Option<Usdc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Deep {
+    pub coin_type: String,
+
+    pub decimals: i64,
+
+    pub rewarder_id: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MockDeep {
+    pub coin_type: String,
+
+    pub decimals: i64,
+
+    pub rewarder_id: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Usdc {
+    pub coin_type: String,
+
+    pub decimals: i64,
+
+    pub rewarder_id: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Usd {
+    pub metadata_cap: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WithdrawalQueue {
+    pub executors: Option<Vec<String>>,
+
+    pub queue: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Wlp {
+    pub aum: String,
+
+    pub currency_type: String,
+
+    pub metadata_cap: String,
+
+    pub pool: String,
+
+    pub pool_tokens: HashMap<String, String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OracleRules {
+    pub constant: Constant,
+
+    pub pyth: Pyth,
+
+    pub pyth_lazer: Option<PythLazer>,
+
+    pub supra: Option<Supra>,
+
+    pub waterx: Waterx,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Constant {
+    pub constant_prices: HashMap<String, ConstantPrice>,
+
+    pub package: String,
+
+    pub rule_config_object: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ConstantPrice {
+    pub price: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Pyth {
+    pub package: String,
+
+    pub pyth_config_object: String,
+
+    pub pyth_price_feeds: HashMap<String, PythPriceFeed>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PythPriceFeed {
+    pub feed_id: String,
+
+    pub price_info_object: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PythLazer {
+    pub lazer_config_object: String,
+
+    pub lazer_feed_ids: HashMap<String, i64>,
+
+    pub lazer_state_object: String,
+
+    pub package: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Supra {
+    pub package: String,
+
+    pub pair_ids: HashMap<String, i64>,
+
+    pub rule_config_object: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Waterx {
+    /// The ONE home for enclave identity (object, cap, config, pubkey).
+    pub enclave: Enclave,
+
+    pub package: String,
+
+    pub rule_config_object: String,
+
+    /// QC feed registry (was packages.waterx_rule.feeds). `weights` remain OFF-CHAIN ONLY —
+    /// audit-scope I-16 trust surface.
+    pub venue_feeds: HashMap<String, VenueFeed>,
+}
+
+/// The ONE home for enclave identity (object, cap, config, pubkey).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Enclave {
+    pub cap: String,
+
     pub config: String,
 
-    pub enclave: String,
+    pub object: String,
 
-    pub enclave_cap: String,
-
-    pub enclave_config: String,
-
-    /// Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home (the enclave package
-    /// block carries identity only); k8s-infra pins an independent env copy by design
-    /// (boot-without-enclave).
-    pub enclave_pubkey: String,
-
-    /// QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY:
-    /// waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of
-    /// weights, so a weight change moves the signed price via a parameter no on-chain check can
-    /// see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface
-    /// change.
-    pub feeds: HashMap<String, WaterxRuleFeed>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
+    pub pubkey: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxRuleFeed {
-    pub kind: String,
-
+pub struct VenueFeed {
     pub method: String,
 
     pub min_sources: i64,
@@ -829,37 +439,30 @@ pub struct Source {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxStaking {
-    /// Admin capability object id.
-    pub admin_cap: String,
-
+pub struct Package {
     /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WaterxStakingMvr>,
+    pub mvr: Option<Mvr>,
 
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    pub pools: Pools,
+    pub original_id: Option<String>,
 
     /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    pub rewarders: Rewarders,
+    pub published_at: Option<String>,
 
     /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
+    pub upgrade_capability: Option<String>,
 
     /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
+    pub version: Option<i64>,
 }
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WaterxStakingMvr {
+pub struct Mvr {
     pub app_cap_id: String,
 
-    pub git: CunningGit,
+    pub git: Option<Git>,
 
     pub name: String,
 
@@ -867,7 +470,7 @@ pub struct WaterxStakingMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CunningGit {
+pub struct Git {
     pub path: String,
 
     pub repo: String,
@@ -876,161 +479,22 @@ pub struct CunningGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub struct Pools {
-    pub wlp: String,
+pub struct Symbol {
+    pub kind: Kind,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub struct Rewarders {
-    pub wlp: HashMap<String, MockDeep>,
-}
+#[serde(rename_all = "snake_case")]
+pub enum Kind {
+    Commodity,
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MockDeep {
-    pub coin_type: String,
+    Fx,
 
-    pub decimals: i64,
+    Perp,
 
-    pub rewarder_id: String,
-}
+    Prediction,
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WithdrawalQueue {
-    pub executors: Option<Vec<String>>,
+    Spot,
 
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WithdrawalQueueMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    pub queue: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-}
-
-/// Move Registry (MVR) registration for this package. Mainnet only today.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WithdrawalQueueMvr {
-    pub app_cap_id: String,
-
-    pub git: MagentaGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MagentaGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Wlp {
-    pub currency: String,
-
-    pub metadata_cap: String,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    pub pool_tokens: PoolTokens,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-
-    pub wlp_aum: String,
-
-    pub wlp_pool: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub struct PoolTokens {
-    pub usdcusd: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WormholeBridge {
-    pub bridge: String,
-
-    pub daily_burn_limit: String,
-
-    pub daily_mint_limit: String,
-
-    pub emitter_cap: String,
-
-    pub max_burn_per_tx: String,
-
-    pub max_mint_per_tx: String,
-
-    /// Move Registry (MVR) registration for this package. Mainnet only today.
-    pub mvr: Option<WormholeBridgeMvr>,
-
-    /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
-    /// (<original_id>::module::Type).
-    pub original_id: String,
-
-    pub personal_burn_cap: PersonalBurnCap,
-
-    /// Package id of the current latest version — the tx-call target. Changes on every upgrade.
-    pub published_at: String,
-
-    /// UpgradeCap object id. Deploy-time artifact; no runtime consumer.
-    pub upgrade_capability: String,
-
-    /// On-chain package version: 1 at first publish, +1 per upgrade.
-    pub version: i64,
-
-    pub wormhole_state: String,
-}
-
-/// Move Registry (MVR) registration for this package. Mainnet only today.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WormholeBridgeMvr {
-    pub app_cap_id: String,
-
-    pub git: FriskyGit,
-
-    pub name: String,
-
-    pub package_info_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FriskyGit {
-    pub path: String,
-
-    pub repo: String,
-
-    pub version: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PersonalBurnCap {
-    pub cap_amount: String,
-
-    pub window_ms: String,
+    Xstock,
 }

@@ -1,27 +1,23 @@
-// Mechanically derive the v2 document (docs/V2-PROPOSAL.md) from a v1 network
-// file. This script IS the field map: every v1 field is either moved here or
-// deliberately routed to deploys/<network>.json — an unrecognized field throws,
-// so v1 additions cannot silently miss the v2 story.
-//
-// Usage: node scripts/derive-v2.mjs <network>
-//   writes v2/<network>.json and deploys/<network>.json
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+// The v1→target field map as CODE — the ONE implementation of the lift, used
+// by the parser (pre-flip: lift the served legacy document into the target
+// shape) and by scripts/derive-target.mjs (flip-day generation + CI
+// losslessness gate). Every legacy field is either moved here or deliberately
+// routed to the deploys/ forensics file; an unrecognized field THROWS, so a
+// legacy addition cannot silently miss the flip story.
 
-const net = process.argv[2];
-if (!["mainnet", "testnet"].includes(net)) throw new Error("usage: derive-v2.mjs <mainnet|testnet>");
-const root = new URL("..", import.meta.url);
-const v1 = JSON.parse(readFileSync(new URL(`${net}.json`, root), "utf8"));
-const P = v1.packages;
+/** Lift a legacy-shape document into the target shape. Throws on any legacy
+ * field with no disposition. Returns { doc, forensics }. */
+export function liftToTarget(v1) {
+  const P = v1.packages;
 
-/** take(pkgName, field) — consume a field so leftovers can be detected. */
-const taken = new Map();
-function take(pkg, field) {
-  const body = P[pkg];
-  if (!body || !(field in body)) return undefined;
-  if (!taken.has(pkg)) taken.set(pkg, new Set());
-  taken.get(pkg).add(field);
-  return body[field];
-}
+  const taken = new Map();
+  function take(pkg, field) {
+    const body = P[pkg];
+    if (!body || !(field in body)) return undefined;
+    if (!taken.has(pkg)) taken.set(pkg, new Set());
+    taken.get(pkg).add(field);
+    return body[field];
+  }
 const IDENTITY = ["published_at", "original_id", "version", "upgrade_capability", "mvr"];
 const FORENSICS = ["publish_digest", "publish_checkpoint", "register_digest", "register_checkpoint"];
 
@@ -159,14 +155,25 @@ const leftovers = [];
 for (const [name, body] of Object.entries(P)) {
   for (const f of Object.keys(body ?? {})) {
     if (!taken.get(name)?.has(f)) leftovers.push(`${name}.${f}`);
+    }
   }
-}
-if (leftovers.length) {
-  throw new Error(`v1 fields with no v2 disposition (extend derive-v2.mjs): ${leftovers.join(", ")}`);
-}
+  if (leftovers.length) {
+    throw new Error(`legacy fields with no flip disposition (extend lift.mjs): ${leftovers.join(", ")}`);
+  }
 
-// ── outputs ───────────────────────────────────────────────────────────────
-const v2 = {
+  // Deploy forensics routed OUT of the hot-path document (already empty on
+  // pruned files; non-empty only if a legacy file regains them).
+  const forensics = {
+    network: v1.network,
+    deploy_tx_log: v1.deploy_tx_log ?? [],
+    package_publish: Object.fromEntries(
+      Object.entries(P)
+        .map(([name, body]) => [name, Object.fromEntries(FORENSICS.filter((f) => f in (body ?? {})).map((f) => [f, body[f]]))])
+        .filter(([, v]) => Object.keys(v).length),
+    ),
+  };
+
+  const doc = {
   schema_version: 2,
   network: v1.network,
   chain_id: v1.chain_id,
@@ -177,24 +184,5 @@ const v2 = {
   ...(v1.coin_registry !== undefined && { coin_registry: v1.coin_registry }),
   ...(v1.evm !== undefined && { evm: v1.evm }),
 };
-mkdirSync(new URL("v2", root), { recursive: true });
-mkdirSync(new URL("deploys", root), { recursive: true });
-writeFileSync(new URL(`v2/${net}.json`, root), JSON.stringify(v2, null, 2) + "\n");
-// deploys/<net>.json is the PRIMARY home of deploy forensics (Phase 2 moved
-// them out of the hot-path document). Seed it from v1 only while v1 still
-// carries legacy forensics fields; once v1 is clean, deploy/register tooling
-// appends here directly and this script must not touch the file.
-const legacy = {
-  deploy_tx_log: v1.deploy_tx_log ?? [],
-  package_publish: Object.fromEntries(
-    Object.entries(P)
-      .map(([name, body]) => [name, Object.fromEntries(FORENSICS.filter((f) => f in (body ?? {})).map((f) => [f, body[f]]))])
-      .filter(([, v]) => Object.keys(v).length),
-  ),
-};
-if (legacy.deploy_tx_log.length || Object.keys(legacy.package_publish).length) {
-  writeFileSync(new URL(`deploys/${net}.json`, root), JSON.stringify({ network: v1.network, ...legacy }, null, 2) + "\n");
-  console.log(`v2/${net}.json derived + deploys/${net}.json seeded from legacy v1 forensics; 0 leftover fields`);
-} else {
-  console.log(`v2/${net}.json derived; deploys/${net}.json untouched (primary); 0 leftover fields`);
+  return { doc, forensics };
 }

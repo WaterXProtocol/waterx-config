@@ -1,13 +1,12 @@
 {
   "name": "@waterx-protocol/config",
   "version": "0.1.0",
-  "description": "Typed loader + Zod validator for waterx-config network files, generated from the canonical JSON Schema",
+  "description": "Typed loader for waterx-config network files: one consolidated shape, legacy documents lifted transparently until flip day. Generated from the canonical JSON Schemas.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsc -p .",
