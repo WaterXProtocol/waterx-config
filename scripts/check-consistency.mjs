@@ -41,5 +41,31 @@ for (const p of Object.keys(m.packages).filter((p) => p in t.packages)) {
   for (const f of [...b].filter((x) => !a.has(x)))
     if (!driftAllow.has(`${p}.${f}`)) fail(`field drift not excepted: ${p}.${f} (testnet only)`);
 }
-if (!failures) console.log("consistency: all green");
+if (!failures) console.log("v1 consistency: all green");
+
+// v2 (when derived files exist): every symbol-keyed map must be ⊆ symbols.
+import { existsSync } from "node:fs";
+for (const net of ["mainnet", "testnet"]) {
+  const p = new URL(`v2/${net}.json`, root);
+  if (!existsSync(p)) continue;
+  const v2 = JSON.parse(readFileSync(p, "utf8"));
+  const universe = new Set(Object.keys(v2.symbols ?? {}));
+  const v2maps = {
+    "objects.oracle.aggregators": v2.objects?.oracle?.aggregators,
+    "objects.perp.markets": v2.objects?.perp?.markets,
+    "oracle_rules.waterx.venue_feeds": v2.oracle_rules?.waterx?.venue_feeds,
+    "oracle_rules.pyth.pyth_price_feeds": v2.oracle_rules?.pyth?.pyth_price_feeds,
+    "oracle_rules.pyth_lazer.lazer_feed_ids": v2.oracle_rules?.pyth_lazer?.lazer_feed_ids,
+    "oracle_rules.constant.constant_prices": v2.oracle_rules?.constant?.constant_prices,
+    "oracle_rules.supra.pair_ids": v2.oracle_rules?.supra?.pair_ids,
+  };
+  const allowed = new Set(exceptions[net] ? Object.values(exceptions[net]).flat() : []);
+  for (const [name, map] of Object.entries(v2maps)) {
+    if (!map) continue;
+    const extra = Object.keys(map).filter((s) => !universe.has(s) && !allowed.has(s));
+    if (extra.length) fail(`v2 ${net}: ${name} has symbols outside the universe: ${extra.join(", ")}`);
+    else ok(`v2 ${net}: ${name} ⊆ symbols`);
+  }
+}
+if (!failures) console.log("v2 consistency: all green");
 process.exit(failures ? 1 : 0);

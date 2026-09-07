@@ -19,8 +19,15 @@ jobs:
         with: { node-version: 22 }
       - run: npx --yes ajv-cli@5 validate --spec=draft2020 -s schema/waterx-config.schema.json -d mainnet.json
       - run: npx --yes ajv-cli@5 validate --spec=draft2020 -s schema/waterx-config.schema.json -d testnet.json
-      - name: Keyspace + drift consistency
+      - name: Keyspace + drift consistency (v1 + v2)
         run: node scripts/check-consistency.mjs
+      - name: v2 derivation is lossless and valid
+        run: |
+          node scripts/derive-v2.mjs mainnet
+          node scripts/derive-v2.mjs testnet
+          git diff --exit-code -- v2/ deploys/
+          npx --yes ajv-cli@5 validate --spec=draft2020 -s schema/v2/waterx-config-v2.schema.json -d v2/mainnet.json
+          npx --yes ajv-cli@5 validate --spec=draft2020 -s schema/v2/waterx-config-v2.schema.json -d v2/testnet.json
 
   ts-parser:
     name: ts-parser-parses-instances

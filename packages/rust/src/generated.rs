@@ -23,7 +23,8 @@ use std::collections::HashMap;
 pub struct WaterxConfig {
     pub chain_id: String,
 
-    pub coin_registry: Option<serde_json::Value>,
+    /// Short-form Sui address/object id.
+    pub coin_registry: Option<String>,
 
     pub deploy_tx_log: Option<Vec<DeployTxLog>>,
 
@@ -67,14 +68,17 @@ pub struct Chain {
 
     pub chain_id: i64,
 
+    /// Short-form Sui address/object id.
     pub deposit_vault: String,
 
     pub tokens: HashMap<String, String>,
 
     pub wormhole_chain_id: i64,
 
+    /// Short-form Sui address/object id.
     pub wormhole_core: String,
 
+    /// Short-form Sui address/object id.
     pub wormhole_executor: String,
 }
 

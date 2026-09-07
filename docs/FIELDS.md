@@ -8,7 +8,7 @@
 |---|---|---|
 | `network` | "mainnet" \| "testnet" |  |
 | `chain_id` | string |  |
-| `coin_registry` | any |  |
+| `coin_registry` | string | Short-form Sui address/object id. |
 | `evm` | object |  |
 | `deploy_tx_log` | array<object> |  |
 
