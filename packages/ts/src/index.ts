@@ -12,9 +12,10 @@
  * Do not edit schema.ts by hand.
  */
 import waterxConfigSchema from "./schema.ts";
+import waterxConfigSchemaTolerant from "./schema-tolerant.ts";
 import type { z } from "zod";
 
-export { waterxConfigSchema };
+export { waterxConfigSchema, waterxConfigSchemaTolerant };
 
 /** The full network file, inferred from the generated Zod schema. */
 export type WaterxConfig = z.infer<typeof waterxConfigSchema>;
@@ -42,7 +43,18 @@ export class WaterxConfigError extends Error {
   }
 }
 
-export interface LoadOptions {
+export interface ParseOptions {
+  /**
+   * Reject unknown fields. Default FALSE: consumers parse live CDN data that
+   * can gain fields before this package version does — tolerating unknowns is
+   * what keeps an additive config change from breaking deployed consumers.
+   * Strict mode is for tests/CI against a pinned document; the config repo's
+   * own ajv gate is the authoritative strict check.
+   */
+  strict?: boolean;
+}
+
+export interface LoadOptions extends ParseOptions {
   /** Override the CDN base (tests, staging CDN). Never point this at raw.githubusercontent.com. */
   baseUrl?: string;
   fetchImpl?: typeof fetch;
@@ -69,7 +81,7 @@ export async function loadWaterxConfig(network: Network, opts: LoadOptions = {})
       try {
         const res = await doFetch(url, { signal: ctrl.signal });
         if (!res.ok) throw new WaterxConfigError(`GET ${url}: HTTP ${res.status}`);
-        return parseWaterxConfig(await res.json(), network);
+        return parseWaterxConfig(await res.json(), network, opts);
       } finally {
         clearTimeout(timer);
       }
@@ -82,9 +94,11 @@ export async function loadWaterxConfig(network: Network, opts: LoadOptions = {})
   throw new WaterxConfigError(`failed to load ${url} after ${attempts} attempts`, lastErr);
 }
 
-/** Strictly parse an already-fetched document (pinned file, test fixture). */
-export function parseWaterxConfig(doc: unknown, expectNetwork?: Network): WaterxConfig {
-  const parsed = waterxConfigSchema.safeParse(doc);
+/** Parse an already-fetched document (pinned file, test fixture). Tolerant of
+ * unknown fields by default — see ParseOptions.strict. */
+export function parseWaterxConfig(doc: unknown, expectNetwork?: Network, opts: ParseOptions = {}): WaterxConfig {
+  const schema = opts.strict ? waterxConfigSchema : waterxConfigSchemaTolerant;
+  const parsed = schema.safeParse(doc);
   if (!parsed.success) {
     const issues = parsed.error.issues
       .slice(0, 5)
@@ -95,5 +109,5 @@ export function parseWaterxConfig(doc: unknown, expectNetwork?: Network): Waterx
   if (expectNetwork && parsed.data.network !== expectNetwork) {
     throw new WaterxConfigError(`network mismatch: asked for ${expectNetwork}, document says ${parsed.data.network}`);
   }
-  return parsed.data;
+  return parsed.data as WaterxConfig;
 }

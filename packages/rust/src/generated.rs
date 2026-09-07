@@ -19,7 +19,6 @@ use std::collections::HashMap;
 /// only one network carry a $comment and are optional. See docs/FIELDS.md for the rendered
 /// reference.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxConfig {
     pub chain_id: String,
 
@@ -34,19 +33,16 @@ pub struct WaterxConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Evm {
     pub bridge: Bridge,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Bridge {
     pub chains: HashMap<String, Chain>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Chain {
     pub block_explorer: String,
 
@@ -75,7 +71,6 @@ pub enum Network {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Packages {
     pub bucket_framework: Option<BucketFramework>,
 
@@ -129,7 +124,6 @@ pub struct Packages {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct BucketFramework {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
@@ -146,7 +140,6 @@ pub struct BucketFramework {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct ConstantRule {
     pub config: String,
 
@@ -175,13 +168,11 @@ pub struct Feeds {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Usdcusd {
     pub price: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Enclave {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
@@ -198,7 +189,6 @@ pub struct Enclave {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct MockSui {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
@@ -215,7 +205,6 @@ pub struct MockSui {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct MockUsdc {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
@@ -229,7 +218,6 @@ pub struct MockUsdc {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct MockUsdsui {
     pub currency: Option<String>,
 
@@ -252,7 +240,6 @@ pub struct MockUsdsui {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct NativeCustody {
     pub assets: Vec<Asset>,
 
@@ -276,7 +263,6 @@ pub struct NativeCustody {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Asset {
     pub burn_fee_scaled: String,
 
@@ -294,7 +280,6 @@ pub struct Asset {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct NativeCustodyMvr {
     pub app_cap_id: String,
 
@@ -306,7 +291,6 @@ pub struct NativeCustodyMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct PurpleGit {
     pub path: String,
 
@@ -316,7 +300,6 @@ pub struct PurpleGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct PythLazerRule {
     pub config: Option<String>,
 
@@ -340,7 +323,6 @@ pub struct PythLazerRule {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct PythRule {
     pub config: String,
 
@@ -366,7 +348,6 @@ pub struct PythRule {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct PythRuleFeed {
     pub feed_id: String,
 
@@ -375,7 +356,6 @@ pub struct PythRuleFeed {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct PythRuleMvr {
     pub app_cap_id: String,
 
@@ -387,7 +367,6 @@ pub struct PythRuleMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct FluffyGit {
     pub path: String,
 
@@ -397,7 +376,6 @@ pub struct FluffyGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct SupraRule {
     pub config: Option<String>,
 
@@ -418,13 +396,11 @@ pub struct SupraRule {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct SupraRuleFeed {
     pub pair_id: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct TestnetFaucet {
     pub faucet: Option<String>,
 
@@ -445,7 +421,6 @@ pub struct TestnetFaucet {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Usd {
     pub metadata_cap: String,
 
@@ -464,7 +439,6 @@ pub struct Usd {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxAccount {
     pub account_registry: String,
 
@@ -490,7 +464,6 @@ pub struct WaterxAccount {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxAccountMvr {
     pub app_cap_id: String,
 
@@ -502,7 +475,6 @@ pub struct WaterxAccountMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct TentacledGit {
     pub path: String,
 
@@ -512,7 +484,6 @@ pub struct TentacledGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxCredit {
     pub credit_registry: String,
 
@@ -537,7 +508,6 @@ pub struct WaterxCredit {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxCreditMvr {
     pub app_cap_id: String,
 
@@ -549,7 +519,6 @@ pub struct WaterxCreditMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct StickyGit {
     pub path: String,
 
@@ -559,7 +528,6 @@ pub struct StickyGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxOracle {
     /// Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation
     /// point.
@@ -588,7 +556,6 @@ pub struct WaterxOracle {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxOracleMvr {
     pub app_cap_id: String,
 
@@ -600,7 +567,6 @@ pub struct WaterxOracleMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct IndigoGit {
     pub path: String,
 
@@ -610,7 +576,6 @@ pub struct IndigoGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxPerp {
     /// Admin capability object id.
     pub admin_cap: String,
@@ -640,7 +605,6 @@ pub struct WaterxPerp {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Market {
     pub config: String,
 
@@ -649,7 +613,6 @@ pub struct Market {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxPerpMvr {
     pub app_cap_id: String,
 
@@ -661,7 +624,6 @@ pub struct WaterxPerpMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct IndecentGit {
     pub path: String,
 
@@ -671,7 +633,6 @@ pub struct IndecentGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxPerpView {
     /// Move Registry (MVR) registration for this package. Mainnet only today.
     pub mvr: Option<WaterxPerpViewMvr>,
@@ -692,7 +653,6 @@ pub struct WaterxPerpView {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxPerpViewMvr {
     pub app_cap_id: String,
 
@@ -704,7 +664,6 @@ pub struct WaterxPerpViewMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct HilariousGit {
     pub path: String,
 
@@ -714,7 +673,6 @@ pub struct HilariousGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxPrediction {
     /// Admin capability object id.
     pub admin_cap: String,
@@ -750,7 +708,6 @@ pub struct MarketRegistries {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxPredictionMvr {
     pub app_cap_id: String,
 
@@ -762,7 +719,6 @@ pub struct WaterxPredictionMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct AmbitiousGit {
     pub path: String,
 
@@ -778,7 +734,6 @@ pub struct SettlementCoinTypes {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxPredictionGift {
     /// Admin capability object id.
     pub admin_cap: String,
@@ -800,7 +755,6 @@ pub struct WaterxPredictionGift {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxReferral {
     /// Package id of the FIRST publish. Never changes across upgrades; used to build type tags
     /// (<original_id>::module::Type).
@@ -819,7 +773,6 @@ pub struct WaterxReferral {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxRule {
     pub config: String,
 
@@ -856,7 +809,6 @@ pub struct WaterxRule {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxRuleFeed {
     pub kind: String,
 
@@ -870,7 +822,6 @@ pub struct WaterxRuleFeed {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Source {
     pub name: String,
 
@@ -878,7 +829,6 @@ pub struct Source {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxStaking {
     /// Admin capability object id.
     pub admin_cap: String,
@@ -906,7 +856,6 @@ pub struct WaterxStaking {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WaterxStakingMvr {
     pub app_cap_id: String,
 
@@ -918,7 +867,6 @@ pub struct WaterxStakingMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct CunningGit {
     pub path: String,
 
@@ -940,7 +888,6 @@ pub struct Rewarders {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct MockDeep {
     pub coin_type: String,
 
@@ -950,7 +897,6 @@ pub struct MockDeep {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WithdrawalQueue {
     pub executors: Option<Vec<String>>,
 
@@ -975,7 +921,6 @@ pub struct WithdrawalQueue {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WithdrawalQueueMvr {
     pub app_cap_id: String,
 
@@ -987,7 +932,6 @@ pub struct WithdrawalQueueMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct MagentaGit {
     pub path: String,
 
@@ -997,7 +941,6 @@ pub struct MagentaGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct Wlp {
     pub currency: String,
 
@@ -1030,7 +973,6 @@ pub struct PoolTokens {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WormholeBridge {
     pub bridge: String,
 
@@ -1067,7 +1009,6 @@ pub struct WormholeBridge {
 
 /// Move Registry (MVR) registration for this package. Mainnet only today.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct WormholeBridgeMvr {
     pub app_cap_id: String,
 
@@ -1079,7 +1020,6 @@ pub struct WormholeBridgeMvr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct FriskyGit {
     pub path: String,
 
@@ -1089,7 +1029,6 @@ pub struct FriskyGit {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct PersonalBurnCap {
     pub cap_amount: String,
 

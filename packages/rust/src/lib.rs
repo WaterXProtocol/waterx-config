@@ -2,11 +2,12 @@
 //!
 //! Types in [`generated`] are produced from `schema/waterx-config.schema.json`
 //! by quicktype (see scripts/ + the codegen workflow); do not edit by hand.
-//! Every struct is `deny_unknown_fields`, so a field added to the JSON without
-//! a schema change fails parsing here — that is the point.
 //!
-//! Pattern-level constraints (object-id hex shape etc.) are enforced by the
-//! repo's ajv gate on every PR; this crate enforces structure and types.
+//! Unknown fields are TOLERATED (serde default): consumers parse live CDN data
+//! that can gain fields before their pinned crate version does, and an
+//! additive config change must never break a deployed consumer. The strict,
+//! reject-unknowns check is the config repo's own ajv CI gate — the place
+//! where data and schema always move together.
 
 pub mod generated;
 pub use generated::*;
@@ -79,13 +80,15 @@ mod tests {
         }
     }
 
-    /// A field the schema does not know about must fail parsing — otherwise
-    /// config drift silently reappears, which is the disease this repo has.
+    /// Forward-compat: a field this crate version does not know about must be
+    /// tolerated — the live CDN document can gain fields before a deployed
+    /// consumer upgrades. (Reject-unknowns lives in the repo's ajv CI gate,
+    /// where schema and data always move together.)
     #[test]
-    fn unknown_field_is_rejected() {
+    fn unknown_field_is_tolerated() {
         let mut doc: serde_json::Value = serde_json::from_str(&fixture("mainnet")).unwrap();
         doc["packages"]["waterx_rule"]["surprise"] = serde_json::json!(1);
-        assert!(parse_waterx_config(&doc.to_string()).is_err());
+        assert!(parse_waterx_config(&doc.to_string()).is_ok());
     }
 
     #[test]

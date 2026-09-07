@@ -28,8 +28,21 @@ test("a corrupted object id is rejected", () => {
   assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
 });
 
-test("an unknown field is rejected (strict mode)", () => {
+test("an unknown field is TOLERATED by default (forward-compat with newer configs)", () => {
   const doc = JSON.parse(readFileSync(new URL("../../../mainnet.json", import.meta.url), "utf8"));
   doc.packages.waterx_rule.surprise = 1;
+  const cfg = parseWaterxConfig(doc);
+  assert.ok(cfg.packages.waterx_rule);
+});
+
+test("strict mode rejects unknown fields (CI/pinned-document use)", () => {
+  const doc = JSON.parse(readFileSync(new URL("../../../mainnet.json", import.meta.url), "utf8"));
+  doc.packages.waterx_rule.surprise = 1;
+  assert.throws(() => parseWaterxConfig(doc, undefined, { strict: true }), WaterxConfigError);
+});
+
+test("a corrupted object id is rejected even in tolerant mode", () => {
+  const doc = JSON.parse(readFileSync(new URL("../../../mainnet.json", import.meta.url), "utf8"));
+  doc.packages.waterx_oracle.oracle = "0xnot-an-id";
   assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
 });
