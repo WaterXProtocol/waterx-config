@@ -15,7 +15,11 @@
       "type": "string",
       "minLength": 4
     },
-    "coin_registry": {},
+    "coin_registry": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{1,64}$",
+      "description": "Short-form Sui address/object id."
+    },
     "packages": {
       "type": "object",
       "properties": {
@@ -1901,28 +1905,40 @@
                     "type": "integer"
                   },
                   "wormhole_core": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "Short-form Sui address/object id."
                   },
                   "wormhole_executor": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "Short-form Sui address/object id."
                   },
                   "block_explorer": {
                     "type": "string"
                   },
                   "deposit_vault": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "Short-form Sui address/object id."
                   },
                   "tokens": {
                     "type": "object",
                     "additionalProperties": {
-                      "type": "string"
+                      "type": "string",
+                      "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                      "description": "Short-form Sui address/object id."
                     },
                     "properties": {
                       "tUSDC": {
-                        "type": "string"
+                        "type": "string",
+                        "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                        "description": "Short-form Sui address/object id."
                       },
                       "tUSDT": {
-                        "type": "string"
+                        "type": "string",
+                        "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                        "description": "Short-form Sui address/object id."
                       }
                     }
                   }
