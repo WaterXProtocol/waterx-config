@@ -1,0 +1,66 @@
+{
+  "_comment": "Declared, reviewed exceptions to keyspace/field consistency. Every entry is a decision, not an accident: shrink this file over time (audit P2/P4).",
+  "mainnet": {
+    "constant_rule.feeds": [
+      "USDCUSD"
+    ],
+    "waterx_oracle.aggregators": [
+      "USDCUSD"
+    ]
+  },
+  "testnet": {
+    "constant_rule.feeds": [
+      "USDCUSD"
+    ],
+    "waterx_oracle.aggregators": [
+      "USDCUSD"
+    ]
+  },
+  "field_drift": [
+    "bucket_framework.publish_checkpoint",
+    "bucket_framework.publish_digest",
+    "bucket_framework.upgrade_capability",
+    "native_custody.mvr",
+    "native_custody.publish_checkpoint",
+    "native_custody.publish_digest",
+    "pyth_rule.mvr",
+    "pyth_rule.publish_checkpoint",
+    "pyth_rule.publish_digest",
+    "usd.publish_checkpoint",
+    "usd.publish_digest",
+    "waterx_account.mvr",
+    "waterx_account.publish_checkpoint",
+    "waterx_account.publish_digest",
+    "waterx_credit.mvr",
+    "waterx_credit.publish_checkpoint",
+    "waterx_credit.publish_digest",
+    "waterx_oracle.mvr",
+    "waterx_perp.mvr",
+    "waterx_perp.publish_checkpoint",
+    "waterx_perp.publish_digest",
+    "waterx_perp_view.mvr",
+    "waterx_perp_view.publish_checkpoint",
+    "waterx_perp_view.publish_digest",
+    "waterx_prediction.mvr",
+    "waterx_prediction.publish_checkpoint",
+    "waterx_prediction.publish_digest",
+    "waterx_referral.publish_checkpoint",
+    "waterx_referral.publish_digest",
+    "waterx_referral.upgrade_capability",
+    "waterx_rule.register_checkpoint",
+    "waterx_rule.register_digest",
+    "waterx_rule.enabled",
+    "waterx_staking.mvr",
+    "waterx_staking.publish_checkpoint",
+    "waterx_staking.publish_digest",
+    "withdrawal_queue.mvr",
+    "withdrawal_queue.executors",
+    "withdrawal_queue.publish_checkpoint",
+    "withdrawal_queue.publish_digest",
+    "wlp.publish_checkpoint",
+    "wlp.publish_digest",
+    "wormhole_bridge.mvr",
+    "wormhole_bridge.publish_checkpoint",
+    "wormhole_bridge.publish_digest"
+  ]
+}
