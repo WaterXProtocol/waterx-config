@@ -655,18 +655,15 @@
                 ],
                 "additionalProperties": false
               }
-            },
-            "enabled": {
-              "type": "boolean"
             }
           },
-          "additionalProperties": false,
           "required": [
             "enclave",
             "package",
             "rule_config_object",
             "venue_feeds"
-          ]
+          ],
+          "additionalProperties": false
         },
         "pyth": {
           "type": "object",

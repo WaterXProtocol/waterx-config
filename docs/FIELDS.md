@@ -252,11 +252,10 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `config` | suiId | ✓ |  |
-| `enabled` | boolean |  | present only on testnet today |
 | `enclave` | suiId | ✓ |  |
 | `enclave_cap` | suiId | ✓ |  |
 | `enclave_config` | suiId | ✓ |  |
-| `enclave_pubkey` | string | ✓ | Registered enclave ed25519 pubkey (hex, no 0x). Duplicated in packages.enclave.enclave_pubkey — keep both in sync until R4 deduplicates. |
+| `enclave_pubkey` | string | ✓ | Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home (the enclave package block carries identity only); k8s-infra pins an independent env copy by design (boot-without-enclave). |
 | `feeds` | map<string, object> | ✓ | QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY: waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of weights, so a weight change moves the signed price via a parameter no on-chain check can see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface change. |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |

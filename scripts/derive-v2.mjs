@@ -55,16 +55,10 @@ oracle_rules.waterx = {
     object: take("waterx_rule", "enclave"),
     cap: take("waterx_rule", "enclave_cap"),
     config: take("waterx_rule", "enclave_config"),
-    pubkey: take("waterx_rule", "enclave_pubkey") ?? take("enclave", "enclave_pubkey"),
+    pubkey: take("waterx_rule", "enclave_pubkey"), // sole home (audit correction: the enclave package block never duplicated it)
   },
   venue_feeds: v2VenueFeeds,
 };
-take("enclave", "enclave_pubkey"); // duplicate home, dropped (P7)
-take("enclave", "enclave_config");
-take("enclave", "enclave_cap");
-take("enclave", "enclave");
-const wrEnabled = take("waterx_rule", "enabled");
-if (wrEnabled !== undefined) oracle_rules.waterx.enabled = wrEnabled; // semantics TBD; carried, schema'd
 
 if (P.pyth_rule) {
   oracle_rules.pyth = {

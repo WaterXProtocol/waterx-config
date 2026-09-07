@@ -269,7 +269,6 @@
       "enclave_cap": "0x46b8905816a91bc443ecbe07777ae60805df044cbc850b5364ec372cd0a0c82f",
       "enclave": "0xebe972b114a5d7abd51addddb9c36d64d35f2c5b4338e7416afcd4e38d8bd315",
       "enclave_pubkey": "03baaa84a2a1d05b3a3563223b114ea62cfd6141b86ab71f1d54de3f88cf90a6",
-      "enabled": true,
       "feeds": {
         "BTCUSD": {
           "ticker": "BTCUSDT",

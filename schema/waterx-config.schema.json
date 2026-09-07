@@ -1192,10 +1192,6 @@
             "config": {
               "$ref": "#/$defs/suiId"
             },
-            "enabled": {
-              "type": "boolean",
-              "$comment": "present only on testnet today"
-            },
             "enclave": {
               "$ref": "#/$defs/suiId"
             },
@@ -1207,7 +1203,7 @@
             },
             "enclave_pubkey": {
               "type": "string",
-              "description": "Registered enclave ed25519 pubkey (hex, no 0x). Duplicated in packages.enclave.enclave_pubkey — keep both in sync until R4 deduplicates."
+              "description": "Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home (the enclave package block carries identity only); k8s-infra pins an independent env copy by design (boot-without-enclave)."
             },
             "feeds": {
               "type": "object",

@@ -1012,8 +1012,7 @@
           "method": "median",
           "min_sources": 2
         }
-      },
-      "enabled": true
+      }
     },
     "pyth": {
       "package": "pyth_rule",
