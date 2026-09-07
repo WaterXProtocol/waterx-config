@@ -1,8 +1,13 @@
-# waterx-config v2 — target shape proposal
+# waterx-config flip plan — the consolidated target shape
 
-Status: **proposal** (Phase 3 of the 2026-09-07 audit). Nothing in this file is
-live; v1 stays the served format until every consumer reads config through the
-generated parsers, at which point the switch is one coordinated version bump.
+Status: **decided** (2026-09-07 audit; zasper: single format, hard flip, no
+v1/v2 parallel serving). The parser packages expose ONLY the target shape and
+lift a legacy document internally (`packages/ts/src/lift.mjs`, mirrored by
+`packages/rust/src/lift.rs` with a byte-equality test between them), so
+consumers migrate once. Work accumulates on the `staging-v2`/`main-v2`
+branches; **flip day** = `node scripts/derive-target.mjs flip` committed via
+the `main-v2 → main` promotion PR, once the last direct-path consumer has
+adopted a parser package (the audit report §8 table is the gate).
 
 ## Design rules
 

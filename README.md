@@ -19,7 +19,7 @@ Hosted on Cloudflare Pages, wired to this repo's `main` branch. Pushing to main 
 ## Schema
 
 The canonical, machine-checked schema lives at [`schema/waterx-config.schema.json`](./schema/waterx-config.schema.json);
-the rendered field reference is [`docs/FIELDS.md`](./docs/FIELDS.md). Both network
+the rendered field references are [`docs/FIELDS.md`](./docs/FIELDS.md) (current shape) and [`docs/FIELDS-TARGET.md`](./docs/FIELDS-TARGET.md) (the flip target — see [`docs/FLIP-PLAN.md`](./docs/FLIP-PLAN.md)). Both network
 files are validated against it on every PR, and every keyspace/field difference
 between networks or symbol maps must be declared in
 [`schema/coverage-exceptions.json`](./schema/coverage-exceptions.json) — new,

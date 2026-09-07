@@ -27,7 +27,7 @@
 | field | type | required | notes |
 |---|---|---|---|
 | `config` | suiId | ✓ |  |
-| `feeds` | object | ✓ | Per-symbol constant price, 1e9-scaled decimal string (e.g. "1000000000" = 1.0). |
+| `feeds` | map<string, object> | ✓ | Per-symbol constant price, 1e9-scaled decimal string (e.g. "1000000000" = 1.0). |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
@@ -218,11 +218,11 @@
 |---|---|---|---|
 | `admin_cap` | suiId | ✓ | Admin capability object id. |
 | `global_config` | suiId | ✓ |  |
-| `market_registries` | object | ✓ |  |
+| `market_registries` | map<string, suiId> | ✓ |  |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
-| `settlement_coin_types` | object | ✓ |  |
+| `settlement_coin_types` | map<string, suiType> | ✓ |  |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
 
@@ -255,7 +255,7 @@
 | `enclave` | suiId | ✓ |  |
 | `enclave_cap` | suiId | ✓ |  |
 | `enclave_config` | suiId | ✓ |  |
-| `enclave_pubkey` | string | ✓ | Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home (the enclave package block carries identity only); k8s-infra pins an independent env copy by design (boot-without-enclave). |
+| `enclave_pubkey` | string | ✓ | Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an independent env copy by design (boot-without-enclave). |
 | `feeds` | map<string, object> | ✓ | QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY: waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of weights, so a weight change moves the signed price via a parameter no on-chain check can see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface change. |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
@@ -269,9 +269,9 @@
 | `admin_cap` | suiId | ✓ | Admin capability object id. |
 | `mvr` | object |  | Move Registry (MVR) registration for this package. Mainnet only today. · present only on mainnet today |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `pools` | object | ✓ |  |
+| `pools` | map<string, suiId> | ✓ |  |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
-| `rewarders` | object | ✓ |  |
+| `rewarders` | map<string, object> | ✓ |  |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |
 
@@ -294,7 +294,7 @@
 | `currency` | suiId | ✓ |  |
 | `metadata_cap` | suiId | ✓ |  |
 | `original_id` | suiId | ✓ | Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type). |
-| `pool_tokens` | object | ✓ |  |
+| `pool_tokens` | map<string, suiType> | ✓ |  |
 | `published_at` | suiId | ✓ | Package id of the current latest version — the tx-call target. Changes on every upgrade. |
 | `upgrade_capability` | suiId | ✓ | UpgradeCap object id. Deploy-time artifact; no runtime consumer. |
 | `version` | integer | ✓ | On-chain package version: 1 at first publish, +1 per upgrade. |

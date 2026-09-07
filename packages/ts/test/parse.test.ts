@@ -1,67 +1,50 @@
-/** The two live instances MUST parse — this is the schema↔data↔parser triangle. */
+/** The schema↔data↔parser↔lift quadrangle: the LIVE legacy files must parse
+ * into the target shape, and a natively-target document must parse identically. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { parseWaterxConfig, WaterxConfigError } from "../src/index.ts";
 
-for (const net of ["mainnet", "testnet"] as const) {
-  test(`${net}.json parses strictly`, () => {
-    const doc = JSON.parse(readFileSync(new URL(`../../../${net}.json`, import.meta.url), "utf8"));
-    const cfg = parseWaterxConfig(doc, net);
-    assert.equal(cfg.network, net);
-    assert.ok(Object.keys(cfg.packages).length >= 15);
-  });
-}
-
-test("waterx_rule feed shape is fully typed", () => {
-  const doc = JSON.parse(readFileSync(new URL("../../../mainnet.json", import.meta.url), "utf8"));
-  const cfg = parseWaterxConfig(doc);
-  const btc = cfg.packages.waterx_rule?.feeds["BTCUSD"];
-  assert.ok(btc);
-  assert.equal(typeof btc.ticker, "string");
-  assert.ok(btc.sources.every((s) => typeof s.name === "string" && Number.isInteger(s.weight)));
-});
-
-test("a corrupted object id is rejected", () => {
-  const doc = JSON.parse(readFileSync(new URL("../../../mainnet.json", import.meta.url), "utf8"));
-  doc.packages.waterx_oracle.oracle = "0xnot-an-id";
-  assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
-});
-
-test("an unknown field is TOLERATED by default (forward-compat with newer configs)", () => {
-  const doc = JSON.parse(readFileSync(new URL("../../../mainnet.json", import.meta.url), "utf8"));
-  doc.packages.waterx_rule.surprise = 1;
-  const cfg = parseWaterxConfig(doc);
-  assert.ok(cfg.packages.waterx_rule);
-});
-
-test("strict mode rejects unknown fields (CI/pinned-document use)", () => {
-  const doc = JSON.parse(readFileSync(new URL("../../../mainnet.json", import.meta.url), "utf8"));
-  doc.packages.waterx_rule.surprise = 1;
-  assert.throws(() => parseWaterxConfig(doc, undefined, { strict: true }), WaterxConfigError);
-});
-
-test("a corrupted object id is rejected even in tolerant mode", () => {
-  const doc = JSON.parse(readFileSync(new URL("../../../mainnet.json", import.meta.url), "utf8"));
-  doc.packages.waterx_oracle.oracle = "0xnot-an-id";
-  assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
-});
-
-import { parseWaterxConfigV2 } from "../src/index.ts";
+const FIXTURES = new Map<string, unknown>();
+const load = (rel: string): any => {
+  if (!FIXTURES.has(rel)) {
+    FIXTURES.set(rel, JSON.parse(readFileSync(new URL(`../../../${rel}`, import.meta.url), "utf8")));
+  }
+  return structuredClone(FIXTURES.get(rel));
+};
 
 for (const net of ["mainnet", "testnet"] as const) {
-  test(`v2/${net}.json parses (tolerant and strict)`, () => {
-    const doc = JSON.parse(readFileSync(new URL(`../../../v2/${net}.json`, import.meta.url), "utf8"));
-    const cfg = parseWaterxConfigV2(doc, net);
+  test(`${net}.json (legacy shape) lifts + parses into the target shape`, () => {
+    const cfg = parseWaterxConfig(load(`${net}.json`), net);
     assert.equal(cfg.schema_version, 2);
     assert.ok(Object.keys(cfg.symbols).length >= 31);
-    assert.ok(cfg.oracle_rules.waterx?.venue_feeds["BTCUSD"]);
-    parseWaterxConfigV2(doc, net, { strict: true }); // must also hold strictly
+    const btc = cfg.oracle_rules.waterx?.venue_feeds["BTCUSD"];
+    assert.ok(btc);
+    assert.ok(btc.sources.every((s) => typeof s.name === "string" && Number.isInteger(s.weight)));
+    // identity fields survive at the SAME path — the flip-immunity guarantee
+    assert.match(cfg.packages.waterx_rule.published_at ?? "", /^0x[0-9a-fA-F]{64}$/);
+  });
+
+  test(`${net}: a natively-target document round-trips (flip-day behavior)`, () => {
+    const lifted = parseWaterxConfig(load(`${net}.json`));
+    const again = parseWaterxConfig(structuredClone(lifted), net); // now schema_version=2 → native path
+    assert.deepEqual(again, lifted);
   });
 }
 
-test("v2: corrupted aggregator id rejected even in tolerant mode", () => {
-  const doc = JSON.parse(readFileSync(new URL("../../../v2/mainnet.json", import.meta.url), "utf8"));
-  doc.objects.oracle.aggregators.BTCUSD = "0xnope";
-  assert.throws(() => parseWaterxConfigV2(doc), WaterxConfigError);
+test("a corrupted object id is rejected (patterns bite despite tolerance)", () => {
+  const doc = load("mainnet.json");
+  doc.packages.waterx_oracle.oracle = "0xnot-an-id";
+  assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
+});
+
+test("an unknown field is TOLERATED (forward-compat with newer configs)", () => {
+  const doc = load("mainnet.json");
+  doc.packages.waterx_rule.surprise = 1;
+  const cfg = parseWaterxConfig(doc);
+  assert.ok(cfg.oracle_rules.waterx);
+});
+
+test("network mismatch is rejected", () => {
+  assert.throws(() => parseWaterxConfig(load("mainnet.json"), "testnet"), WaterxConfigError);
 });

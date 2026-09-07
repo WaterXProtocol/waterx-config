@@ -1,68 +1,59 @@
 /**
  * @waterx-protocol/config — the official typed reader for waterx-config.
  *
- * One import replaces every hand-rolled partial type in SDK/FE/BE/agent:
+ * ONE public shape: the consolidated target format (docs/FLIP-PLAN.md).
+ * Until flip day the CDN serves the legacy layout; this parser detects the
+ * shape (`schema_version`) and lifts a legacy document into the target shape
+ * via the same mapping the flip itself will use (src/lift.mjs), so consumers
+ * migrate once and never see two formats:
  *
  *   import { loadWaterxConfig } from "@waterx-protocol/config";
  *   const cfg = await loadWaterxConfig("mainnet");
- *   cfg.packages.waterx_rule?.feeds["BTCUSD"].sources; // fully typed
+ *   cfg.oracle_rules.waterx.venue_feeds["BTCUSD"].sources; // fully typed
  *
- * The runtime validator is GENERATED from schema/waterx-config.schema.json
- * (scripts/deref-schema.mjs → json-schema-to-zod); CI fails if it drifts.
- * Do not edit schema.ts by hand.
+ * Validators are GENERATED from the schemas (scripts/deref-schema.mjs →
+ * json-schema-to-zod); CI fails if they drift. Do not edit schema*.ts by hand.
+ *
+ * Unknown fields are TOLERATED: consumers parse live CDN data that can gain
+ * fields before this package version does. The strict reject-unknowns check is
+ * the config repo's own ajv CI gate, where schema and data move together.
  */
 import waterxConfigSchema from "./schema.ts";
-import waterxConfigSchemaTolerant from "./schema-tolerant.ts";
-import waterxConfigV2Schema from "./schema-v2.ts";
-import waterxConfigV2SchemaTolerant from "./schema-v2-tolerant.ts";
+import legacySchema from "./schema-legacy.ts";
+// The flip mapping — single implementation shared with scripts/derive-target.mjs.
+// Plain JS module (compiled via allowJs) so repo scripts can import it directly.
+// @ts-expect-error untyped internal module
+import { liftToTarget } from "./lift.mjs";
 import type { z } from "zod";
 
-export { waterxConfigSchema, waterxConfigSchemaTolerant, waterxConfigV2Schema, waterxConfigV2SchemaTolerant };
+export { waterxConfigSchema };
 
-/** The full network file, inferred from the generated Zod schema. */
+/** The full network document, in the consolidated (target) shape. */
 export type WaterxConfig = z.infer<typeof waterxConfigSchema>;
 export type WaterxPackages = WaterxConfig["packages"];
-export type WaterxRulePackage = NonNullable<WaterxPackages["waterx_rule"]>;
-export type WaterxRuleFeed = WaterxRulePackage["feeds"][string];
-export type PythRuleFeed = NonNullable<WaterxPackages["pyth_rule"]>["feeds"][string];
-export type PerpMarket = NonNullable<WaterxPackages["waterx_perp"]>["markets"][string];
+export type SymbolsRegistry = WaterxConfig["symbols"];
+export type OracleRules = WaterxConfig["oracle_rules"];
+export type VenueFeed = NonNullable<OracleRules["waterx"]>["venue_feeds"][string];
+export type PerpMarket = NonNullable<WaterxConfig["objects"]["perp"]>["markets"][string];
 
 export type Network = "mainnet" | "testnet";
 
-/** The consolidated v2 document (docs/V2-PROPOSAL.md), served at /v2/<network>.json. */
-export type WaterxConfigV2 = z.infer<typeof waterxConfigV2Schema>;
-export type SymbolsRegistry = WaterxConfigV2["symbols"];
-export type OracleRules = WaterxConfigV2["oracle_rules"];
-
 /**
  * The ONLY sanctioned base URL. raw.githubusercontent.com is rate-limited
- * (429) and explicitly forbidden by the repo README — this loader exists so
- * no consumer ever hardcodes it again.
+ * (429) and forbidden by the repo README — this loader exists so no consumer
+ * ever hardcodes it again.
  */
 export const CONFIG_CDN_BASE = "https://config.waterx.app";
 
 export class WaterxConfigError extends Error {
-  override readonly cause?: unknown;
   constructor(message: string, cause?: unknown) {
-    super(message);
+    super(message, { cause });
     this.name = "WaterxConfigError";
-    this.cause = cause;
   }
 }
 
-export interface ParseOptions {
-  /**
-   * Reject unknown fields. Default FALSE: consumers parse live CDN data that
-   * can gain fields before this package version does — tolerating unknowns is
-   * what keeps an additive config change from breaking deployed consumers.
-   * Strict mode is for tests/CI against a pinned document; the config repo's
-   * own ajv gate is the authoritative strict check.
-   */
-  strict?: boolean;
-}
-
-export interface LoadOptions extends ParseOptions {
-  /** Override the CDN base (tests, staging CDN). Never point this at raw.githubusercontent.com. */
+export interface LoadOptions {
+  /** Override the CDN base (tests, staging CDN). Never raw.githubusercontent.com. */
   baseUrl?: string;
   fetchImpl?: typeof fetch;
   /** Per-attempt timeout in ms (default 10_000). */
@@ -71,11 +62,13 @@ export interface LoadOptions extends ParseOptions {
   attempts?: number;
 }
 
-/** Fetch + strictly parse one network's config. Throws WaterxConfigError on any failure. */
+/** Fetch + parse one network's config. Throws WaterxConfigError on any failure. */
 export async function loadWaterxConfig(network: Network, opts: LoadOptions = {}): Promise<WaterxConfig> {
   const base = (opts.baseUrl ?? CONFIG_CDN_BASE).replace(/\/+$/, "");
   if (/raw\.githubusercontent\.com/.test(base)) {
-    throw new WaterxConfigError("raw.githubusercontent.com is not a config source (429-rate-limited; README forbids it). Use the CDN.");
+    throw new WaterxConfigError(
+      "raw.githubusercontent.com is not a config source (429-rate-limited; README forbids it). Use the CDN.",
+    );
   }
   const url = `${base}/${network}.json`;
   const doFetch = opts.fetchImpl ?? fetch;
@@ -88,7 +81,7 @@ export async function loadWaterxConfig(network: Network, opts: LoadOptions = {})
       try {
         const res = await doFetch(url, { signal: ctrl.signal });
         if (!res.ok) throw new WaterxConfigError(`GET ${url}: HTTP ${res.status}`);
-        return parseWaterxConfig(await res.json(), network, opts);
+        return parseWaterxConfig(await res.json(), network);
       } finally {
         clearTimeout(timer);
       }
@@ -101,61 +94,33 @@ export async function loadWaterxConfig(network: Network, opts: LoadOptions = {})
   throw new WaterxConfigError(`failed to load ${url} after ${attempts} attempts`, lastErr);
 }
 
-/** Fetch + parse one network's v2 config from the CDN (/v2/<network>.json). */
-export async function loadWaterxConfigV2(network: Network, opts: LoadOptions = {}): Promise<WaterxConfigV2> {
-  const base = (opts.baseUrl ?? CONFIG_CDN_BASE).replace(/\/+$/, "");
-  if (/raw\.githubusercontent\.com/.test(base)) {
-    throw new WaterxConfigError("raw.githubusercontent.com is not a config source. Use the CDN.");
-  }
-  const url = `${base}/v2/${network}.json`;
-  const doFetch = opts.fetchImpl ?? fetch;
-  const attempts = opts.attempts ?? 3;
-  let lastErr: unknown;
-  for (let i = 0; i < attempts; i++) {
+function zodIssues(error: z.ZodError): string {
+  return error.issues.slice(0, 5).map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+}
+
+/**
+ * Parse an already-fetched document (pinned file, test fixture) into the
+ * target shape. Legacy-shape documents (no `schema_version`) are first
+ * validated against the legacy schema, then lifted — so pre-flip consumers get
+ * the exact post-flip shape today, and flip day is a non-event for them.
+ */
+export function parseWaterxConfig(doc: unknown, expectNetwork?: Network): WaterxConfig {
+  let candidate = doc;
+  const version = (doc as { schema_version?: unknown })?.schema_version;
+  if (typeof version !== "number" || version < 2) {
+    const legacy = legacySchema.safeParse(doc);
+    if (!legacy.success) {
+      throw new WaterxConfigError(`legacy config failed schema validation: ${zodIssues(legacy.error)}`);
+    }
     try {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), opts.timeoutMs ?? 10_000);
-      try {
-        const res = await doFetch(url, { signal: ctrl.signal });
-        if (!res.ok) throw new WaterxConfigError(`GET ${url}: HTTP ${res.status}`);
-        return parseWaterxConfigV2(await res.json(), network, opts);
-      } finally {
-        clearTimeout(timer);
-      }
+      candidate = liftToTarget(legacy.data).doc;
     } catch (e) {
-      lastErr = e;
-      if (e instanceof WaterxConfigError && !/HTTP 5|abort/i.test(String(e.message))) throw e;
-      if (i < attempts - 1) await new Promise((r) => setTimeout(r, 500 * 2 ** i));
+      throw new WaterxConfigError(`legacy config could not be lifted to the target shape: ${String(e)}`, e);
     }
   }
-  throw new WaterxConfigError(`failed to load ${url} after ${attempts} attempts`, lastErr);
-}
-
-/** Parse an already-fetched v2 document. Tolerant by default — see ParseOptions.strict. */
-export function parseWaterxConfigV2(doc: unknown, expectNetwork?: Network, opts: ParseOptions = {}): WaterxConfigV2 {
-  const schema = opts.strict ? waterxConfigV2Schema : waterxConfigV2SchemaTolerant;
-  const parsed = schema.safeParse(doc);
+  const parsed = waterxConfigSchema.safeParse(candidate);
   if (!parsed.success) {
-    const issues = parsed.error.issues.slice(0, 5).map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
-    throw new WaterxConfigError(`v2 config failed schema validation: ${issues}`);
-  }
-  if (expectNetwork && parsed.data.network !== expectNetwork) {
-    throw new WaterxConfigError(`network mismatch: asked for ${expectNetwork}, document says ${parsed.data.network}`);
-  }
-  return parsed.data as WaterxConfigV2;
-}
-
-/** Parse an already-fetched document (pinned file, test fixture). Tolerant of
- * unknown fields by default — see ParseOptions.strict. */
-export function parseWaterxConfig(doc: unknown, expectNetwork?: Network, opts: ParseOptions = {}): WaterxConfig {
-  const schema = opts.strict ? waterxConfigSchema : waterxConfigSchemaTolerant;
-  const parsed = schema.safeParse(doc);
-  if (!parsed.success) {
-    const issues = parsed.error.issues
-      .slice(0, 5)
-      .map((i) => `${i.path.join(".")}: ${i.message}`)
-      .join("; ");
-    throw new WaterxConfigError(`config failed schema validation: ${issues}`);
+    throw new WaterxConfigError(`config failed schema validation: ${zodIssues(parsed.error)}`);
   }
   if (expectNetwork && parsed.data.network !== expectNetwork) {
     throw new WaterxConfigError(`network mismatch: asked for ${expectNetwork}, document says ${parsed.data.network}`);

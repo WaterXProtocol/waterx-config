@@ -1,11 +1,15 @@
 name: Codegen freshness
 
-# The parsers and docs are GENERATED from the schema. This job regenerates them
-# and fails on any diff — so a schema change cannot merge without its generated
-# artifacts, and nobody can hand-edit a generated file and have it stick.
+# Schemas, parsers and docs are GENERATED. This job regenerates all of them
+# and fails on any diff — a schema/data change cannot merge without its
+# generated artifacts, and generated files cannot be hand-edited.
 on:
   pull_request:
-    paths: [schema/**, packages/ts/src/schema.ts, packages/rust/src/generated.rs, docs/FIELDS.md, scripts/**]
+    paths: [schema/**, scripts/**, packages/**, docs/FIELDS*.md, mainnet.json, testnet.json]
+
+concurrency:
+  group: codegen-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   regen:
@@ -14,31 +18,25 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
-      - name: Regenerate TS parser
+      - name: Install generators once
+        run: npm i -g json-schema-to-zod@2 quicktype@23
+      - name: Regenerate everything (schemas → parsers → docs)
         run: |
-          node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/schema-deref.json
-          npx --yes json-schema-to-zod@2 -i /tmp/schema-deref.json -o packages/ts/src/schema.ts
-          node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/schema-deref-tolerant.json --tolerant
-          npx --yes json-schema-to-zod@2 -i /tmp/schema-deref-tolerant.json -o packages/ts/src/schema-tolerant.ts
-      - name: Regenerate Rust types
-        run: |
-          npx --yes quicktype@23 --src-lang schema --src schema/waterx-config.schema.json \
-            --lang rust --visibility public --derive-debug --derive-clone -o packages/rust/src/generated.rs
-          node scripts/patch-generated-rust.mjs
-      - name: Regenerate v2 (derivation, schema, parsers)
-        run: |
-          node scripts/derive-v2.mjs mainnet && node scripts/derive-v2.mjs testnet
-          python3 scripts/gen_v2_schema.py
-          node scripts/deref-schema.mjs schema/v2/waterx-config-v2.schema.json /tmp/v2-strict.json
-          npx --yes json-schema-to-zod@2 -i /tmp/v2-strict.json -o packages/ts/src/schema-v2.ts
-          node scripts/deref-schema.mjs schema/v2/waterx-config-v2.schema.json /tmp/v2-tolerant.json --tolerant
-          npx --yes json-schema-to-zod@2 -i /tmp/v2-tolerant.json -o packages/ts/src/schema-v2-tolerant.ts
-          npx --yes quicktype@23 --src-lang schema --src schema/v2/waterx-config-v2.schema.json \
-            --lang rust --visibility public --derive-debug --derive-clone --top-level WaterxConfigV2 \
-            -o packages/rust/src/generated_v2.rs
-      - name: Regenerate field docs
-        run: node scripts/gen-fields-doc.mjs && node scripts/gen-fields-doc.mjs v2
-      - name: Generated artifacts must match the schema
-        run: git diff --exit-code -- packages/ts/src packages/rust/src/generated.rs packages/rust/src/generated_v2.rs docs/FIELDS.md docs/FIELDS-V2.md v2/ schema/v2/
+          python3 scripts/gen_schema.py
+          node scripts/derive-target.mjs emit .build-target
+          python3 scripts/gen_target_schema.py
+          for pair in "waterx-config.schema.json:schema-legacy.ts" "waterx-config-target.schema.json:schema.ts"; do
+            s="schema/${pair%%:*}"; out="packages/ts/src/${pair##*:}"
+            node scripts/deref-schema.mjs "$s" /tmp/deref.json --tolerant
+            json-schema-to-zod -i /tmp/deref.json -o "$out"
+          done
+          quicktype --src-lang schema --src schema/waterx-config.schema.json --lang rust \
+            --visibility public --derive-debug --derive-clone --top-level LegacyWaterxConfig \
+            -o packages/rust/src/generated_legacy.rs
+          quicktype --src-lang schema --src schema/waterx-config-target.schema.json --lang rust \
+            --visibility public --derive-debug --derive-clone --top-level WaterxConfig \
+            -o packages/rust/src/generated.rs
+          node scripts/gen-fields-doc.mjs
+          node scripts/gen-fields-doc.mjs target
+      - name: Generated artifacts must match their sources
+        run: git diff --exit-code -- schema/*.json packages/ts/src packages/rust/src docs/FIELDS.md docs/FIELDS-TARGET.md

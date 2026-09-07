@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, registry-url: "https://registry.npmjs.org" }
+        with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json, registry-url: "https://registry.npmjs.org" }
       - name: Refuse to publish without a token
         run: |
           if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
@@ -33,6 +33,7 @@ jobs:
             echo "::error::tag v$TAG != packages/ts version $PKG — bump package.json in the same PR as the tag."
             exit 1
           fi
-      - run: cd packages/ts && npm ci && npm test && npm run build
+      # tests already gated the merge (validate.yml); the tag gate above is the publish gate
+      - run: cd packages/ts && npm ci && npm run build
       - run: cd packages/ts && npm publish --access public
         env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }

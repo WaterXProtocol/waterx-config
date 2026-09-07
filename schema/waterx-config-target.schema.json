@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://config.waterx.app/schema/v2/waterx-config-v2.schema.json",
-  "title": "waterx-config network file (v2)",
-  "description": "The consolidated v2 shape (docs/V2-PROPOSAL.md): one symbol universe, uniform package identity, domain-grouped shared objects, and a named per-rule oracle registry. Derived mechanically from v1 by scripts/derive-v2.mjs until cutover.",
+  "$id": "https://config.waterx.app/schema/waterx-config-target.schema.json",
+  "title": "waterx-config network file (flip target)",
+  "description": "The consolidated post-flip shape (docs/FLIP-PLAN.md): one symbol universe, uniform package identity, domain-grouped shared objects, and a named per-rule oracle registry. Until flip day this validates the LIFTED form of the served files; on flip day it becomes the schema of mainnet.json/testnet.json themselves.",
   "type": "object",
   "properties": {
     "schema_version": {
@@ -20,7 +20,6 @@
     },
     "symbols": {
       "type": "object",
-      "description": "The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map elsewhere must reference a key from here (CI-enforced).",
       "additionalProperties": {
         "type": "object",
         "properties": {
@@ -39,70 +38,8 @@
           "kind"
         ],
         "additionalProperties": false
-      }
-    },
-    "packages": {
-      "type": "object",
-      "description": "Package identity ONLY — uniform shape for every package; shared objects live under `objects`.",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "published_at": {
-            "$ref": "#/$defs/suiId"
-          },
-          "original_id": {
-            "$ref": "#/$defs/suiId"
-          },
-          "version": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "upgrade_capability": {
-            "$ref": "#/$defs/suiId"
-          },
-          "mvr": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "package_info_id": {
-                "$ref": "#/$defs/suiId"
-              },
-              "app_cap_id": {
-                "$ref": "#/$defs/suiId"
-              },
-              "git": {
-                "type": "object",
-                "properties": {
-                  "repo": {
-                    "type": "string"
-                  },
-                  "path": {
-                    "type": "string"
-                  },
-                  "version": {
-                    "type": "integer"
-                  }
-                },
-                "required": [
-                  "repo",
-                  "path",
-                  "version"
-                ],
-                "additionalProperties": false
-              }
-            },
-            "required": [
-              "name",
-              "package_info_id",
-              "app_cap_id"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "additionalProperties": false
-      }
+      },
+      "description": "The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map elsewhere must reference a key from here (CI-enforced)."
     },
     "objects": {
       "type": "object",
@@ -187,15 +124,9 @@
             },
             "pool_tokens": {
               "type": "object",
-              "properties": {
-                "USDCUSD": {
-                  "$ref": "#/$defs/suiType"
-                }
-              },
-              "required": [
-                "USDCUSD"
-              ],
-              "additionalProperties": false
+              "additionalProperties": {
+                "$ref": "#/$defs/suiType"
+              }
             }
           },
           "required": [
@@ -215,22 +146,16 @@
             },
             "pools": {
               "type": "object",
-              "properties": {
-                "WLP": {
-                  "$ref": "#/$defs/suiId"
-                }
-              },
-              "required": [
-                "WLP"
-              ],
-              "additionalProperties": false
+              "additionalProperties": {
+                "$ref": "#/$defs/suiId"
+              }
             },
             "rewarders": {
               "type": "object",
-              "properties": {
-                "WLP": {
-                  "type": "object",
-                  "additionalProperties": {
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "USDC": {
                     "type": "object",
                     "properties": {
                       "rewarder_id": {
@@ -250,34 +175,49 @@
                     ],
                     "additionalProperties": false
                   },
-                  "properties": {
-                    "MOCK_DEEP": {
-                      "type": "object",
-                      "properties": {
-                        "rewarder_id": {
-                          "$ref": "#/$defs/suiId"
-                        },
-                        "coin_type": {
-                          "$ref": "#/$defs/suiType"
-                        },
-                        "decimals": {
-                          "type": "integer"
-                        }
+                  "DEEP": {
+                    "type": "object",
+                    "properties": {
+                      "rewarder_id": {
+                        "$ref": "#/$defs/suiId"
                       },
-                      "required": [
-                        "coin_type",
-                        "decimals",
-                        "rewarder_id"
-                      ],
-                      "additionalProperties": false
-                    }
+                      "coin_type": {
+                        "$ref": "#/$defs/suiType"
+                      },
+                      "decimals": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "coin_type",
+                      "decimals",
+                      "rewarder_id"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "MOCK_DEEP": {
+                    "type": "object",
+                    "properties": {
+                      "rewarder_id": {
+                        "$ref": "#/$defs/suiId"
+                      },
+                      "coin_type": {
+                        "$ref": "#/$defs/suiType"
+                      },
+                      "decimals": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "coin_type",
+                      "decimals",
+                      "rewarder_id"
+                    ],
+                    "additionalProperties": false
                   }
-                }
-              },
-              "additionalProperties": false,
-              "required": [
-                "WLP"
-              ]
+                },
+                "additionalProperties": false
+              }
             }
           },
           "additionalProperties": false,
@@ -470,27 +410,15 @@
             },
             "market_registries": {
               "type": "object",
-              "properties": {
-                "USD": {
-                  "$ref": "#/$defs/suiId"
-                }
-              },
-              "required": [
-                "USD"
-              ],
-              "additionalProperties": false
+              "additionalProperties": {
+                "$ref": "#/$defs/suiId"
+              }
             },
             "settlement_coin_types": {
               "type": "object",
-              "properties": {
-                "USD": {
-                  "$ref": "#/$defs/suiType"
-                }
-              },
-              "required": [
-                "USD"
-              ],
-              "additionalProperties": false
+              "additionalProperties": {
+                "$ref": "#/$defs/suiType"
+              }
             },
             "claimable_link_config": {
               "$ref": "#/$defs/suiId"
@@ -611,7 +539,8 @@
                 "object",
                 "pubkey"
               ],
-              "additionalProperties": false
+              "additionalProperties": false,
+              "description": "The ONE home for enclave identity (object, cap, config, pubkey)."
             },
             "venue_feeds": {
               "type": "object",
@@ -654,7 +583,8 @@
                   "ticker"
                 ],
                 "additionalProperties": false
-              }
+              },
+              "description": "QC feed registry (was packages.waterx_rule.feeds). `weights` remain OFF-CHAIN ONLY — audit-scope I-16 trust surface."
             }
           },
           "required": [
@@ -739,24 +669,18 @@
             },
             "constant_prices": {
               "type": "object",
-              "properties": {
-                "USDCUSD": {
-                  "type": "object",
-                  "properties": {
-                    "price": {
-                      "$ref": "#/$defs/decString"
-                    }
-                  },
-                  "required": [
-                    "price"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "USDCUSD"
-              ],
-              "additionalProperties": false
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "price": {
+                    "$ref": "#/$defs/decString"
+                  }
+                },
+                "required": [
+                  "price"
+                ],
+                "additionalProperties": false
+              }
             }
           },
           "required": [
@@ -839,12 +763,17 @@
                   },
                   "tokens": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "string",
-                      "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                      "description": "Short-form Sui address/object id."
-                    },
                     "properties": {
+                      "USDC": {
+                        "type": "string",
+                        "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                        "description": "Short-form Sui address/object id."
+                      },
+                      "USDT": {
+                        "type": "string",
+                        "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                        "description": "Short-form Sui address/object id."
+                      },
                       "tUSDC": {
                         "type": "string",
                         "pattern": "^0x[0-9a-fA-F]{1,64}$",
@@ -855,7 +784,8 @@
                         "pattern": "^0x[0-9a-fA-F]{1,64}$",
                         "description": "Short-form Sui address/object id."
                       }
-                    }
+                    },
+                    "additionalProperties": false
                   }
                 },
                 "additionalProperties": false,
@@ -881,6 +811,73 @@
       "required": [
         "bridge"
       ]
+    },
+    "packages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "published_at": {
+            "$ref": "#/$defs/suiId",
+            "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
+          },
+          "original_id": {
+            "$ref": "#/$defs/suiId",
+            "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+          },
+          "upgrade_capability": {
+            "$ref": "#/$defs/suiId",
+            "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
+          },
+          "mvr": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "package_info_id": {
+                "$ref": "#/$defs/suiId"
+              },
+              "app_cap_id": {
+                "$ref": "#/$defs/suiId"
+              },
+              "git": {
+                "type": "object",
+                "properties": {
+                  "repo": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "repo",
+                  "path",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "package_info_id",
+              "app_cap_id"
+            ],
+            "additionalProperties": false,
+            "description": "Move Registry (MVR) registration for this package. Mainnet only today."
+          }
+        },
+        "additionalProperties": false
+      }
     }
   },
   "required": [
@@ -907,7 +904,7 @@
     "decString": {
       "type": "string",
       "pattern": "^[0-9]+$",
-      "description": "Unsigned integer as a decimal string (u64/u128-safe)."
+      "description": "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices)."
     }
   }
 }

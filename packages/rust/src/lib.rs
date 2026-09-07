@@ -1,22 +1,27 @@
 //! waterx-config — the official typed reader for WaterX network files.
 //!
-//! Types in [`generated`] are produced from `schema/waterx-config.schema.json`
-//! by quicktype (see scripts/ + the codegen workflow); do not edit by hand.
+//! ONE public shape: the consolidated target format (docs/FLIP-PLAN.md).
+//! Until flip day the CDN serves the legacy layout; [`parse_waterx_config`]
+//! detects the shape (`schema_version`) and lifts a legacy document via
+//! [`lift`] — the same mapping flip day itself uses — so consumers migrate
+//! once and never see two formats.
 //!
-//! Unknown fields are TOLERATED (serde default): consumers parse live CDN data
-//! that can gain fields before their pinned crate version does, and an
-//! additive config change must never break a deployed consumer. The strict,
-//! reject-unknowns check is the config repo's own ajv CI gate — the place
-//! where data and schema always move together.
+//! Types in [`generated`] (target) and [`generated_legacy`] are produced from
+//! the schemas by quicktype (see the codegen workflow); do not edit by hand.
+//! Unknown fields are TOLERATED (serde default): live CDN data can gain fields
+//! before a deployed consumer's pinned crate does. The strict reject-unknowns
+//! check is the repo's own ajv CI gate.
 
 pub mod generated;
-pub mod generated_v2;
-pub use generated::*;
-pub use generated_v2::WaterxConfigV2;
+pub mod generated_legacy;
+pub mod lift;
+
+pub use generated::WaterxConfig;
 
 #[derive(Debug)]
 pub enum ConfigError {
     Parse(serde_json::Error),
+    Lift(lift::LiftError),
     NetworkMismatch { expected: String, got: String },
     #[cfg(feature = "fetch")]
     Http(reqwest::Error),
@@ -26,6 +31,7 @@ impl std::fmt::Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ConfigError::Parse(e) => write!(f, "config failed schema-derived parsing: {e}"),
+            ConfigError::Lift(e) => write!(f, "{e}"),
             ConfigError::NetworkMismatch { expected, got } => {
                 write!(f, "network mismatch: asked for {expected}, document says {got}")
             }
@@ -40,17 +46,23 @@ impl std::error::Error for ConfigError {}
 /// forbidden by the repo README.
 pub const CONFIG_CDN_BASE: &str = "https://config.waterx.app";
 
-/// Parse an already-fetched v1 document (unknown fields tolerated).
+/// Parse an already-fetched document into the target shape, lifting a
+/// legacy-shape document (no `schema_version`) transparently.
 pub fn parse_waterx_config(json: &str) -> Result<WaterxConfig, ConfigError> {
-    serde_json::from_str(json).map_err(ConfigError::Parse)
+    let value: serde_json::Value = serde_json::from_str(json).map_err(ConfigError::Parse)?;
+    let is_target = value
+        .get("schema_version")
+        .and_then(serde_json::Value::as_i64)
+        .is_some_and(|v| v >= 2);
+    let target = if is_target {
+        value
+    } else {
+        lift::lift_to_target(&value).map_err(ConfigError::Lift)?.doc
+    };
+    serde_json::from_value(target).map_err(ConfigError::Parse)
 }
 
-/// Parse an already-fetched v2 document (/v2/<network>.json; unknown fields tolerated).
-pub fn parse_waterx_config_v2(json: &str) -> Result<WaterxConfigV2, ConfigError> {
-    serde_json::from_str(json).map_err(ConfigError::Parse)
-}
-
-/// Fetch + strictly parse one network's config from the CDN.
+/// Fetch + parse one network's config from the CDN.
 #[cfg(feature = "fetch")]
 pub async fn load_waterx_config(network: &str) -> Result<WaterxConfig, ConfigError> {
     let url = format!("{CONFIG_CDN_BASE}/{network}.json");
@@ -63,9 +75,12 @@ pub async fn load_waterx_config(network: &str) -> Result<WaterxConfig, ConfigErr
         .await
         .map_err(ConfigError::Http)?;
     let cfg = parse_waterx_config(&body)?;
-    let got = format!("{:?}", cfg.network).to_lowercase();
+    let got = match cfg.network {
+        generated::Network::Mainnet => "mainnet",
+        generated::Network::Testnet => "testnet",
+    };
     if got != network {
-        return Err(ConfigError::NetworkMismatch { expected: network.into(), got });
+        return Err(ConfigError::NetworkMismatch { expected: network.into(), got: got.into() });
     }
     Ok(cfg)
 }
@@ -74,48 +89,62 @@ pub async fn load_waterx_config(network: &str) -> Result<WaterxConfig, ConfigErr
 mod tests {
     use super::*;
 
-    fn fixture(name: &str) -> String {
-        std::fs::read_to_string(format!("{}/../../{name}.json", env!("CARGO_MANIFEST_DIR"))).unwrap()
+    fn fixture(rel: &str) -> String {
+        std::fs::read_to_string(format!("{}/../../{rel}", env!("CARGO_MANIFEST_DIR"))).unwrap()
     }
 
-    /// v2: both derived instances must parse, and the consolidated shape holds.
+    /// The LIVE legacy files must lift + parse into the target shape, with the
+    /// identity fields surviving at the same path (the flip-immunity guarantee).
     #[test]
-    fn both_v2_networks_parse() {
+    fn legacy_files_lift_and_parse() {
         for net in ["mainnet", "testnet"] {
-            let json = std::fs::read_to_string(format!("{}/../../v2/{net}.json", env!("CARGO_MANIFEST_DIR"))).unwrap();
-            let cfg = parse_waterx_config_v2(&json).unwrap_or_else(|e| panic!("v2 {net}: {e}"));
-            assert_eq!(cfg.schema_version as i64, 2, "schema_version pin");
+            let cfg = parse_waterx_config(&fixture(&format!("{net}.json")))
+                .unwrap_or_else(|e| panic!("{net}: {e}"));
             assert!(cfg.symbols.len() >= 31, "{net} symbols universe");
             assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
+            let wr = cfg.packages.get("waterx_rule").expect("waterx_rule identity");
+            assert!(wr.published_at.as_deref().unwrap_or("").starts_with("0x"));
         }
     }
 
-    /// The schema↔data↔parser triangle: both live instances MUST parse.
+    /// A natively-target document parses identically (flip-day behavior).
     #[test]
-    fn both_networks_parse_strictly() {
-        for net in ["mainnet", "testnet"] {
-            let cfg = parse_waterx_config(&fixture(net)).unwrap_or_else(|e| panic!("{net}: {e}"));
-            assert!(cfg.packages.waterx_rule.is_some(), "{net} lost waterx_rule");
-        }
+    fn native_target_round_trips() {
+        let legacy: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
+        let lifted = lift::lift_to_target(&legacy).unwrap().doc;
+        let cfg = parse_waterx_config(&lifted.to_string()).unwrap();
+        assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
     }
 
-    /// Forward-compat: a field this crate version does not know about must be
-    /// tolerated — the live CDN document can gain fields before a deployed
-    /// consumer upgrades. (Reject-unknowns lives in the repo's ajv CI gate,
-    /// where schema and data always move together.)
+    /// Forward-compat: unknown fields tolerated (the strict gate is repo CI).
     #[test]
     fn unknown_field_is_tolerated() {
-        let mut doc: serde_json::Value = serde_json::from_str(&fixture("mainnet")).unwrap();
+        let mut doc: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
         doc["packages"]["waterx_rule"]["surprise"] = serde_json::json!(1);
-        assert!(parse_waterx_config(&doc.to_string()).is_ok());
+        // an unknown field is also an unmapped legacy field for the LIFT, which
+        // must throw (flip completeness) — tolerance applies to TARGET-shape docs
+        assert!(parse_waterx_config(&doc.to_string()).is_err());
+        let legacy: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
+        let mut lifted = lift::lift_to_target(&legacy).unwrap().doc;
+        lifted["surprise_top"] = serde_json::json!(1);
+        assert!(parse_waterx_config(&lifted.to_string()).is_ok());
     }
 
+    /// Cross-language drift guard: this port must produce EXACTLY what the
+    /// canonical node lift (packages/ts/src/lift.mjs) produced. Run
+    /// `node scripts/derive-target.mjs emit .build-target` first (CI does).
     #[test]
-    fn waterx_rule_feed_shape_is_typed() {
-        let cfg = parse_waterx_config(&fixture("mainnet")).unwrap();
-        let feeds = &cfg.packages.waterx_rule.as_ref().unwrap().feeds;
-        let btc = feeds.get("BTCUSD").expect("BTCUSD feed");
-        assert!(!btc.ticker.is_empty());
-        assert!(btc.sources.iter().all(|s| s.weight >= 1));
+    fn lift_matches_node_lift() {
+        for net in ["mainnet", "testnet"] {
+            let path = format!("{}/../../.build-target/{net}.json", env!("CARGO_MANIFEST_DIR"));
+            let Ok(node_out) = std::fs::read_to_string(&path) else {
+                eprintln!("skipping cross-language lift check: {path} missing (run derive-target.mjs emit .build-target)");
+                return;
+            };
+            let node_val: serde_json::Value = serde_json::from_str(&node_out).unwrap();
+            let legacy: serde_json::Value = serde_json::from_str(&fixture(&format!("{net}.json"))).unwrap();
+            let rust_val = lift::lift_to_target(&legacy).unwrap().doc;
+            assert_eq!(rust_val, node_val, "{net}: rust lift drifted from node lift");
+        }
     }
 }
