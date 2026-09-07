@@ -6,14 +6,13 @@
 //! [`lift`] — the same mapping flip day itself uses — so consumers migrate
 //! once and never see two formats.
 //!
-//! Types in [`generated`] (target) and [`generated_legacy`] are produced from
-//! the schemas by quicktype (see the codegen workflow); do not edit by hand.
+//! Types in [`generated`] are produced from the target schema by quicktype
+//! (see the codegen workflow); do not edit by hand.
 //! Unknown fields are TOLERATED (serde default): live CDN data can gain fields
 //! before a deployed consumer's pinned crate does. The strict reject-unknowns
 //! check is the repo's own ajv CI gate.
 
 pub mod generated;
-pub mod generated_legacy;
 pub mod lift;
 
 pub use generated::WaterxConfig;
@@ -22,6 +21,7 @@ pub use generated::WaterxConfig;
 pub enum ConfigError {
     Parse(serde_json::Error),
     Lift(lift::LiftError),
+    #[cfg(feature = "fetch")]
     NetworkMismatch { expected: String, got: String },
     #[cfg(feature = "fetch")]
     Http(reqwest::Error),
@@ -32,6 +32,7 @@ impl std::fmt::Display for ConfigError {
         match self {
             ConfigError::Parse(e) => write!(f, "config failed schema-derived parsing: {e}"),
             ConfigError::Lift(e) => write!(f, "{e}"),
+            #[cfg(feature = "fetch")]
             ConfigError::NetworkMismatch { expected, got } => {
                 write!(f, "network mismatch: asked for {expected}, document says {got}")
             }
@@ -57,7 +58,9 @@ pub fn parse_waterx_config(json: &str) -> Result<WaterxConfig, ConfigError> {
     let target = if is_target {
         value
     } else {
-        lift::lift_to_target(&value).map_err(ConfigError::Lift)?.doc
+        // strict:false — a consumer must tolerate a legacy field added after
+        // its pinned crate version; flip completeness is repo CI's job.
+        lift::lift_to_target(&value, false).map_err(ConfigError::Lift)?
     };
     serde_json::from_value(target).map_err(ConfigError::Parse)
 }
@@ -111,21 +114,23 @@ mod tests {
     #[test]
     fn native_target_round_trips() {
         let legacy: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
-        let lifted = lift::lift_to_target(&legacy).unwrap().doc;
+        let lifted = lift::lift_to_target(&legacy, true).unwrap();
         let cfg = parse_waterx_config(&lifted.to_string()).unwrap();
         assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
     }
 
-    /// Forward-compat: unknown fields tolerated (the strict gate is repo CI).
+    /// Forward-compat (same policy as the TS parser): unknown fields are
+    /// tolerated on BOTH shapes at parse time — a consumer must survive a
+    /// config addition made after its pinned version. Flip completeness is
+    /// enforced by the STRICT lift, which repo CI runs (derive-target).
     #[test]
-    fn unknown_field_is_tolerated() {
+    fn unknown_field_is_tolerated_by_parser_but_caught_by_strict_lift() {
         let mut doc: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
         doc["packages"]["waterx_rule"]["surprise"] = serde_json::json!(1);
-        // an unknown field is also an unmapped legacy field for the LIFT, which
-        // must throw (flip completeness) — tolerance applies to TARGET-shape docs
-        assert!(parse_waterx_config(&doc.to_string()).is_err());
+        assert!(parse_waterx_config(&doc.to_string()).is_ok(), "parser must tolerate");
+        assert!(lift::lift_to_target(&doc, true).is_err(), "strict lift must catch");
         let legacy: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
-        let mut lifted = lift::lift_to_target(&legacy).unwrap().doc;
+        let mut lifted = lift::lift_to_target(&legacy, true).unwrap();
         lifted["surprise_top"] = serde_json::json!(1);
         assert!(parse_waterx_config(&lifted.to_string()).is_ok());
     }
@@ -137,13 +142,13 @@ mod tests {
     fn lift_matches_node_lift() {
         for net in ["mainnet", "testnet"] {
             let path = format!("{}/../../.build-target/{net}.json", env!("CARGO_MANIFEST_DIR"));
-            let Ok(node_out) = std::fs::read_to_string(&path) else {
-                eprintln!("skipping cross-language lift check: {path} missing (run derive-target.mjs emit .build-target)");
-                return;
-            };
+            let node_out = std::fs::read_to_string(&path).unwrap_or_else(|_| {
+                panic!("{path} missing — run `node scripts/derive-target.mjs emit .build-target` first; \
+                        this test is the ONLY cross-language lift coupling and must not silently skip")
+            });
             let node_val: serde_json::Value = serde_json::from_str(&node_out).unwrap();
             let legacy: serde_json::Value = serde_json::from_str(&fixture(&format!("{net}.json"))).unwrap();
-            let rust_val = lift::lift_to_target(&legacy).unwrap().doc;
+            let rust_val = lift::lift_to_target(&legacy, true).unwrap();
             assert_eq!(rust_val, node_val, "{net}: rust lift drifted from node lift");
         }
     }

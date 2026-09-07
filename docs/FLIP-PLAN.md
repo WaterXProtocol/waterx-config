@@ -95,8 +95,7 @@ lacks:
       "package": "waterx_rule",              // reference into §2
       "enclave": {                            // the ONE home for enclave identity
         "config": "0x…", "cap": "0x…", "object": "0x…",
-        "pubkey": "03baaa…hex"                // was duplicated in two packages
-      },
+        "pubkey": "03baaa…hex"                      },
       // was waterx_rule.feeds — same content, honest name. weights stay an
       // OFF-CHAIN-ONLY trust surface (audit I-16) and keep their warning in
       // the schema description.
@@ -146,9 +145,7 @@ preserved in git history / `deploys/`.
 | `packages.waterx_rule.register_digest / register_checkpoint` | `deploys/<network>.json` | same |
 | `packages.waterx_rule.feeds` | `oracle_rules.waterx.venue_feeds` | shape unchanged; name honest |
 | `packages.waterx_rule.enclave / enclave_cap / enclave_config / enclave_pubkey` | `oracle_rules.waterx.enclave.*` | P7 dedup — one home |
-| `packages.enclave.enclave_pubkey` (duplicate) | *(dropped)* | reads move to `oracle_rules.waterx.enclave.pubkey` |
 | `packages.waterx_rule.config` | `oracle_rules.waterx.rule_config_object` | de-generic'd |
-| `packages.waterx_rule.enabled` (testnet) | *(drop or schema'd)* | owner to confirm semantics first |
 | `packages.pyth_rule.feeds` | `oracle_rules.pyth.pyth_price_feeds` | |
 | `packages.pyth_rule.config` | `oracle_rules.pyth.pyth_config_object` | |
 | `packages.pyth_lazer_rule.feeds` | `oracle_rules.pyth_lazer.lazer_feed_ids` | bare int → still int, named |
@@ -167,7 +164,7 @@ preserved in git history / `deploys/`.
 | `packages.withdrawal_queue.{queue,executors}` | `objects.withdrawal_queue.*` | `executors` becomes schema'd, both networks |
 | `packages.waterx_prediction.*` objects | `objects.prediction.*` | |
 | `packages.waterx_prediction_gift.claimable_link_config` | `objects.prediction.claimable_link_config` | |
-| `coin_registry` | unchanged (schema'd in v2) | currently `z.any()` — needs its own pass |
+| `coin_registry` | unchanged (schema'd in v2) |
 | `evm` | unchanged | |
 | `deploy_tx_log` | `deploys/<network>.json` | |
 | — | `symbols` (new) | R2: the single symbol universe |
@@ -188,13 +185,16 @@ preserved in git history / `deploys/`.
   common case; exceptions shrink to genuinely-intentional gaps (e.g. lazer not
   carrying fx).
 
-## Rollout
+## Rollout (single format — no parallel serving)
 
-1. Land the v2 schema next to v1 (`schema/v2/…`), plus a **derive script**
-   that mechanically produces the v2 document from v1 (every mapping above is
-   mechanical). CI proves v1→v2 derivation is lossless (modulo the dropped
-   forensics, which land in `deploys/`).
-2. Generated parsers gain a v2 mode; consumers migrate imports at their own
-   pace while the CDN serves both (`/v2/mainnet.json` beside `/mainnet.json`).
-3. When the last consumer flips (tracked in the audit's consumption matrix),
-   v1 files freeze with a deprecation banner; one release later they are gone.
+1. **Parsers first**: both packages expose only the target shape and lift the
+   served legacy document internally (already true on this branch).
+2. **Consumers migrate** repo by repo to `@waterx-protocol/config` / the
+   `waterx-config` crate — behavior-neutral, since the parser lifts. The audit
+   report's §8 table tracks the remaining direct readers of moved paths.
+3. **Flip day** (gated on that table reaching zero): `node
+   scripts/derive-target.mjs flip` committed via the `main-v2 → main`
+   promotion PR — both networks in one commit (`check-flip-state.mjs` enforces
+   it) — then the legacy artifacts are deleted and the target schema renamed
+   to `waterx-config.schema.json` (same `$id`), which the flip-state gate also
+   enforces. One release later the lift code is gone.

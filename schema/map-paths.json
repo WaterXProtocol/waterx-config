@@ -1,18 +1,83 @@
 {
-  "_comment": "Declared open-keyed maps (map-ness is a schema fact, never inferred from instance key counts — a single-entry map must NOT become a closed struct; audit finding). base:'symbols' entries are checked ⊆ the symbol universe by check-consistency.mjs; legacy/target give each map's path in both shapes so exceptions and checks survive the flip.",
+  "_comment": "Declared open-keyed maps (map-ness is a schema fact, never inferred from instance key counts). `id` is the STABLE key \u2014 exceptions and future per-map metadata key off it, so nothing breaks when the legacy path disappears at flip. base:'symbols' maps are checked \u2286 the symbol universe.",
   "maps": [
-    { "legacy": "packages/waterx_rule/feeds",      "target": "oracle_rules/waterx/venue_feeds",       "base": "symbols" },
-    { "legacy": "packages/pyth_rule/feeds",        "target": "oracle_rules/pyth/pyth_price_feeds",    "base": "symbols" },
-    { "legacy": "packages/pyth_lazer_rule/feeds",  "target": "oracle_rules/pyth_lazer/lazer_feed_ids","base": "symbols" },
-    { "legacy": "packages/supra_rule/feeds",       "target": "oracle_rules/supra/pair_ids",           "base": "symbols" },
-    { "legacy": "packages/constant_rule/feeds",    "target": "oracle_rules/constant/constant_prices", "base": "symbols" },
-    { "legacy": "packages/waterx_oracle/aggregators","target": "objects/oracle/aggregators",          "base": "symbols" },
-    { "legacy": "packages/waterx_perp/markets",    "target": "objects/perp/markets",                  "base": "symbols" },
-    { "legacy": "packages/wlp/pool_tokens",        "target": "objects/wlp/pool_tokens",               "base": "open" },
-    { "legacy": "packages/waterx_staking/pools",   "target": "objects/staking/pools",                 "base": "open" },
-    { "legacy": "packages/waterx_staking/rewarders","target": "objects/staking/rewarders",            "base": "open" },
-    { "legacy": "packages/waterx_prediction/market_registries", "target": "objects/prediction/market_registries", "base": "open" },
-    { "legacy": "packages/waterx_prediction/settlement_coin_types", "target": "objects/prediction/settlement_coin_types", "base": "open" },
-    { "legacy": "evm/bridge/chains",               "target": "evm/bridge/chains",                     "base": "open" }
+    {
+      "id": "venue_feeds",
+      "legacy": "packages/waterx_rule/feeds",
+      "target": "oracle_rules/waterx/venue_feeds",
+      "base": "symbols"
+    },
+    {
+      "id": "pyth_price_feeds",
+      "legacy": "packages/pyth_rule/feeds",
+      "target": "oracle_rules/pyth/pyth_price_feeds",
+      "base": "symbols"
+    },
+    {
+      "id": "lazer_feed_ids",
+      "legacy": "packages/pyth_lazer_rule/feeds",
+      "target": "oracle_rules/pyth_lazer/lazer_feed_ids",
+      "base": "symbols"
+    },
+    {
+      "id": "supra_pair_ids",
+      "legacy": "packages/supra_rule/feeds",
+      "target": "oracle_rules/supra/pair_ids",
+      "base": "symbols"
+    },
+    {
+      "id": "constant_prices",
+      "legacy": "packages/constant_rule/feeds",
+      "target": "oracle_rules/constant/constant_prices",
+      "base": "symbols"
+    },
+    {
+      "id": "aggregators",
+      "legacy": "packages/waterx_oracle/aggregators",
+      "target": "objects/oracle/aggregators",
+      "base": "symbols"
+    },
+    {
+      "id": "perp_markets",
+      "legacy": "packages/waterx_perp/markets",
+      "target": "objects/perp/markets",
+      "base": "symbols"
+    },
+    {
+      "id": "wlp_pool_tokens",
+      "legacy": "packages/wlp/pool_tokens",
+      "target": "objects/wlp/pool_tokens",
+      "base": "open"
+    },
+    {
+      "id": "staking_pools",
+      "legacy": "packages/waterx_staking/pools",
+      "target": "objects/staking/pools",
+      "base": "open"
+    },
+    {
+      "id": "staking_rewarders",
+      "legacy": "packages/waterx_staking/rewarders",
+      "target": "objects/staking/rewarders",
+      "base": "open"
+    },
+    {
+      "id": "prediction_market_registries",
+      "legacy": "packages/waterx_prediction/market_registries",
+      "target": "objects/prediction/market_registries",
+      "base": "open"
+    },
+    {
+      "id": "prediction_settlement_coin_types",
+      "legacy": "packages/waterx_prediction/settlement_coin_types",
+      "target": "objects/prediction/settlement_coin_types",
+      "base": "open"
+    },
+    {
+      "id": "evm_bridge_chains",
+      "legacy": "evm/bridge/chains",
+      "target": "evm/bridge/chains",
+      "base": "open"
+    }
   ]
 }

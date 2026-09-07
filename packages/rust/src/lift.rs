@@ -9,13 +9,6 @@
 use serde_json::{json, Map, Value};
 
 const IDENTITY: [&str; 5] = ["published_at", "original_id", "version", "upgrade_capability", "mvr"];
-const FORENSICS: [&str; 4] = ["publish_digest", "publish_checkpoint", "register_digest", "register_checkpoint"];
-
-pub struct Lifted {
-    pub doc: Value,
-    /// Legacy deploy forensics routed out of the hot path (empty on pruned files).
-    pub forensics: Value,
-}
 
 #[derive(Debug)]
 pub struct LiftError(pub String);
@@ -41,7 +34,11 @@ impl<'a> Taker<'a> {
     }
 }
 
-pub fn lift_to_target(legacy: &Value) -> Result<Lifted, LiftError> {
+/// Lift a legacy-shape document into the target shape. `strict` throws on any
+/// legacy field with no disposition (repo tooling wants flip completeness);
+/// the parser passes `false` — a consumer must tolerate a legacy field added
+/// after its pinned crate version (forward-compat).
+pub fn lift_to_target(legacy: &Value, strict: bool) -> Result<Value, LiftError> {
     let root = legacy.as_object().ok_or_else(|| LiftError("document is not an object".into()))?;
     let pkgs = root
         .get("packages")
@@ -59,9 +56,6 @@ pub fn lift_to_target(legacy: &Value) -> Result<Lifted, LiftError> {
                     entry.insert(f.into(), v);
                 }
             }
-        }
-        for f in FORENSICS {
-            tk.take(name, f); // routed to forensics below
         }
         packages.insert(name.clone(), Value::Object(entry));
     }
@@ -146,7 +140,7 @@ pub fn lift_to_target(legacy: &Value) -> Result<Lifted, LiftError> {
 
     // §3 objects by domain — (domain, target key, legacy pkg, legacy field)
     let mut objects: Map<String, Value> = Map::new();
-    let mut put = |objects: &mut Map<String, Value>, tk: &mut Taker, domain: &str, key: &str, pkg: &str, field: &str| {
+    fn put(objects: &mut Map<String, Value>, tk: &mut Taker, domain: &str, key: &str, pkg: &str, field: &str) {
         if let Some(v) = tk.take(pkg, field) {
             objects
                 .entry(domain.to_string())
@@ -155,7 +149,7 @@ pub fn lift_to_target(legacy: &Value) -> Result<Lifted, LiftError> {
                 .unwrap()
                 .insert(key.to_string(), v);
         }
-    };
+    }
     for (domain, key, pkg, field) in [
         ("oracle", "oracle", "waterx_oracle", "oracle"),
         ("oracle", "listing_cap", "waterx_oracle", "listing_cap"),
@@ -243,19 +237,21 @@ pub fn lift_to_target(legacy: &Value) -> Result<Lifted, LiftError> {
         }
     }
 
-    // leftover detection
-    let mut leftovers = Vec::new();
-    for (name, body) in pkgs {
-        if let Some(o) = body.as_object() {
-            for f in o.keys() {
-                if !tk.taken.get(name).is_some_and(|s| s.contains(f)) {
-                    leftovers.push(format!("{name}.{f}"));
+    // leftover detection: flip completeness (strict) / forward-compat (lax)
+    if strict {
+        let mut leftovers = Vec::new();
+        for (name, body) in pkgs {
+            if let Some(o) = body.as_object() {
+                for f in o.keys() {
+                    if !tk.taken.get(name).is_some_and(|s| s.contains(f)) {
+                        leftovers.push(format!("{name}.{f}"));
+                    }
                 }
             }
         }
-    }
-    if !leftovers.is_empty() {
-        return Err(LiftError(format!("legacy fields with no flip disposition (extend lift.rs AND lift.mjs): {}", leftovers.join(", "))));
+        if !leftovers.is_empty() {
+            return Err(LiftError(format!("legacy fields with no flip disposition (extend lift.rs AND lift.mjs): {}", leftovers.join(", "))));
+        }
     }
 
     let mut doc = Map::new();
@@ -273,17 +269,5 @@ pub fn lift_to_target(legacy: &Value) -> Result<Lifted, LiftError> {
         doc.insert("evm".into(), v.clone());
     }
 
-    let forensics = json!({
-        "network": root.get("network").cloned().unwrap_or(Value::Null),
-        "deploy_tx_log": root.get("deploy_tx_log").cloned().unwrap_or_else(|| json!([])),
-        "package_publish": pkgs.iter().filter_map(|(name, body)| {
-            let o = body.as_object()?;
-            let m: Map<String, Value> = FORENSICS.iter()
-                .filter_map(|f| o.get(*f).map(|v| (f.to_string(), v.clone())))
-                .collect();
-            (!m.is_empty()).then(|| (name.clone(), Value::Object(m)))
-        }).collect::<Map<_, _>>(),
-    });
-
-    Ok(Lifted { doc: Value::Object(doc), forensics })
+    Ok(Value::Object(doc))
 }

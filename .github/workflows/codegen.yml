@@ -2,14 +2,16 @@ name: Codegen freshness
 
 # Schemas, parsers and docs are GENERATED. This job regenerates all of them
 # and fails on any diff — a schema/data change cannot merge without its
-# generated artifacts, and generated files cannot be hand-edited.
+# generated artifacts, and generated files cannot be hand-edited. The
+# generator tools are devDependencies of packages/ts, so the npm cache
+# covers them (quicktype is the heavy one).
 on:
   pull_request:
     paths: [schema/**, scripts/**, packages/**, docs/FIELDS*.md, mainnet.json, testnet.json]
 
 concurrency:
   group: codegen-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   regen:
@@ -17,22 +19,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22 }
-      - name: Install generators once
-        run: npm i -g json-schema-to-zod@2 quicktype@23
+        with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json }
+      - run: cd packages/ts && npm ci
       - name: Regenerate everything (schemas → parsers → docs)
         run: |
+          export PATH="$PWD/packages/ts/node_modules/.bin:$PATH"
           python3 scripts/gen_schema.py
           node scripts/derive-target.mjs emit .build-target
           python3 scripts/gen_target_schema.py
           for pair in "waterx-config.schema.json:schema-legacy.ts" "waterx-config-target.schema.json:schema.ts"; do
-            s="schema/${pair%%:*}"; out="packages/ts/src/${pair##*:}"
-            node scripts/deref-schema.mjs "$s" /tmp/deref.json --tolerant
-            json-schema-to-zod -i /tmp/deref.json -o "$out"
+            node scripts/deref-schema.mjs "schema/${pair%%:*}" /tmp/deref.json
+            json-schema-to-zod -i /tmp/deref.json -o "packages/ts/src/${pair##*:}"
           done
-          quicktype --src-lang schema --src schema/waterx-config.schema.json --lang rust \
-            --visibility public --derive-debug --derive-clone --top-level LegacyWaterxConfig \
-            -o packages/rust/src/generated_legacy.rs
           quicktype --src-lang schema --src schema/waterx-config-target.schema.json --lang rust \
             --visibility public --derive-debug --derive-clone --top-level WaterxConfig \
             -o packages/rust/src/generated.rs

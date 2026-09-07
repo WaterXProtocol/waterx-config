@@ -16,15 +16,15 @@ jobs:
   npm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json, registry-url: "https://registry.npmjs.org" }
       - name: Refuse to publish without a token
         run: |
           if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
             echo "::error::NPM_TOKEN secret is not set — create an org automation token with publish rights on @waterx-protocol and add it to this repo's secrets."
             exit 1
           fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json, registry-url: "https://registry.npmjs.org" }
       - name: Tag must match package version
         run: |
           PKG=$(node -p "require('./packages/ts/package.json').version")

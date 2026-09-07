@@ -38,11 +38,13 @@ test("a corrupted object id is rejected (patterns bite despite tolerance)", () =
   assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
 });
 
-test("an unknown field is TOLERATED (forward-compat with newer configs)", () => {
+test("an unknown field is TOLERATED by the parser but caught by the strict lift", async () => {
   const doc = load("mainnet.json");
   doc.packages.waterx_rule.surprise = 1;
-  const cfg = parseWaterxConfig(doc);
+  const cfg = parseWaterxConfig(doc); // parser: forward-compat
   assert.ok(cfg.oracle_rules.waterx);
+  const { liftToTarget } = await import("../src/lift.mjs");
+  assert.throws(() => liftToTarget(doc), /no flip disposition/); // repo tooling: flip completeness
 });
 
 test("network mismatch is rejected", () => {

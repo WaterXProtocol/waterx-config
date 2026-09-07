@@ -6,7 +6,7 @@ import json
 import sys, os
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from gen_schema_lib import build_schema, infer, map_paths, merge  # noqa: E402
+from gen_schema_lib import build_schema, infer, merge, save_descriptions_used  # noqa: E402
 
 m = json.load(open("mainnet.json"))
 t = json.load(open("testnet.json"))
@@ -51,4 +51,5 @@ schema = build_schema(
     required=["network", "chain_id", "packages"],
 )
 json.dump(schema, open("schema/waterx-config.schema.json", "w"), indent=2, ensure_ascii=False)
+save_descriptions_used("legacy")
 print("schema/waterx-config.schema.json written")

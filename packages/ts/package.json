@@ -9,14 +9,24 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p .",
+    "build": "rm -rf dist && tsc -p .",
     "test": "node --test --experimental-strip-types test/*.test.ts"
   },
   "dependencies": {
     "zod": "^3.23.0"
   },
   "devDependencies": {
+    "ajv-cli": "5.0.0",
+    "json-schema-to-zod": "2.6.1",
+    "quicktype": "23.2.6",
     "typescript": "^5.7.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  }
 }
