@@ -31,26 +31,53 @@ changed and the old→new path map).
 
 **Do not hand-roll config types in a consuming repo.** Use the generated parsers:
 
-- TypeScript: [`packages/ts`](./packages/ts) — `@waterx-protocol/config` (Zod
+- TypeScript: [`packages/ts`](./packages/ts) — `@waterx/config` (Zod
   validator + CDN loader; refuses raw.githubusercontent, retries 429/5xx).
-- Rust: [`packages/rust`](./packages/rust) — `waterx-config` crate
-  (tolerant serde types — the strict gate is this repo's ajv CI — optional `fetch` feature).
+  *Not yet published* — first publish happens on the first `v*` tag once npm
+  trusted publishing is configured (see `publish.yml`).
+- Rust: [`packages/rust`](./packages/rust) — `waterx-config` crate, consumed
+  via git tag (tolerant serde types — the strict gate is this repo's ajv CI —
+  optional `fetch` feature with a `load_waterx_config_from(base, network)`
+  override for the staging CDN).
+
+Parsing returns the typed view: unknown fields on known objects are stripped
+(open maps keep every entry). **Never write a parse result back to a config
+file** — read-modify-write tools must patch the original document and use the
+parser only to validate.
 
 Both are **generated from the schema** (`codegen.yml` fails any PR where they
 drift); edit the schema, never the generated files.
 
 ## Listing a feed — read this first
 
-- `oracle_rules.waterx.venue_feeds[].sources[].name` is a **wire vocabulary**
-  shared with `waterx_rule.move`'s on-chain u64 source registry. A source id
-  must be **registered on-chain for the target network** before a feed lists
-  it — an unregistered id aborts on-chain validation at feed time. The id
-  table and details live in the schema description / [FIELDS.md](./docs/FIELDS.md)
-  (registration tracking: WL-1968).
+- `symbol` is the oracle key (`BTCUSD`); `ticker` is the venue's own spelling —
+  **never derive one from the other**. Crude oil is the standing example:
+  `WTIUSD`/`BRENTUSD` trade as `CLUSDT`/`BZUSDT`, not `WTIUSDT`/`BRENTUSDT`.
+  A wrong ticker does not error — the feed silently never fetches.
+- `oracle_rules.waterx.venue_feeds[].sources[].name` and `method` are a **wire
+  vocabulary** shared with `waterx_rule.move`'s on-chain u64 source registry
+  and quote-service `resolve.rs`; CI pins the exact spelling
+  (`schema/waterx-config.gate.json`). A source id must be **registered
+  on-chain for the target network** before a feed lists it — an unregistered
+  id aborts on-chain validation at feed time. Ids 1–11 are registered on BOTH
+  networks (verified on-chain 2026-09-08; per-network registration history:
+  WL-1968). The full id table is in [FIELDS.md](./docs/FIELDS.md) under
+  `oracle_rules.waterx.venue_feeds — each entry`.
+- The on-chain `FeedConfig` (`set_perp_feed`) pins `ticker`, `sources` and
+  `method` **field-for-field**: a config entry that disagrees with the
+  on-chain record aborts every publish tick for that symbol
+  (`ESourceMismatch`). `kind` (in `symbols`) is NOT on-chain — it only drives
+  per-kind publish cadence off-chain, so a kind change can never abort.
 - `weights` are **off-chain only** (audit I-16): review weight changes as
   trust-surface changes.
-- `oracle_rules.pyth.pyth_price_feeds[].price_info_object` must be the shared
-  `PriceInfoObject` itself, **not** the `Field<PriceIdentifier, ID>` wrapper.
+- `oracle_rules.pyth.pyth_price_feeds[].feed_id` is usually **different
+  between testnet and mainnet** — look each up in its own Hermes
+  (hermes-beta.pyth.network vs hermes.pyth.network); `price_info_object` must
+  be the shared `PriceInfoObject` itself, **not** the
+  `Field<PriceIdentifier, ID>` wrapper.
+- The end-to-end listing runbook (create aggregator → wire the rule → create
+  market) lives in
+  [`waterx-contract/.claude/skills/list-perp-asset/SKILL.md`](https://github.com/WaterXProtocol/waterx-contract/blob/main/.claude/skills/list-perp-asset/SKILL.md).
 
 ## Update flow
 

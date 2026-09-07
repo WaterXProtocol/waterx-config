@@ -2,6 +2,13 @@ name: Guard main merges
 
 # Only staging may be merged into main. PRs from any other source branch fail.
 # Mark this check as required in the main ruleset so a failure blocks the merge.
+#
+# main-v2 is allowed ONLY while main still serves the pre-flip shape (the
+# format-flip promotion window). The window check is keyed on DATA, so the
+# allowance expires itself: once the promotion lands, main holds
+# schema_version 2 and any later main-v2 PR is rejected with instructions to
+# delete the allowance (review finding: a bare branch-name allowance would
+# have been a permanent guard bypass).
 on:
   pull_request:
     branches: [main]
@@ -15,13 +22,27 @@ jobs:
     name: only-staging-can-merge
     runs-on: ubuntu-latest
     steps:
-      - name: Ensure PR source is staging
+      - uses: actions/checkout@v4
+        with: { ref: main } # the BASE — the window check reads what main serves today
+      - name: Ensure PR source is staging (or main-v2 during the promotion window)
         env:
           SOURCE_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
           SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
-          if [ "$SOURCE_REPOSITORY" != "WaterXProtocol/waterx-config" ] || { [ "$SOURCE_BRANCH" != "staging" ] && [ "$SOURCE_BRANCH" != "main-v2" ]; }; then
-            echo "::error::Only WaterXProtocol/waterx-config:staging (ongoing flow) or :main-v2 (the schema/format flip) may be merged into main. This PR is from $SOURCE_REPOSITORY:$SOURCE_BRANCH."
+          if [ "$SOURCE_REPOSITORY" != "WaterXProtocol/waterx-config" ]; then
+            echo "::error::Only branches of WaterXProtocol/waterx-config may merge into main. This PR is from $SOURCE_REPOSITORY."
             exit 1
           fi
-          echo "Source branch $SOURCE_REPOSITORY:$SOURCE_BRANCH is allowed."
+          case "$SOURCE_BRANCH" in
+            staging)
+              echo "Source branch staging is allowed." ;;
+            main-v2)
+              if [ "$(jq -r '.schema_version // empty' mainnet.json)" = "2" ]; then
+                echo "::error::main already serves the consolidated shape — the main-v2 promotion window is CLOSED. Delete this allowance (and the main-v2 branch); only staging may merge into main."
+                exit 1
+              fi
+              echo "Source branch main-v2 is allowed: promotion window open (main is still pre-flip)." ;;
+            *)
+              echo "::error::Only staging (ongoing flow) or main-v2 (the schema/format flip, self-expiring) may merge into main. This PR is from branch $SOURCE_BRANCH."
+              exit 1 ;;
+          esac

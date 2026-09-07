@@ -19,10 +19,11 @@ for (const net of ["mainnet", "testnet"] as const) {
     assert.equal(cfg.schema_version, 2);
     assert.ok(Object.keys(cfg.symbols).length > 0);
     assert.ok(cfg.symbols["BTCUSD"], "the flagship symbol must exist in the universe");
-    const btc = cfg.oracle_rules.waterx?.venue_feeds["BTCUSD"];
+    const btc = cfg.oracle_rules.waterx.venue_feeds["BTCUSD"];
     assert.ok(btc);
     assert.ok(btc.sources.every((s) => typeof s.name === "string" && Number.isInteger(s.weight)));
-    assert.match(cfg.packages.waterx_rule?.published_at ?? "", /^0x[0-9a-fA-F]{64}$/);
+    assert.ok(cfg.packages.waterx_rule, "waterx_rule identity block");
+    assert.match(cfg.packages.waterx_rule.published_at, /^0x[0-9a-fA-F]{64}$/);
   });
 }
 
@@ -88,4 +89,43 @@ test("loader: attempts is floored at 1", async () => {
   }) as typeof fetch;
   await loadWaterxConfig("mainnet", { fetchImpl, attempts: 0 });
   assert.equal(calls, 1);
+});
+
+test("loader: a 200 with a non-JSON body is permanent — no retries (SyntaxError class)", async () => {
+  let calls = 0;
+  const fetchImpl = (async () => {
+    calls++;
+    return new Response("<html>edge error page</html>", { status: 200 });
+  }) as typeof fetch;
+  await assert.rejects(loadWaterxConfig("mainnet", { fetchImpl, backoffBaseMs: 0 }), SyntaxError);
+  assert.equal(calls, 1, "a malformed body must not be re-fetched");
+});
+
+test("loader: non-finite attempts falls back to the default instead of zero fetches", async () => {
+  let calls = 0;
+  const body = JSON.stringify(load("mainnet.json"));
+  const fetchImpl = (async () => {
+    calls++;
+    return new Response(body, { status: 200 });
+  }) as typeof fetch;
+  await loadWaterxConfig("mainnet", { fetchImpl, attempts: Number("not a number") });
+  assert.equal(calls, 1, "NaN attempts must still fetch");
+});
+
+test("loader: exhausted retries surface the last HTTP status", async () => {
+  const fetchImpl = (async () => new Response("busy", { status: 429 })) as typeof fetch;
+  try {
+    await loadWaterxConfig("mainnet", { fetchImpl, attempts: 2, backoffBaseMs: 0 });
+    assert.fail("should have thrown");
+  } catch (e) {
+    assert.ok(e instanceof WaterxConfigError);
+    assert.equal(e.status, 429, "circuit-breakers need the status without string-matching cause");
+  }
+});
+
+test("parse strips unknown FIELDS on known objects (documented; do not round-trip a parse result)", () => {
+  const doc = load("mainnet.json");
+  doc.oracle_rules.waterx.surprise = 1;
+  const cfg: any = parseWaterxConfig(doc);
+  assert.ok(!("surprise" in cfg.oracle_rules.waterx), "typed view drops unknown fields — patch the ORIGINAL doc for read-modify-write");
 });

@@ -1,17 +1,22 @@
 /**
- * @waterx-protocol/config — the official typed reader for waterx-config.
+ * @waterx/config — the official typed reader for waterx-config.
  *
  * The CDN serves ONE format: the consolidated shape (schema_version 2).
  *
- *   import { loadWaterxConfig } from "@waterx-protocol/config";
+ *   import { loadWaterxConfig } from "@waterx/config";
  *   const cfg = await loadWaterxConfig("mainnet");
  *   cfg.oracle_rules.waterx.venue_feeds["BTCUSD"].sources; // fully typed
  *
  * The validator is GENERATED from schema/waterx-config.schema.json; CI fails
  * if it drifts. Do not edit schema.ts by hand.
  *
- * Unknown fields are TOLERATED: consumers parse live CDN data that can gain
- * fields before this package version does. ID patterns, required fields and
+ * Unknown fields are ACCEPTED but NOT PRESERVED: parsing validates live CDN
+ * data that can gain fields before this package version does, and returns
+ * the typed view — zod strips keys this version doesn't know (open maps like
+ * `packages` keep every entry; unknown FIELDS on known objects are dropped).
+ * Therefore NEVER re-serialize a parse result back into a config file — a
+ * read-modify-write tool must patch the ORIGINAL document and use
+ * parseWaterxConfig only to validate it. ID patterns, required fields and
  * the schema_version pin still bite; the strict reject-unknowns check is the
  * config repo's own ajv CI gate, where schema and data move together.
  */
@@ -25,8 +30,11 @@ export type WaterxConfig = z.infer<typeof waterxConfigSchema>;
 export type WaterxPackages = WaterxConfig["packages"];
 export type SymbolsRegistry = WaterxConfig["symbols"];
 export type OracleRules = WaterxConfig["oracle_rules"];
-export type VenueFeed = NonNullable<OracleRules["waterx"]>["venue_feeds"][string];
-export type PerpMarket = NonNullable<WaterxConfig["objects"]["perp"]>["markets"][string];
+// Direct index types — the schema marks these required, and if that ever
+// changes the compiler should break these aliases loudly (review finding:
+// NonNullable<> wrappers taught consumers the wrong nullability).
+export type VenueFeed = OracleRules["waterx"]["venue_feeds"][string];
+export type PerpMarket = WaterxConfig["objects"]["perp"]["markets"][string];
 
 export type Network = "mainnet" | "testnet";
 
@@ -71,8 +79,15 @@ export async function loadWaterxConfig(network: Network, opts: LoadOptions = {})
     );
   }
   const url = `${base}/${network}.json`;
+  try {
+    new URL(url); // a malformed baseUrl is permanent — fail once, before the loop
+  } catch (e) {
+    throw new WaterxConfigError(`invalid config URL ${url}`, { cause: e });
+  }
   const doFetch = opts.fetchImpl ?? fetch;
-  const attempts = Math.max(1, opts.attempts ?? 3);
+  // Number.isFinite guards NaN/Infinity (Math.max(1, NaN) is NaN — review
+  // finding: a NaN here made the loop body never run).
+  const attempts = Number.isFinite(opts.attempts) ? Math.max(1, Math.floor(opts.attempts!)) : 3;
   let lastErr: unknown;
   for (let i = 0; i < attempts; i++) {
     try {
@@ -81,18 +96,26 @@ export async function loadWaterxConfig(network: Network, opts: LoadOptions = {})
       return parseWaterxConfig(await res.json(), network);
     } catch (e) {
       lastErr = e;
-      // Retry classification by TYPE, never by message text (a URL containing
-      // "abort" must not flip a 404 into a retryable): retryable = HTTP 5xx /
-      // 429 / 408, and timeouts/aborts. Everything else is permanent.
-      const retryable =
-        (e instanceof WaterxConfigError && e.status !== undefined && RETRYABLE_STATUS(e.status)) ||
-        (e instanceof DOMException && (e.name === "TimeoutError" || e.name === "AbortError")) ||
-        (!(e instanceof WaterxConfigError) && e instanceof Error && !(e instanceof TypeError && /json/i.test(e.message)));
+      // Retry classification by TYPE, never by message text. Our own errors
+      // retry only on a retryable HTTP status (schema/network-mismatch
+      // failures carry no status and are permanent). A SyntaxError is a
+      // malformed body — permanent (NOT TypeError: Response.json() rejects
+      // with SyntaxError; review finding — the old TypeError guard was dead
+      // and re-fetched unparseable bodies). Everything else (network
+      // TypeError, timeout/abort DOMException) is transient.
+      const retryable = e instanceof WaterxConfigError
+        ? e.status !== undefined && RETRYABLE_STATUS(e.status)
+        : !(e instanceof SyntaxError);
       if (!retryable) throw e;
       if (i < attempts - 1) await new Promise((r) => setTimeout(r, (opts.backoffBaseMs ?? 500) * 2 ** i));
     }
   }
-  throw new WaterxConfigError(`failed to load ${url} after ${attempts} attempts`, { cause: lastErr });
+  // Surface the last HTTP status so circuit-breakers can distinguish 429
+  // from 5xx without string-matching the cause (review finding).
+  throw new WaterxConfigError(`failed to load ${url} after ${attempts} attempts`, {
+    cause: lastErr,
+    status: lastErr instanceof WaterxConfigError ? lastErr.status : undefined,
+  });
 }
 
 /** Parse an already-fetched document (pinned file, test fixture). */

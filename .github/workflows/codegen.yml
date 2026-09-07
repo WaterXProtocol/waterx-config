@@ -29,6 +29,10 @@ jobs:
           quicktype --src-lang schema --src schema/waterx-config.schema.json --lang rust \
             --visibility public --derive-debug --derive-clone --top-level WaterxConfig \
             -o packages/rust/src/generated.rs
+          # round-trip fix: absent Options must not serialize as null
+          python3 scripts/postprocess_generated_rs.py
+          # one field per line: schema changes must diff reviewably, not as a 14KB one-liner
+          prettier --write packages/ts/src/schema.ts
           node scripts/gen-fields-doc.mjs
       - name: Generated artifacts must match their sources (tracked AND new files)
         run: |

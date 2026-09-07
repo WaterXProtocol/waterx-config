@@ -109,6 +109,11 @@
             "description": "Move Registry (MVR) registration for this package. Mainnet only today."
           }
         },
+        "required": [
+          "published_at",
+          "original_id",
+          "version"
+        ],
         "additionalProperties": false
       }
     },
@@ -566,7 +571,8 @@
                 },
                 "pubkey": {
                   "type": "string",
-                  "description": "Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an independent env copy by design (boot-without-enclave)."
+                  "description": "Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an independent env copy by design (boot-without-enclave).",
+                  "pattern": "^[0-9a-fA-F]{64}$"
                 }
               },
               "required": [
@@ -604,7 +610,7 @@
                       ],
                       "additionalProperties": false
                     },
-                    "description": "Venue set feeding the aggregate. Source names are a wire vocabulary shared with waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws, 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4 gateio_usdt_perp_ws, 5 bybit_spot_ws, 6 xstock_equity_rest, 7 okx_spot_ws, 8 hyperliquid_perp_ws, 9 gateio_spot_ws, 10 kraken_spot_ws, 11 pyth_lazer_ws). A source id must be REGISTERED ON-CHAIN for the target network before a feed lists it — an unregistered id aborts on-chain validation at feed time (per-network registration is tracked in WL-1968)."
+                    "description": "Venue set feeding the aggregate. Source names are a wire vocabulary shared with waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws / binance_spot [REST], 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4 gateio_usdt_perp_ws, 5 bybit_spot_ws, 6 xstock_equity_rest, 7 okx_spot_ws, 8 hyperliquid_perp_ws, 9 gateio_spot_ws, 10 kraken_spot_ws, 11 pyth_lazer_ws). A source id must be REGISTERED ON-CHAIN for the target network before a feed lists it — an unregistered id aborts on-chain validation at feed time (per-network registration is tracked in WL-1968)."
                   },
                   "method": {
                     "type": "string"
@@ -788,7 +794,7 @@
                   "wormhole_core": {
                     "type": "string",
                     "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                    "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+                    "description": "Wormhole core contract address on this EVM chain (20-byte, 0x + 40 hex)."
                   },
                   "wormhole_executor": {
                     "type": "string",
@@ -801,7 +807,7 @@
                   "deposit_vault": {
                     "type": "string",
                     "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                    "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+                    "description": "Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex)."
                   },
                   "tokens": {
                     "type": "object",

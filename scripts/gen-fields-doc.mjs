@@ -31,8 +31,7 @@ function propsTable(node) {
   lines.push("| field | type | required | notes |", "|---|---|---|---|");
   const req = new Set(node.required ?? []);
   for (const [k, s] of Object.entries(node.properties ?? {})) {
-    const note = [s.description, s.deprecated ? "**deprecated**" : ""].filter(Boolean).join(" · ");
-    lines.push(`| \`${k}\` | ${typ(s)} | ${req.has(k) ? "✓" : ""} | ${esc(note)} |`);
+    lines.push(`| \`${k}\` | ${typ(s)} | ${req.has(k) ? "✓" : ""} | ${esc(s.description ?? "")} |`);
   }
   lines.push("");
 }
@@ -46,6 +45,13 @@ for (const section of ["objects", "oracle_rules"]) {
   for (const [domain, ds] of Object.entries(ss.properties)) {
     lines.push(`### \`${section}.${domain}\``, "");
     propsTable(ds);
+    for (const [field, fs] of Object.entries(ds.properties ?? {})) {
+      const item = fs?.additionalProperties;
+      if (item && typeof item === "object" && item.properties) {
+        lines.push(`#### \`${section}.${domain}.${field}\` — each entry`, "");
+        propsTable(item);
+      }
+    }
   }
 }
 

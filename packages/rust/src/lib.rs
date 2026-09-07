@@ -18,8 +18,10 @@ pub use generated::WaterxConfig;
 #[non_exhaustive]
 pub enum ConfigError {
     Parse(serde_json::Error),
-    /// The document does not declare `schema_version` 2 — either a pre-flip
-    /// legacy file or a future format this crate version does not speak.
+    /// The document does not declare an integer `schema_version` of 2.
+    /// `Some(v)` is a different (e.g. future) format; `None` means the field
+    /// is missing or not an integer (a pre-flip legacy file, a stringified
+    /// "2" from a templating layer, or a fractional/overflowing number).
     UnsupportedVersion(Option<i64>),
     NetworkMismatch { expected: String, got: String },
     #[cfg(feature = "fetch")]
@@ -30,10 +32,10 @@ impl std::fmt::Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ConfigError::Parse(e) => write!(f, "config failed schema-derived parsing: {e}"),
-            ConfigError::UnsupportedVersion(v) => write!(
-                f,
-                "unsupported config schema_version {v:?} — this crate speaks version 2 only"
-            ),
+            ConfigError::UnsupportedVersion(v) => match v {
+                Some(v) => write!(f, "unsupported config schema_version {v} — this crate speaks version 2 only"),
+                None => write!(f, "config schema_version is missing or not an integer — this crate speaks version 2 (integer) only"),
+            },
             ConfigError::NetworkMismatch { expected, got } => {
                 write!(f, "network mismatch: asked for {expected}, document says {got}")
             }
@@ -69,7 +71,7 @@ pub fn parse_waterx_config(json: &str, expect_network: Option<&str>) -> Result<W
     let cfg = match serde_json::from_str::<WaterxConfig>(json) {
         Ok(cfg) if cfg.schema_version == SCHEMA_VERSION => cfg,
         Ok(cfg) => return Err(ConfigError::UnsupportedVersion(Some(cfg.schema_version))),
-        Err(e) => parse_slow(json, e)?,
+        Err(e) => return parse_slow(json, e),
     };
     if let Some(expected) = expect_network {
         let got = network_str(&cfg.network);
@@ -81,43 +83,77 @@ pub fn parse_waterx_config(json: &str, expect_network: Option<&str>) -> Result<W
 }
 
 /// Cold path, entered only when the typed parse fails: classify the failure.
-/// A missing/wrong `schema_version` becomes the legible [`ConfigError::UnsupportedVersion`];
-/// the float spelling of 2 (producers that round-trip through a float writer
-/// may emit 2.0 — same version, different token) is normalized and re-parsed,
-/// so the tolerance costs the integer-spelled happy path nothing.
+/// A missing/non-integer/wrong `schema_version` becomes the legible
+/// [`ConfigError::UnsupportedVersion`]; anything else returns the ORIGINAL
+/// typed error — the only one carrying line/column (review finding: the old
+/// re-parse discarded it, and its float-2.0 tolerance served a producer that
+/// does not exist while every other integer field stayed strict anyway).
 fn parse_slow(json: &str, typed_err: serde_json::Error) -> Result<WaterxConfig, ConfigError> {
-    let Ok(mut value) = serde_json::from_str::<serde_json::Value>(json) else {
+    let Ok(value) = serde_json::from_str::<serde_json::Value>(json) else {
         return Err(ConfigError::Parse(typed_err));
     };
-    let version = value.get("schema_version").and_then(|v| {
-        v.as_i64().or_else(|| v.as_f64().filter(|f| f.fract() == 0.0).map(|f| f as i64))
-    });
-    if version != Some(SCHEMA_VERSION) {
-        return Err(ConfigError::UnsupportedVersion(version));
+    match value.get("schema_version").and_then(serde_json::Value::as_i64) {
+        Some(SCHEMA_VERSION) => Err(ConfigError::Parse(typed_err)),
+        other => Err(ConfigError::UnsupportedVersion(other)),
     }
-    value["schema_version"] = serde_json::json!(SCHEMA_VERSION);
-    serde_json::from_value(value).map_err(ConfigError::Parse)
 }
 
-/// Fetch + parse one network's config from the CDN, with a 10s timeout.
+/// One process-wide client: rebuilding it per call re-parses the root cert
+/// store and drops the connection pool — and the CDN's cache headers are
+/// tuned for re-polling consumers (review finding).
+#[cfg(feature = "fetch")]
+fn http_client() -> &'static reqwest::Client {
+    static CLIENT: std::sync::OnceLock<reqwest::Client> = std::sync::OnceLock::new();
+    CLIENT.get_or_init(|| {
+        reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(10))
+            .build()
+            .expect("default reqwest client")
+    })
+}
+
+/// Fetch + parse one network's config from the CDN (10s per-attempt timeout,
+/// 3 attempts with exponential backoff on 429/408/5xx and transport errors —
+/// the same classification as the TS loader).
 #[cfg(feature = "fetch")]
 pub async fn load_waterx_config(network: &str) -> Result<WaterxConfig, ConfigError> {
-    let url = format!("{CONFIG_CDN_BASE}/{network}.json");
-    let client = reqwest::Client::builder()
-        .timeout(std::time::Duration::from_secs(10))
-        .build()
-        .map_err(ConfigError::Http)?;
-    let body = client
-        .get(&url)
-        .send()
-        .await
-        .map_err(ConfigError::Http)?
-        .error_for_status()
-        .map_err(ConfigError::Http)?
-        .text()
-        .await
-        .map_err(ConfigError::Http)?;
-    parse_waterx_config(&body, Some(network))
+    load_waterx_config_from(CONFIG_CDN_BASE, network).await
+}
+
+/// Same as [`load_waterx_config`], from an alternative base URL (the staging
+/// CDN alias, a test server). Never raw.githubusercontent.com.
+#[cfg(feature = "fetch")]
+pub async fn load_waterx_config_from(base: &str, network: &str) -> Result<WaterxConfig, ConfigError> {
+    let url = format!("{}/{network}.json", base.trim_end_matches('/'));
+    let mut last: Option<ConfigError> = None;
+    for attempt in 0..3u32 {
+        if attempt > 0 {
+            tokio::time::sleep(std::time::Duration::from_millis(500 * (1 << (attempt - 1)))).await;
+        }
+        match http_client().get(&url).send().await {
+            Ok(resp) => {
+                let status = resp.status();
+                let retryable = status.as_u16() == 429 || status.as_u16() == 408 || status.is_server_error();
+                match resp.error_for_status() {
+                    // A parse/network-mismatch failure is permanent — return it as-is.
+                    Ok(ok) => match ok.text().await {
+                        Ok(body) => return parse_waterx_config(&body, Some(network)),
+                        Err(e) => last = Some(ConfigError::Http(e)), // body cut off mid-read: retry
+                    },
+                    Err(e) => {
+                        let err = ConfigError::Http(e);
+                        if !retryable {
+                            return Err(err);
+                        }
+                        last = Some(err);
+                    }
+                }
+            }
+            // Transport errors (DNS, refused, timeout) are transient.
+            Err(e) => last = Some(ConfigError::Http(e)),
+        }
+    }
+    Err(last.expect("at least one attempt ran"))
 }
 
 #[cfg(test)]
@@ -139,7 +175,8 @@ mod tests {
                 "{net}: the symbols universe must exist and hold the flagship symbol");
             assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
             let wr = cfg.packages.get("waterx_rule").expect("waterx_rule identity");
-            assert!(wr.published_at.as_deref().unwrap_or("").starts_with("0x"));
+            // published_at is a REQUIRED String now (identity trio; review finding)
+            assert!(wr.published_at.starts_with("0x"));
         }
     }
 
@@ -163,7 +200,7 @@ mod tests {
         let base: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
         for (v, ok) in [
             (serde_json::json!(2), true),
-            (serde_json::json!(2.0), true),
+            (serde_json::json!(2.0), false), // not an integer token; no producer emits it
             (serde_json::json!(3), false),
             (serde_json::json!(2.5), false),
             (serde_json::json!("2"), false),
@@ -191,6 +228,34 @@ mod tests {
             schema["properties"]["schema_version"]["enum"],
             serde_json::json!([SCHEMA_VERSION])
         );
+    }
+
+    /// A genuine shape error (version fine) must surface the TYPED error,
+    /// which carries line/column — not a repackaged one without position.
+    #[test]
+    fn shape_errors_keep_position_info() {
+        let mut doc: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
+        doc["oracle_rules"]["waterx"]["venue_feeds"]["BTCUSD"]["min_sources"] = serde_json::json!("two");
+        let err = parse_waterx_config(&serde_json::to_string_pretty(&doc).unwrap(), None).unwrap_err();
+        match err {
+            ConfigError::Parse(e) => {
+                assert!(e.line() > 0, "typed serde error must keep its position: {e}");
+            }
+            other => panic!("expected Parse, got {other}"),
+        }
+    }
+
+    /// Round-trip: serializing a parsed config must not emit `null` for
+    /// absent optionals (ajv and zod both reject null there).
+    #[test]
+    fn serialization_round_trips_without_nulls() {
+        for net in ["mainnet", "testnet"] {
+            let cfg = parse_waterx_config(&fixture(&format!("{net}.json")), Some(net)).unwrap();
+            let out = serde_json::to_string(&cfg).unwrap();
+            assert!(!out.contains(":null") && !out.contains(": null"),
+                "{net}: absent Options must be skipped, not serialized as null");
+            parse_waterx_config(&out, Some(net)).unwrap_or_else(|e| panic!("{net} re-parse: {e}"));
+        }
     }
 
     /// A mainnet binary must not silently load a testnet file.

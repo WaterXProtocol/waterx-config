@@ -1,0 +1,20 @@
+name: Codegen freshness
+
+# Companion to codegen.yml: the SAME job name (`regen`) on the INVERSE path
+# filter, so `regen` can be a required check without deadlocking PRs that
+# touch no generated inputs (a path-skipped required check sits at
+# "Expected — Waiting for status" forever; review finding). Keep this
+# paths-ignore list identical to codegen.yml's paths list.
+on:
+  pull_request:
+    paths-ignore: [schema/**, scripts/**, packages/**, docs/FIELDS.md, mainnet.json, testnet.json, .github/workflows/codegen.yml]
+
+concurrency:
+  group: codegen-noop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No generated inputs touched — codegen freshness trivially holds."

@@ -14,10 +14,30 @@ Full field reference: [FIELDS.md](./FIELDS.md).
 
 ## Consumer impact (breaking, accepted by decision 2026-09-07)
 
-Merging to `main` deploys the new shape to config.waterx.app immediately.
-Every consumer that reads legacy paths directly breaks until it migrates to
-the generated parsers (`@waterx-protocol/config` / the `waterx-config` crate)
-or repoints its reads:
+Merging to `main` deploys the new shape to config.waterx.app immediately
+(60s edge TTL). **Merging to `staging` is NOT the safe half**: the staging
+branch serves the live `staging.waterx-config.pages.dev` alias, which
+waterx-sdk CI hard-defaults to (`WATERX_CONFIG_URL` fallback; the repo
+variable override is unset) — so the staging PR breaks waterx-sdk CI on all
+branches the moment it merges, and nothing guards merges into staging.
+Sequence accordingly: pin waterx-sdk's `WATERX_CONFIG_URL` (or land its
+migration) BEFORE the staging merge.
+
+**Verified per-repo blast radius** (traced 2026-09-08; no consumer repo has a
+migration in flight — every one must migrate to the generated parsers
+(`@waterx/config` / the `waterx-config` crate) or repoint its reads first):
+
+| consumer | what happens on flip | mode |
+|---|---|---|
+| waterx-quote-center | boots `bail!("no packages.waterx_rule.feeds")` → CrashLoopBackOff, no signed prices, both networks | loud |
+| bucket-backend-mono | `Object.entries(undefined)` in registry `onModuleInit` → whole app restart loop | loud |
+| data-infra **oracle service** | boot throw under both `ORACLE_SOURCE` values (this consumer was previously missing from this list) | loud |
+| waterx-keeper | one `warn`, then **permanent fallback to the bundled snapshot**; refresh worker rejects every later remote config | **silent** |
+| waterx-sdk | `validateConfig` passes (checks `published_at` only) but every object-id read is `undefined` → tx-build throws deep in @mysten/sui; `isConstantTicker("USDCUSD")` goes false → **the WLP collateral price stops refreshing** (no Pyth fallback exists for USDCUSD) | **silent** |
+| waterx-fe | reads raw.githubusercontent.com @ `main` (violating this repo's own CDN rule) → flips at merge instant; read-plane serves **$0 prices** for unresolved tickers | **silent** |
+| waterx-contract | next config PR red on ajv (intended), but the `price_info_object` backfill also SKIPS silently and nothing writes `objects.*`/`oracle_rules.*` | mixed |
+
+The old→new path map:
 
 | old path | new path |
 |---|---|
@@ -39,9 +59,12 @@ or repoints its reads:
 | `packages.withdrawal_queue.*` | `objects.withdrawal_queue.*` |
 | `packages.waterx_prediction*.*` | `objects.prediction.*` |
 | `packages.*.{published_at,original_id,version,upgrade_capability,mvr}` | **unchanged** |
+| `packages.waterx_rule.enabled` (testnet) | **dropped** — never read by any repo; last value `true`; recorded here, not archived in deploys/ |
 
-Identity-only readers (`published_at`/`original_id` — the SDK's packageIds,
-data-infra's indexer) are unaffected.
+Truly identity-only readers are unaffected — of the consumers traced, that is
+**only data-infra's two indexers** (they read `packages.*.original_id` +
+`network` and nothing else). The SDK is NOT identity-only (see the table
+above), despite validating only `published_at`.
 
 ## Producer impact — ACTION REQUIRED in waterx-contract
 
@@ -51,10 +74,17 @@ and `deploy_tx_log` into `{network}.json`, and must be repointed at
 new layout for object-id syncs. Until then, the next deploy's config PR will
 fail ajv here — deliberately, rather than silently reintroducing the old shape.
 
-## Governance still owed (repo admin)
+## Governance still owed (repo admin / npm org admin)
 
-The ruleset currently targets no refs (`ref_name.include: []`) so NO check is
-enforced — point it at `refs/heads/main`, require
-`schema-consistency-and-ts-parser`, `rust-parser-parses-instances`, `regen`
-(with a same-name no-op job for path-skipped PRs) and the guard; and retire
-the `main-v2` allowance in guard-main-merges.yml after the promotion merges.
+- The ruleset currently targets no refs (`ref_name.include: []`) so NO check
+  is enforced — point it at `refs/heads/main` and require
+  `schema-consistency-and-ts-parser`, `rust-parser-parses-instances`, `regen`
+  and the guard. `regen` is now safe to require: `codegen-noop.yml` reports
+  the same job name on the inverse path filter, so path-skipped PRs cannot
+  deadlock on it.
+- The `main-v2` allowance in guard-main-merges.yml now **self-expires**: it is
+  keyed on main still serving the pre-flip shape, so after the promotion it
+  rejects main-v2 PRs with an instruction to delete it. Deleting the dead
+  allowance (and the -v2 branches) after promotion is cleanup, not a guard fix.
+- npm: add this repo as a **Trusted Publisher** for `@waterx/config` on
+  npmjs.com (the org's existing OIDC model; publish.yml carries no token).
