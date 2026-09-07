@@ -41,76 +41,47 @@ def _load(name):
 
 
 _MAPS = _load("map-paths.json")["maps"]
-
-def _expand_descriptions(raw):
-    """One text serves both shapes: a key written against either path of a
-    registered map is mirrored to the other path (prefix rewrite), so prose
-    like the I-16 weights warning survives the flip without duplication."""
-    out = dict(raw)
-    for m in _MAPS:
-        for a, b in ((m["legacy"], m["target"]), (m["target"], m["legacy"])):
-            for k, v in raw.items():
-                if k == a or k.startswith(a + "/"):
-                    out.setdefault(b + k[len(a):], v)
-    return out
-
-DESCRIPTIONS = _expand_descriptions({k: v for k, v in _load("descriptions.json").items() if k != "_comment"})
+DESCRIPTIONS = {k: v for k, v in _load("descriptions.json").items() if k != "_comment"}
 DESCRIPTIONS_USED = set()
 
 
-def map_paths(shape):
-    """The declared open-keyed map paths for 'legacy' or 'target'."""
-    return {m[shape] for m in _MAPS}
+MAP_PATTERNS = [m["path"] for m in _MAPS]
+
+
+def _path_matches(pattern, path):
+    pp, sp = pattern.split("/"), path.split("/")
+    return len(pp) == len(sp) and all(a == "*" or a == b for a, b in zip(pp, sp))
+
+
+def is_map_path(path):
+    """Whether `path` is a declared open-keyed map ('*' = one segment)."""
+    return any(_path_matches(p, path) for p in MAP_PATTERNS)
 
 
 def describe(path):
     """Description for a /-joined path. '*' in a registry key matches exactly
-    one segment; annotate() also uses the literal segment '*' for map ITEMS,
-    so `packages/*/published_at` covers both every named package and a
-    uniform-map item — first match (exact, then declaration order) wins."""
+    one segment; annotate() uses the literal segments '*' (map item) and '[]'
+    (array element), which the same wildcard covers. First match (exact, then
+    declaration order) wins."""
     if path in DESCRIPTIONS:
         DESCRIPTIONS_USED.add(path)
         return DESCRIPTIONS[path]
     parts = path.split("/")
     for key, text in DESCRIPTIONS.items():
         kp = key.split("/")
-        if len(kp) == len(parts) and all(a == "*" or a == b for a, b in zip(kp, parts)):
+        if len(kp) == len(parts) and all(a in ("*", b) for a, b in zip(kp, parts)):
             DESCRIPTIONS_USED.add(key)
             return text
     return None
 
 
-_USED_DIR = os.path.join(_HERE, "..", ".build-target")
-
-
-def save_descriptions_used(run_name):
-    """Persist this generator run's matched keys — the two generators are
-    separate processes, so the stale-key gate unions their files."""
-    os.makedirs(_USED_DIR, exist_ok=True)
-    with open(os.path.join(_USED_DIR, f"desc-used-{run_name}.json"), "w") as f:
-        json.dump(sorted(DESCRIPTIONS_USED), f)
-
-
-def assert_descriptions_used(runs=("legacy", "target")):
+def assert_descriptions_used():
     """Stale-key gate: every authored description key must have matched at
-    least once across the generator runs (directly or via its registry
-    mirror). Call after BOTH generators have run (save_descriptions_used)."""
-    used = set(DESCRIPTIONS_USED)
-    for r in runs:
-        p = os.path.join(_USED_DIR, f"desc-used-{r}.json")
-        if os.path.exists(p):
-            with open(p) as f:
-                used |= set(json.load(f))
+    least one schema path in this generator run."""
     raw = {k for k in _load("descriptions.json") if k != "_comment"}
-    mirror_of = {}
-    for m in _MAPS:
-        for a, b in ((m["legacy"], m["target"]), (m["target"], m["legacy"])):
-            for k in raw:
-                if k == a or k.startswith(a + "/"):
-                    mirror_of.setdefault(k, set()).add(b + k[len(a):])
-    stale = {k for k in raw if not (({k} | mirror_of.get(k, set())) & used)}
+    stale = raw - DESCRIPTIONS_USED
     if stale:
-        raise SystemExit(f"stale description key(s) — no schema path matched them in either shape: {sorted(stale)}")
+        raise SystemExit(f"stale description key(s) — no schema path matched them: {sorted(stale)}")
 
 
 def leaf_schema(v):
@@ -129,7 +100,7 @@ def leaf_schema(v):
             return dict(SUI_TYPE)
         if v.startswith("0x") and v[2:] and all(c in "0123456789abcdefABCDEF" for c in v[2:]):
             return {"type": "string", "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                    "description": "Short-form Sui address/object id."}
+                    "description": "0x-prefixed hex id/address (Sui short-form or EVM)."}
         if v.isdigit():
             return dict(DEC_STR)
         return {"type": "string"}
@@ -172,14 +143,14 @@ def merge(a, b):
     return {"type": [ta, tb] if ta and tb else "string"}
 
 
-def infer(v, path, maps):
-    """Infer a schema for value v at /-joined `path`; `maps` declares which
-    paths are open-keyed maps (from map_paths())."""
+def infer(v, path, maps=None):
+    """Infer a schema for value v at /-joined `path`. Map-ness comes from the
+    declared registry (is_map_path); the `maps` arg is retired."""
     if isinstance(v, dict):
-        if path in maps:
+        if is_map_path(path):
             item = None
             for k in v:
-                item = merge(item, infer(v[k], f"{path}/{k}", maps))
+                item = merge(item, infer(v[k], f"{path}/*"))
             return {"type": "object", "additionalProperties": item if item is not None else {}}
         props, req = {}, []
         for k, val in v.items():
@@ -187,14 +158,14 @@ def infer(v, path, maps):
                 props[k] = {"type": "string", "deprecated": True,
                             "description": "Inline comment carried in DATA. Do not add new ones."}
                 continue
-            props[k] = infer(val, f"{path}/{k}", maps)
+            props[k] = infer(val, f"{path}/{k}")
             req.append(k)
         return {"type": "object", "properties": props,
                 "required": sorted(req), "additionalProperties": False}
     if isinstance(v, list):
         item = None
         for x in v:
-            item = merge(item, infer(x, path, maps))
+            item = merge(item, infer(x, f"{path}/[]"))
         return {"type": "array", "items": item or {}}
     return leaf_schema(v)
 
@@ -213,23 +184,22 @@ def annotate(node, path=""):
         annotate(ap, f"{path}/*".lstrip("/"))
     it = node.get("items")
     if isinstance(it, dict):
-        annotate(it, path)
+        annotate(it, f"{path}/[]".lstrip("/"))
     return node
 
 
-def build_schema(m, t, shape, top_extra, schema_id, title, description, required):
+def build_schema(m, t, top_extra, schema_id, title, description, required):
     """Assemble a full document schema from two network instances.
 
-    `top_extra(m, t, maps)` returns the dict of top-level properties beyond the
-    generic per-key inference (or {} to infer everything generically).
+    `top_extra` is a dict of hand-written top-level properties that override
+    the generic per-key inference.
     """
-    maps = map_paths(shape)
     keys = [k for k in {**t, **m} if k != "packages"]
     props = {}
     for k in keys:
-        props[k] = merge(infer(m[k], k, maps) if k in m else None,
-                         infer(t[k], k, maps) if k in t else None)
-    props.update(top_extra(m, t, maps))
+        props[k] = merge(infer(m[k], k) if k in m else None,
+                         infer(t[k], k) if k in t else None)
+    props.update(top_extra)
     props = {k: v for k, v in props.items() if v}
     schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",

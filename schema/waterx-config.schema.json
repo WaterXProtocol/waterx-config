@@ -2,9 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://config.waterx.app/schema/waterx-config.schema.json",
   "title": "waterx-config network file",
-  "description": "One WaterX network deployment: package ids, shared objects, and the oracle feed registry. Describes the CURRENT served shape; the flip target is schema/waterx-config-target.schema.json. Fields present on only one network carry a $comment and are optional. See docs/FIELDS.md.",
+  "description": "One WaterX network deployment in the consolidated shape: one symbol universe, uniform package identity, domain-grouped shared objects, and a named per-rule oracle registry. See docs/FIELDS.md.",
   "type": "object",
   "properties": {
+    "schema_version": {
+      "type": "integer",
+      "enum": [
+        2
+      ],
+      "description": "Format discriminator. This repo serves only version 2 (the consolidated shape); parsers reject anything else."
+    },
     "network": {
       "enum": [
         "mainnet",
@@ -15,296 +22,227 @@
       "type": "string",
       "minLength": 4
     },
-    "coin_registry": {
-      "type": "string",
-      "pattern": "^0x[0-9a-fA-F]{1,64}$",
-      "description": "Short-form Sui address/object id."
-    },
-    "evm": {
+    "symbols": {
       "type": "object",
-      "properties": {
-        "bridge": {
-          "type": "object",
-          "properties": {
-            "chains": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object",
-                "properties": {
-                  "chain_id": {
-                    "type": "integer"
-                  },
-                  "wormhole_chain_id": {
-                    "type": "integer"
-                  },
-                  "wormhole_core": {
-                    "type": "string",
-                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                    "description": "Short-form Sui address/object id."
-                  },
-                  "wormhole_executor": {
-                    "type": "string",
-                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                    "description": "Short-form Sui address/object id."
-                  },
-                  "block_explorer": {
-                    "type": "string"
-                  },
-                  "deposit_vault": {
-                    "type": "string",
-                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                    "description": "Short-form Sui address/object id."
-                  },
-                  "tokens": {
-                    "type": "object",
-                    "properties": {
-                      "USDC": {
-                        "type": "string",
-                        "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                        "description": "Short-form Sui address/object id."
-                      },
-                      "USDT": {
-                        "type": "string",
-                        "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                        "description": "Short-form Sui address/object id."
-                      },
-                      "tUSDC": {
-                        "type": "string",
-                        "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                        "description": "Short-form Sui address/object id."
-                      },
-                      "tUSDT": {
-                        "type": "string",
-                        "pattern": "^0x[0-9a-fA-F]{1,64}$",
-                        "description": "Short-form Sui address/object id."
-                      }
-                    },
-                    "additionalProperties": false
-                  }
-                },
-                "additionalProperties": false,
-                "required": [
-                  "block_explorer",
-                  "chain_id",
-                  "deposit_vault",
-                  "tokens",
-                  "wormhole_chain_id",
-                  "wormhole_core",
-                  "wormhole_executor"
-                ]
-              }
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "chains"
-          ]
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "bridge"
-      ]
-    },
-    "packages": {
-      "type": "object",
-      "properties": {
-        "bucket_framework": {
-          "type": "object",
-          "properties": {
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "original_id",
-            "published_at",
-            "version"
-          ]
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "perp",
+              "spot",
+              "xstock",
+              "commodity",
+              "fx",
+              "prediction"
+            ]
+          }
         },
-        "constant_rule": {
+        "required": [
+          "kind"
+        ],
+        "additionalProperties": false
+      },
+      "description": "The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map elsewhere must reference a key from here (CI-enforced)."
+    },
+    "objects": {
+      "type": "object",
+      "properties": {
+        "oracle": {
           "type": "object",
           "properties": {
-            "config": {
+            "oracle": {
               "$ref": "#/$defs/suiId"
             },
-            "feeds": {
+            "listing_cap": {
+              "$ref": "#/$defs/suiId"
+            },
+            "aggregators": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/suiId"
+              },
+              "description": "Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation point."
+            }
+          },
+          "required": [
+            "aggregators",
+            "listing_cap",
+            "oracle"
+          ],
+          "additionalProperties": false
+        },
+        "perp": {
+          "type": "object",
+          "properties": {
+            "global_config": {
+              "$ref": "#/$defs/suiId"
+            },
+            "admin_cap": {
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
+            },
+            "market_registry_wlp": {
+              "$ref": "#/$defs/suiId"
+            },
+            "markets": {
               "type": "object",
               "additionalProperties": {
                 "type": "object",
                 "properties": {
-                  "price": {
-                    "$ref": "#/$defs/decString"
+                  "market": {
+                    "$ref": "#/$defs/suiId"
+                  },
+                  "config": {
+                    "$ref": "#/$defs/suiId"
                   }
                 },
                 "required": [
-                  "price"
+                  "config",
+                  "market"
                 ],
                 "additionalProperties": false
               },
-              "description": "Per-symbol constant price, 1e9-scaled decimal string (e.g. \"1000000000\" = 1.0)."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+              "description": "Per-symbol perp market: market + config object ids."
             }
           },
-          "additionalProperties": false,
           "required": [
-            "config",
-            "feeds",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
+            "admin_cap",
+            "global_config",
+            "market_registry_wlp",
+            "markets"
+          ],
+          "additionalProperties": false
         },
-        "enclave": {
+        "wlp": {
           "type": "object",
           "properties": {
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
+            "pool": {
+              "$ref": "#/$defs/suiId"
             },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
+            "aum": {
+              "$ref": "#/$defs/suiId"
             },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
-        },
-        "mock_sui": {
-          "type": "object",
-          "properties": {
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "$comment": "present only on testnet today",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "$comment": "package exists only on testnet today"
-        },
-        "mock_usdc": {
-          "type": "object",
-          "properties": {
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "version": {
-              "type": "integer",
-              "$comment": "present only on testnet today",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "$comment": "package exists only on testnet today"
-        },
-        "mock_usdsui": {
-          "type": "object",
-          "properties": {
-            "currency": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today"
+            "currency_type": {
+              "$ref": "#/$defs/suiId"
             },
             "metadata_cap": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today"
+              "$ref": "#/$defs/suiId"
             },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "treasury_cap": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today"
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "$comment": "present only on testnet today",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+            "pool_tokens": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/suiType"
+              }
             }
           },
-          "additionalProperties": false,
-          "$comment": "package exists only on testnet today"
+          "required": [
+            "aum",
+            "currency_type",
+            "metadata_cap",
+            "pool",
+            "pool_tokens"
+          ],
+          "additionalProperties": false
         },
-        "native_custody": {
+        "staking": {
           "type": "object",
           "properties": {
+            "admin_cap": {
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
+            },
+            "pools": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/suiId"
+              }
+            },
+            "rewarders": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "rewarder_id": {
+                      "$ref": "#/$defs/suiId"
+                    },
+                    "coin_type": {
+                      "$ref": "#/$defs/suiType"
+                    },
+                    "decimals": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "coin_type",
+                    "decimals",
+                    "rewarder_id"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "required": [
+            "admin_cap",
+            "pools",
+            "rewarders"
+          ],
+          "additionalProperties": false
+        },
+        "account": {
+          "type": "object",
+          "properties": {
+            "registry": {
+              "$ref": "#/$defs/suiId"
+            },
+            "admin_cap": {
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
+            }
+          },
+          "required": [
+            "admin_cap",
+            "registry"
+          ],
+          "additionalProperties": false
+        },
+        "referral": {
+          "type": "object",
+          "properties": {
+            "table": {
+              "$ref": "#/$defs/suiId"
+            }
+          },
+          "required": [
+            "table"
+          ],
+          "additionalProperties": false
+        },
+        "credit": {
+          "type": "object",
+          "properties": {
+            "registry": {
+              "$ref": "#/$defs/suiId"
+            },
+            "credit_type": {
+              "$ref": "#/$defs/suiType"
+            }
+          },
+          "required": [
+            "credit_type",
+            "registry"
+          ],
+          "additionalProperties": false
+        },
+        "custody": {
+          "type": "object",
+          "properties": {
+            "vault": {
+              "$ref": "#/$defs/suiId"
+            },
             "assets": {
               "type": "array",
               "items": {
@@ -338,768 +276,105 @@
                   "type"
                 ],
                 "additionalProperties": false
-              }
-            },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
               },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "vault": {
-              "$ref": "#/$defs/suiId"
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+              "description": "Native-custody asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled (0 = no fee; 1_000_000 = 0.1%; 1_000_000_000 = 100%). min_burn_amount is the dust floor in the asset's smallest unit."
             }
           },
-          "additionalProperties": false,
           "required": [
             "assets",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "vault",
-            "version"
-          ]
+            "vault"
+          ],
+          "additionalProperties": false
         },
-        "pyth_lazer_rule": {
+        "bridge": {
           "type": "object",
           "properties": {
-            "config": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on mainnet today"
-            },
-            "feeds": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "integer"
-              },
-              "$comment": "present only on mainnet today",
-              "description": "Per-symbol Pyth Lazer numeric feed id, as used by the keeper's Lazer WS subscription."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on mainnet today",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on mainnet today",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
             "state": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on mainnet today"
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on mainnet today",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "$comment": "present only on mainnet today",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "$comment": "package exists only on mainnet today"
-        },
-        "pyth_rule": {
-          "type": "object",
-          "properties": {
-            "config": {
               "$ref": "#/$defs/suiId"
             },
-            "feeds": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object",
-                "properties": {
-                  "feed_id": {
-                    "$ref": "#/$defs/suiId"
-                  },
-                  "price_info_object": {
-                    "$ref": "#/$defs/suiId"
-                  }
-                },
-                "required": [
-                  "feed_id",
-                  "price_info_object"
-                ],
-                "additionalProperties": false
-              },
-              "description": "Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes)."
+            "emitter_cap": {
+              "$ref": "#/$defs/suiId"
             },
-            "mvr": {
+            "wormhole_state": {
+              "$ref": "#/$defs/suiId"
+            },
+            "limits": {
               "type": "object",
               "properties": {
-                "name": {
-                  "type": "string"
+                "max_mint_per_tx": {
+                  "$ref": "#/$defs/decString"
                 },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
+                "max_burn_per_tx": {
+                  "$ref": "#/$defs/decString"
                 },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
+                "daily_mint": {
+                  "$ref": "#/$defs/decString"
                 },
-                "git": {
+                "daily_burn": {
+                  "$ref": "#/$defs/decString"
+                },
+                "personal_burn": {
                   "type": "object",
                   "properties": {
-                    "repo": {
-                      "type": "string"
+                    "cap_amount": {
+                      "$ref": "#/$defs/decString"
                     },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
+                    "window_ms": {
+                      "$ref": "#/$defs/decString"
                     }
                   },
                   "required": [
-                    "path",
-                    "repo",
-                    "version"
+                    "cap_amount",
+                    "window_ms"
                   ],
                   "additionalProperties": false
                 }
               },
               "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
+                "daily_burn",
+                "daily_mint",
+                "max_burn_per_tx",
+                "max_mint_per_tx",
+                "personal_burn"
               ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+              "additionalProperties": false
             }
           },
-          "additionalProperties": false,
           "required": [
-            "config",
-            "feeds",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
+            "emitter_cap",
+            "limits",
+            "state",
+            "wormhole_state"
+          ],
+          "additionalProperties": false
         },
-        "supra_rule": {
+        "withdrawal_queue": {
           "type": "object",
           "properties": {
-            "config": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today"
+            "queue": {
+              "$ref": "#/$defs/suiId"
             },
-            "feeds": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object",
-                "properties": {
-                  "pair_id": {
-                    "type": "integer"
-                  }
-                },
-                "required": [
-                  "pair_id"
-                ],
-                "additionalProperties": false
-              },
-              "$comment": "present only on testnet today"
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "$comment": "present only on testnet today",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "$comment": "package exists only on testnet today"
-        },
-        "testnet_faucet": {
-          "type": "object",
-          "properties": {
-            "faucet": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today"
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "$comment": "present only on testnet today",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            },
-            "whitelist": {
+            "executors": {
               "type": "array",
               "items": {
                 "$ref": "#/$defs/suiId"
-              },
-              "$comment": "present only on testnet today"
-            }
-          },
-          "additionalProperties": false,
-          "$comment": "package exists only on testnet today"
-        },
-        "usd": {
-          "type": "object",
-          "properties": {
-            "metadata_cap": {
-              "$ref": "#/$defs/suiId"
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+              }
             }
           },
           "additionalProperties": false,
           "required": [
-            "metadata_cap",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
+            "queue"
           ]
         },
-        "waterx_account": {
+        "prediction": {
           "type": "object",
           "properties": {
-            "account_registry": {
-              "$ref": "#/$defs/suiId"
-            },
-            "admin_cap": {
-              "$ref": "#/$defs/suiId",
-              "description": "Admin capability object id."
-            },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "account_registry",
-            "admin_cap",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
-        },
-        "waterx_credit": {
-          "type": "object",
-          "properties": {
-            "credit_registry": {
-              "$ref": "#/$defs/suiId"
-            },
-            "credit_type": {
-              "$ref": "#/$defs/suiType"
-            },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "credit_registry",
-            "credit_type",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
-        },
-        "waterx_oracle": {
-          "type": "object",
-          "properties": {
-            "aggregators": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/$defs/suiId"
-              },
-              "description": "Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation point."
-            },
-            "listing_cap": {
-              "$ref": "#/$defs/suiId"
-            },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "oracle": {
-              "$ref": "#/$defs/suiId"
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "aggregators",
-            "listing_cap",
-            "oracle",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
-        },
-        "waterx_perp": {
-          "type": "object",
-          "properties": {
-            "admin_cap": {
-              "$ref": "#/$defs/suiId",
-              "description": "Admin capability object id."
-            },
             "global_config": {
               "$ref": "#/$defs/suiId"
             },
-            "market_registry_wlp": {
-              "$ref": "#/$defs/suiId"
-            },
-            "markets": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object",
-                "properties": {
-                  "market": {
-                    "$ref": "#/$defs/suiId"
-                  },
-                  "config": {
-                    "$ref": "#/$defs/suiId"
-                  }
-                },
-                "required": [
-                  "config",
-                  "market"
-                ],
-                "additionalProperties": false
-              },
-              "description": "Per-symbol perp market: market + config object ids."
-            },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "admin_cap",
-            "global_config",
-            "market_registry_wlp",
-            "markets",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
-        },
-        "waterx_perp_view": {
-          "type": "object",
-          "properties": {
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
-        },
-        "waterx_prediction": {
-          "type": "object",
-          "properties": {
             "admin_cap": {
               "$ref": "#/$defs/suiId",
               "description": "Admin capability object id."
-            },
-            "global_config": {
-              "$ref": "#/$defs/suiId"
             },
             "market_registries": {
               "type": "object",
@@ -1107,173 +382,136 @@
                 "$ref": "#/$defs/suiId"
               }
             },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
             "settlement_coin_types": {
               "type": "object",
               "additionalProperties": {
                 "$ref": "#/$defs/suiType"
               }
             },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "admin_cap",
-            "global_config",
-            "market_registries",
-            "original_id",
-            "published_at",
-            "settlement_coin_types",
-            "upgrade_capability",
-            "version"
-          ]
-        },
-        "waterx_prediction_gift": {
-          "type": "object",
-          "properties": {
-            "admin_cap": {
-              "$ref": "#/$defs/suiId",
-              "description": "Admin capability object id."
-            },
             "claimable_link_config": {
               "$ref": "#/$defs/suiId"
             },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+            "gift_admin_cap": {
+              "$ref": "#/$defs/suiId"
             }
           },
-          "additionalProperties": false,
           "required": [
             "admin_cap",
             "claimable_link_config",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
+            "gift_admin_cap",
+            "global_config",
+            "market_registries",
+            "settlement_coin_types"
+          ],
+          "additionalProperties": false
         },
-        "waterx_referral": {
+        "usd": {
           "type": "object",
           "properties": {
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "referral_table": {
+            "metadata_cap": {
               "$ref": "#/$defs/suiId"
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "$comment": "present only on testnet today",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
             }
           },
-          "additionalProperties": false,
           "required": [
-            "original_id",
-            "published_at",
-            "referral_table",
-            "version"
-          ]
+            "metadata_cap"
+          ],
+          "additionalProperties": false
         },
-        "waterx_rule": {
+        "faucet": {
           "type": "object",
           "properties": {
-            "config": {
+            "faucet": {
+              "$ref": "#/$defs/suiId"
+            },
+            "whitelist": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/suiId"
+              }
+            }
+          },
+          "required": [
+            "faucet",
+            "whitelist"
+          ],
+          "additionalProperties": false
+        },
+        "mock_usdsui": {
+          "type": "object",
+          "properties": {
+            "currency_type": {
+              "$ref": "#/$defs/suiId"
+            },
+            "metadata_cap": {
+              "$ref": "#/$defs/suiId"
+            },
+            "treasury_cap": {
+              "$ref": "#/$defs/suiId"
+            }
+          },
+          "required": [
+            "currency_type",
+            "metadata_cap",
+            "treasury_cap"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "account",
+        "bridge",
+        "credit",
+        "custody",
+        "oracle",
+        "perp",
+        "prediction",
+        "referral",
+        "staking",
+        "usd",
+        "withdrawal_queue",
+        "wlp"
+      ]
+    },
+    "oracle_rules": {
+      "type": "object",
+      "properties": {
+        "waterx": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "rule_config_object": {
               "$ref": "#/$defs/suiId"
             },
             "enclave": {
-              "$ref": "#/$defs/suiId"
+              "type": "object",
+              "properties": {
+                "object": {
+                  "$ref": "#/$defs/suiId"
+                },
+                "cap": {
+                  "$ref": "#/$defs/suiId"
+                },
+                "config": {
+                  "$ref": "#/$defs/suiId"
+                },
+                "pubkey": {
+                  "type": "string",
+                  "description": "Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an independent env copy by design (boot-without-enclave)."
+                }
+              },
+              "required": [
+                "cap",
+                "config",
+                "object",
+                "pubkey"
+              ],
+              "additionalProperties": false,
+              "description": "The ONE home for enclave identity (object, cap, config, pubkey)."
             },
-            "enclave_cap": {
-              "$ref": "#/$defs/suiId"
-            },
-            "enclave_config": {
-              "$ref": "#/$defs/suiId"
-            },
-            "enclave_pubkey": {
-              "type": "string",
-              "description": "Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an independent env copy by design (boot-without-enclave)."
-            },
-            "feeds": {
+            "venue_feeds": {
               "type": "object",
               "additionalProperties": {
                 "type": "object",
@@ -1298,20 +536,17 @@
                         "weight"
                       ],
                       "additionalProperties": false
-                    }
+                    },
+                    "description": "Venue set feeding the aggregate. Source names are a wire vocabulary shared with waterx_rule.move's on-chain u64 registry (1 binance_spot, 2 binance_usdm_perp, 3 bybit_linear_perp, 4 gateio_usdt_perp, 5 bybit_spot, 6 xstock_equity, 7 okx_spot, 8 hyperliquid_perp, 9 gateio_spot, 10 kraken_spot, 11 pyth_lazer). A source id must be REGISTERED ON-CHAIN for the target network before a feed lists it — mainnet has ids 5-10 unregistered (WL-1968), so xstock/commodity-style feeds using them are testnet-only until then; listing one on mainnet aborts on-chain validation at feed time."
                   },
                   "method": {
                     "type": "string"
                   },
                   "min_sources": {
                     "type": "integer"
-                  },
-                  "kind": {
-                    "type": "string"
                   }
                 },
                 "required": [
-                  "kind",
                   "method",
                   "min_sources",
                   "sources",
@@ -1320,448 +555,296 @@
                 "additionalProperties": false
               },
               "description": "QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY: waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of weights, so a weight change moves the signed price via a parameter no on-chain check can see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface change."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
             }
           },
-          "additionalProperties": false,
           "required": [
-            "config",
             "enclave",
-            "enclave_cap",
-            "enclave_config",
-            "enclave_pubkey",
-            "feeds",
-            "original_id",
-            "published_at",
-            "upgrade_capability",
-            "version"
-          ]
+            "package",
+            "rule_config_object",
+            "venue_feeds"
+          ],
+          "additionalProperties": false
         },
-        "waterx_staking": {
+        "pyth": {
           "type": "object",
           "properties": {
-            "admin_cap": {
-              "$ref": "#/$defs/suiId",
-              "description": "Admin capability object id."
+            "package": {
+              "type": "string"
             },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
+            "pyth_config_object": {
+              "$ref": "#/$defs/suiId"
             },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "pools": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/$defs/suiId"
-              }
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "rewarders": {
+            "pyth_price_feeds": {
               "type": "object",
               "additionalProperties": {
                 "type": "object",
                 "properties": {
-                  "USDC": {
-                    "type": "object",
-                    "properties": {
-                      "rewarder_id": {
-                        "$ref": "#/$defs/suiId"
-                      },
-                      "coin_type": {
-                        "$ref": "#/$defs/suiType"
-                      },
-                      "decimals": {
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "coin_type",
-                      "decimals",
-                      "rewarder_id"
-                    ],
-                    "additionalProperties": false
+                  "feed_id": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "Pyth price-feed identifier (32-byte hex). NOT a Sui object id."
                   },
-                  "DEEP": {
-                    "type": "object",
-                    "properties": {
-                      "rewarder_id": {
-                        "$ref": "#/$defs/suiId"
-                      },
-                      "coin_type": {
-                        "$ref": "#/$defs/suiType"
-                      },
-                      "decimals": {
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "coin_type",
-                      "decimals",
-                      "rewarder_id"
-                    ],
-                    "additionalProperties": false
-                  },
-                  "MOCK_DEEP": {
-                    "type": "object",
-                    "properties": {
-                      "rewarder_id": {
-                        "$ref": "#/$defs/suiId"
-                      },
-                      "coin_type": {
-                        "$ref": "#/$defs/suiType"
-                      },
-                      "decimals": {
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "coin_type",
-                      "decimals",
-                      "rewarder_id"
-                    ],
-                    "additionalProperties": false
+                  "price_info_object": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object; passing the wrapper is the classic mistake."
                   }
                 },
+                "required": [
+                  "feed_id",
+                  "price_info_object"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes)."
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "package",
+            "pyth_config_object",
+            "pyth_price_feeds"
+          ]
+        },
+        "pyth_lazer": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "lazer_state_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "lazer_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "lazer_feed_ids": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "description": "Per-symbol Pyth Lazer numeric feed id, as used by the keeper's Lazer WS subscription."
+            }
+          },
+          "required": [
+            "lazer_config_object",
+            "lazer_feed_ids",
+            "lazer_state_object",
+            "package"
+          ],
+          "additionalProperties": false
+        },
+        "constant": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "rule_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "constant_prices": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "price": {
+                    "$ref": "#/$defs/decString"
+                  }
+                },
+                "required": [
+                  "price"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-symbol constant price, 1e9-scaled decimal string (e.g. \"1000000000\" = 1.0)."
+            }
+          },
+          "required": [
+            "constant_prices",
+            "package",
+            "rule_config_object"
+          ],
+          "additionalProperties": false
+        },
+        "supra": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "rule_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "pair_ids": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer"
+              }
+            }
+          },
+          "required": [
+            "package",
+            "pair_ids",
+            "rule_config_object"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "constant",
+        "pyth",
+        "waterx"
+      ]
+    },
+    "coin_registry": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{1,64}$",
+      "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+    },
+    "evm": {
+      "type": "object",
+      "properties": {
+        "bridge": {
+          "type": "object",
+          "properties": {
+            "chains": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "chain_id": {
+                    "type": "integer"
+                  },
+                  "wormhole_chain_id": {
+                    "type": "integer"
+                  },
+                  "wormhole_core": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+                  },
+                  "wormhole_executor": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+                  },
+                  "block_explorer": {
+                    "type": "string"
+                  },
+                  "deposit_vault": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+                  },
+                  "tokens": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                      "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+                    }
+                  }
+                },
+                "required": [
+                  "block_explorer",
+                  "chain_id",
+                  "deposit_vault",
+                  "tokens",
+                  "wormhole_chain_id",
+                  "wormhole_core",
+                  "wormhole_executor"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "chains"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "bridge"
+      ],
+      "additionalProperties": false
+    },
+    "packages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "published_at": {
+            "$ref": "#/$defs/suiId",
+            "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
+          },
+          "original_id": {
+            "$ref": "#/$defs/suiId",
+            "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+          },
+          "upgrade_capability": {
+            "$ref": "#/$defs/suiId",
+            "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
+          },
+          "mvr": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "package_info_id": {
+                "$ref": "#/$defs/suiId"
+              },
+              "app_cap_id": {
+                "$ref": "#/$defs/suiId"
+              },
+              "git": {
+                "type": "object",
+                "properties": {
+                  "repo": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "repo",
+                  "path",
+                  "version"
+                ],
                 "additionalProperties": false
               }
             },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "admin_cap",
-            "original_id",
-            "pools",
-            "published_at",
-            "rewarders",
-            "upgrade_capability",
-            "version"
-          ]
+            "required": [
+              "name",
+              "package_info_id",
+              "app_cap_id"
+            ],
+            "additionalProperties": false,
+            "description": "Move Registry (MVR) registration for this package. Mainnet only today."
+          }
         },
-        "withdrawal_queue": {
-          "type": "object",
-          "properties": {
-            "executors": {
-              "type": "array",
-              "items": {
-                "$ref": "#/$defs/suiId"
-              },
-              "$comment": "present only on testnet today"
-            },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "queue": {
-              "$ref": "#/$defs/suiId"
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "original_id",
-            "published_at",
-            "queue",
-            "upgrade_capability",
-            "version"
-          ]
-        },
-        "wlp": {
-          "type": "object",
-          "properties": {
-            "currency": {
-              "$ref": "#/$defs/suiId"
-            },
-            "metadata_cap": {
-              "$ref": "#/$defs/suiId"
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "pool_tokens": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/$defs/suiType"
-              }
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            },
-            "wlp_aum": {
-              "$ref": "#/$defs/suiId"
-            },
-            "wlp_pool": {
-              "$ref": "#/$defs/suiId"
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "currency",
-            "metadata_cap",
-            "original_id",
-            "pool_tokens",
-            "published_at",
-            "upgrade_capability",
-            "version",
-            "wlp_aum",
-            "wlp_pool"
-          ]
-        },
-        "wormhole_bridge": {
-          "type": "object",
-          "properties": {
-            "bridge": {
-              "$ref": "#/$defs/suiId"
-            },
-            "daily_burn_limit": {
-              "$ref": "#/$defs/decString"
-            },
-            "daily_mint_limit": {
-              "$ref": "#/$defs/decString"
-            },
-            "emitter_cap": {
-              "$ref": "#/$defs/suiId"
-            },
-            "max_burn_per_tx": {
-              "$ref": "#/$defs/decString"
-            },
-            "max_mint_per_tx": {
-              "$ref": "#/$defs/decString"
-            },
-            "mvr": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "package_info_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "app_cap_id": {
-                  "$ref": "#/$defs/suiId"
-                },
-                "git": {
-                  "type": "object",
-                  "properties": {
-                    "repo": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "path",
-                    "repo",
-                    "version"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "app_cap_id",
-                "git",
-                "name",
-                "package_info_id"
-              ],
-              "additionalProperties": false,
-              "$comment": "present only on mainnet today",
-              "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-            },
-            "original_id": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-            },
-            "personal_burn_cap": {
-              "type": "object",
-              "properties": {
-                "cap_amount": {
-                  "$ref": "#/$defs/decString"
-                },
-                "window_ms": {
-                  "$ref": "#/$defs/decString"
-                }
-              },
-              "required": [
-                "cap_amount",
-                "window_ms"
-              ],
-              "additionalProperties": false
-            },
-            "published_at": {
-              "$ref": "#/$defs/suiId",
-              "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-            },
-            "upgrade_capability": {
-              "$ref": "#/$defs/suiId",
-              "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-            },
-            "version": {
-              "type": "integer",
-              "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-            },
-            "wormhole_state": {
-              "$ref": "#/$defs/suiId"
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "bridge",
-            "daily_burn_limit",
-            "daily_mint_limit",
-            "emitter_cap",
-            "max_burn_per_tx",
-            "max_mint_per_tx",
-            "original_id",
-            "personal_burn_cap",
-            "published_at",
-            "upgrade_capability",
-            "version",
-            "wormhole_state"
-          ]
-        }
-      },
-      "additionalProperties": false
+        "additionalProperties": false
+      }
     }
   },
   "required": [
+    "schema_version",
     "network",
     "chain_id",
-    "packages"
+    "symbols",
+    "packages",
+    "objects",
+    "oracle_rules"
   ],
   "additionalProperties": false,
   "$defs": {

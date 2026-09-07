@@ -1,31 +1,31 @@
-// Flip-coherence gate: the repo must be in exactly one mode. Pre-flip the
-// legacy artifacts are load-bearing; post-flip they are contraband — this is
-// what turns docs/FLIP-PLAN.md's cleanup checklist from prose into CI.
+// Repo-state gate: the flip is DONE — both served files must declare the
+// consolidated shape, and no legacy artifact may resurface.
 import { existsSync, readFileSync } from "node:fs";
 
 const root = new URL("..", import.meta.url);
-const flipped = ["mainnet", "testnet"].map((n) =>
-  (JSON.parse(readFileSync(new URL(`${n}.json`, root), "utf8")).schema_version ?? 1) >= 2);
-if (flipped[0] !== flipped[1]) {
-  console.error("FAIL: mainnet and testnet declare different shapes — flip both in one commit");
-  process.exit(1);
+let failures = 0;
+for (const net of ["mainnet", "testnet"]) {
+  const v = JSON.parse(readFileSync(new URL(`${net}.json`, root), "utf8")).schema_version;
+  if (v !== 2) {
+    console.error(`FAIL: ${net}.json declares schema_version ${v} — this repo serves the consolidated shape (2) only`);
+    failures++;
+  }
 }
 const LEGACY_ARTIFACTS = [
-  "schema/waterx-config.schema.json",
+  "schema/waterx-config-target.schema.json", // the target schema IS waterx-config.schema.json now
   "packages/ts/src/schema-legacy.ts",
   "packages/ts/src/lift.mjs",
   "packages/rust/src/lift.rs",
-  "docs/FIELDS.md",
-  "scripts/gen_schema.py",
+  "packages/rust/src/generated_legacy.rs",
+  "scripts/derive-target.mjs",
+  "scripts/gen_target_schema.py",
+  "docs/FIELDS-TARGET.md",
 ];
-const missing = LEGACY_ARTIFACTS.filter((p) => !existsSync(new URL(p, root)));
-if (!flipped[0] && missing.length) {
-  console.error(`FAIL: pre-flip, legacy artifacts are load-bearing but missing: ${missing.join(", ")}`);
-  process.exit(1);
+for (const p of LEGACY_ARTIFACTS) {
+  if (existsSync(new URL(p, root))) {
+    console.error(`FAIL: legacy artifact resurfaced: ${p}`);
+    failures++;
+  }
 }
-if (flipped[0] && missing.length !== LEGACY_ARTIFACTS.length) {
-  const leftover = LEGACY_ARTIFACTS.filter((p) => existsSync(new URL(p, root)));
-  console.error(`FAIL: post-flip, delete the legacy artifacts (and rename the target schema to waterx-config.schema.json): ${leftover.join(", ")}`);
-  process.exit(1);
-}
-console.log(`flip-state coherent: ${flipped[0] ? "TARGET (post-flip)" : "LEGACY (pre-flip)"}`);
+console.log(failures ? `flip-state: ${failures} failure(s)` : "flip-state: consolidated shape, no legacy artifacts");
+process.exit(failures ? 1 : 0);
