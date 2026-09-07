@@ -22,7 +22,7 @@ DESCRIPTIONS = {
     ("*", "mvr"): "Move Registry (MVR) registration for this package. Mainnet only today.",
     ("*", "admin_cap"): "Admin capability object id.",
     ("waterx_rule", "feeds"): "QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY: waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of weights, so a weight change moves the signed price via a parameter no on-chain check can see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface change.",
-    ("waterx_rule", "enclave_pubkey"): "Registered enclave ed25519 pubkey (hex, no 0x). Duplicated in packages.enclave.enclave_pubkey — keep both in sync until R4 deduplicates.",
+    ("waterx_rule", "enclave_pubkey"): "Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home (the enclave package block carries identity only); k8s-infra pins an independent env copy by design (boot-without-enclave).",
     ("pyth_rule", "feeds"): "Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes).",
     ("pyth_lazer_rule", "feeds"): "Per-symbol Pyth Lazer numeric feed id, as used by the keeper's Lazer WS subscription.",
     ("constant_rule", "feeds"): "Per-symbol constant price, 1e9-scaled decimal string (e.g. \"1000000000\" = 1.0).",

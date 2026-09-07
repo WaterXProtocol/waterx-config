@@ -823,16 +823,15 @@ pub struct WaterxReferral {
 pub struct WaterxRule {
     pub config: String,
 
-    pub enabled: Option<bool>,
-
     pub enclave: String,
 
     pub enclave_cap: String,
 
     pub enclave_config: String,
 
-    /// Registered enclave ed25519 pubkey (hex, no 0x). Duplicated in
-    /// packages.enclave.enclave_pubkey — keep both in sync until R4 deduplicates.
+    /// Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home (the enclave package
+    /// block carries identity only); k8s-infra pins an independent env copy by design
+    /// (boot-without-enclave).
     pub enclave_pubkey: String,
 
     /// QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY:

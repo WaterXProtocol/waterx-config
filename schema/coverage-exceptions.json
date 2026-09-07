@@ -27,7 +27,6 @@
     "waterx_perp_view.mvr",
     "waterx_prediction.mvr",
     "waterx_referral.upgrade_capability",
-    "waterx_rule.enabled",
     "waterx_staking.mvr",
     "withdrawal_queue.mvr",
     "withdrawal_queue.executors",
