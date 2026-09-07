@@ -1,0 +1,9 @@
+{
+  "name": "waterx-config-codegen-tools",
+  "private": true,
+  "description": "Codegen-only tooling (quicktype is ~150MB installed) — kept out of packages/ts so validate/publish CI never installs it. Used by .github/workflows/codegen.yml.",
+  "devDependencies": {
+    "json-schema-to-zod": "2.6.1",
+    "quicktype": "23.2.6"
+  }
+}

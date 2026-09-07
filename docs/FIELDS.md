@@ -17,7 +17,7 @@
 
 ## Packages
 
-### `(any package)`
+Every package carries the same identity block (the map is uniform — new packages need no schema change):
 
 | field | type | required | notes |
 |---|---|---|---|

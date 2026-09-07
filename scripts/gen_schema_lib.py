@@ -1,7 +1,6 @@
-"""Shared schema-inference library for the two generators (current-shape and
-target-shape). The generators are thin call sites over this module — there must
-be exactly ONE copy of merge/infer/annotate (a previous revision had three,
-and they drifted).
+"""Schema-inference library behind scripts/gen_schema.py (its only call
+site — kept separate so the inference machinery stays importable and testable
+without running the generator).
 
 Design decisions this module enforces:
 
@@ -49,8 +48,10 @@ MAP_PATTERNS = [m["path"] for m in _MAPS]
 
 
 def _path_matches(pattern, path):
+    """'*' matches exactly one map-key segment — never an array's '[]', so a
+    wildcarded description or map path cannot silently attach to array items."""
     pp, sp = pattern.split("/"), path.split("/")
-    return len(pp) == len(sp) and all(a == "*" or a == b for a, b in zip(pp, sp))
+    return len(pp) == len(sp) and all(a == b or (a == "*" and b != "[]") for a, b in zip(pp, sp))
 
 
 def is_map_path(path):
@@ -59,17 +60,14 @@ def is_map_path(path):
 
 
 def describe(path):
-    """Description for a /-joined path. '*' in a registry key matches exactly
-    one segment; annotate() uses the literal segments '*' (map item) and '[]'
-    (array element), which the same wildcard covers. First match (exact, then
-    declaration order) wins."""
+    """Description for a /-joined path. First match wins (exact, then
+    declaration order); registry keys use the same '*' wildcard as map paths.
+    To describe an array's items, key the literal '[]' segment."""
     if path in DESCRIPTIONS:
         DESCRIPTIONS_USED.add(path)
         return DESCRIPTIONS[path]
-    parts = path.split("/")
     for key, text in DESCRIPTIONS.items():
-        kp = key.split("/")
-        if len(kp) == len(parts) and all(a in ("*", b) for a, b in zip(kp, parts)):
+        if _path_matches(key, path):
             DESCRIPTIONS_USED.add(key)
             return text
     return None
@@ -78,8 +76,7 @@ def describe(path):
 def assert_descriptions_used():
     """Stale-key gate: every authored description key must have matched at
     least one schema path in this generator run."""
-    raw = {k for k in _load("descriptions.json") if k != "_comment"}
-    stale = raw - DESCRIPTIONS_USED
+    stale = set(DESCRIPTIONS) - DESCRIPTIONS_USED
     if stale:
         raise SystemExit(f"stale description key(s) — no schema path matched them: {sorted(stale)}")
 
@@ -143,9 +140,9 @@ def merge(a, b):
     return {"type": [ta, tb] if ta and tb else "string"}
 
 
-def infer(v, path, maps=None):
+def infer(v, path):
     """Infer a schema for value v at /-joined `path`. Map-ness comes from the
-    declared registry (is_map_path); the `maps` arg is retired."""
+    declared registry (is_map_path)."""
     if isinstance(v, dict):
         if is_map_path(path):
             item = None
@@ -194,12 +191,15 @@ def build_schema(m, t, top_extra, schema_id, title, description, required):
     `top_extra` is a dict of hand-written top-level properties that override
     the generic per-key inference.
     """
-    keys = [k for k in {**t, **m} if k != "packages"]
+    # Instance-document key order; a key owned by a hand-written top_extra
+    # schema takes that schema at its natural position and is never inferred.
     props = {}
-    for k in keys:
-        props[k] = merge(infer(m[k], k) if k in m else None,
-                         infer(t[k], k) if k in t else None)
-    props.update(top_extra)
+    for k in {**t, **m}:
+        props[k] = top_extra[k] if k in top_extra else merge(
+            infer(m[k], k) if k in m else None,
+            infer(t[k], k) if k in t else None)
+    for k, v in top_extra.items():
+        props.setdefault(k, v)
     props = {k: v for k, v in props.items() if v}
     schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",

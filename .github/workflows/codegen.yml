@@ -18,11 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json }
-      - run: cd packages/ts && npm ci
+        with: { node-version: 22, cache: npm, cache-dependency-path: scripts/package-lock.json }
+      - run: cd scripts && npm ci
       - name: Regenerate everything (schema → parsers → docs)
         run: |
-          export PATH="$PWD/packages/ts/node_modules/.bin:$PATH"
+          export PATH="$PWD/scripts/node_modules/.bin:$PATH"
           python3 scripts/gen_schema.py
           node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/deref.json
           json-schema-to-zod -i /tmp/deref.json -o packages/ts/src/schema.ts

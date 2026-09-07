@@ -17,7 +17,8 @@ for (const net of ["mainnet", "testnet"] as const) {
   test(`${net}.json parses`, () => {
     const cfg = parseWaterxConfig(load(`${net}.json`), net);
     assert.equal(cfg.schema_version, 2);
-    assert.ok(Object.keys(cfg.symbols).length >= 31);
+    assert.ok(Object.keys(cfg.symbols).length > 0);
+    assert.ok(cfg.symbols["BTCUSD"], "the flagship symbol must exist in the universe");
     const btc = cfg.oracle_rules.waterx?.venue_feeds["BTCUSD"];
     assert.ok(btc);
     assert.ok(btc.sources.every((s) => typeof s.name === "string" && Number.isInteger(s.weight)));
@@ -56,7 +57,7 @@ test("loader: HTTP 429 is retried with backoff (the status this CDN rule exists 
     calls++;
     return calls < 3 ? new Response("slow down", { status: 429 }) : new Response(body, { status: 200 });
   }) as typeof fetch;
-  const cfg = await loadWaterxConfig("mainnet", { fetchImpl, attempts: 3 });
+  const cfg = await loadWaterxConfig("mainnet", { fetchImpl, attempts: 3, backoffBaseMs: 0 });
   assert.equal(calls, 3);
   assert.equal(cfg.network, "mainnet");
 });

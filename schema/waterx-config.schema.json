@@ -45,6 +45,73 @@
       },
       "description": "The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map elsewhere must reference a key from here (CI-enforced)."
     },
+    "packages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "published_at": {
+            "$ref": "#/$defs/suiId",
+            "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
+          },
+          "original_id": {
+            "$ref": "#/$defs/suiId",
+            "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+          },
+          "upgrade_capability": {
+            "$ref": "#/$defs/suiId",
+            "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
+          },
+          "mvr": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "package_info_id": {
+                "$ref": "#/$defs/suiId"
+              },
+              "app_cap_id": {
+                "$ref": "#/$defs/suiId"
+              },
+              "git": {
+                "type": "object",
+                "properties": {
+                  "repo": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "repo",
+                  "path",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "package_info_id",
+              "app_cap_id"
+            ],
+            "additionalProperties": false,
+            "description": "Move Registry (MVR) registration for this package. Mainnet only today."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "objects": {
       "type": "object",
       "properties": {
@@ -537,7 +604,7 @@
                       ],
                       "additionalProperties": false
                     },
-                    "description": "Venue set feeding the aggregate. Source names are a wire vocabulary shared with waterx_rule.move's on-chain u64 registry (1 binance_spot, 2 binance_usdm_perp, 3 bybit_linear_perp, 4 gateio_usdt_perp, 5 bybit_spot, 6 xstock_equity, 7 okx_spot, 8 hyperliquid_perp, 9 gateio_spot, 10 kraken_spot, 11 pyth_lazer). A source id must be REGISTERED ON-CHAIN for the target network before a feed lists it — mainnet has ids 5-10 unregistered (WL-1968), so xstock/commodity-style feeds using them are testnet-only until then; listing one on mainnet aborts on-chain validation at feed time."
+                    "description": "Venue set feeding the aggregate. Source names are a wire vocabulary shared with waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws, 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4 gateio_usdt_perp_ws, 5 bybit_spot_ws, 6 xstock_equity_rest, 7 okx_spot_ws, 8 hyperliquid_perp_ws, 9 gateio_spot_ws, 10 kraken_spot_ws, 11 pyth_lazer_ws). A source id must be REGISTERED ON-CHAIN for the target network before a feed lists it — an unregistered id aborts on-chain validation at feed time (per-network registration is tracked in WL-1968)."
                   },
                   "method": {
                     "type": "string"
@@ -768,73 +835,6 @@
         "bridge"
       ],
       "additionalProperties": false
-    },
-    "packages": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "published_at": {
-            "$ref": "#/$defs/suiId",
-            "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
-          },
-          "original_id": {
-            "$ref": "#/$defs/suiId",
-            "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
-          },
-          "version": {
-            "type": "integer",
-            "minimum": 1,
-            "description": "On-chain package version: 1 at first publish, +1 per upgrade."
-          },
-          "upgrade_capability": {
-            "$ref": "#/$defs/suiId",
-            "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
-          },
-          "mvr": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "package_info_id": {
-                "$ref": "#/$defs/suiId"
-              },
-              "app_cap_id": {
-                "$ref": "#/$defs/suiId"
-              },
-              "git": {
-                "type": "object",
-                "properties": {
-                  "repo": {
-                    "type": "string"
-                  },
-                  "path": {
-                    "type": "string"
-                  },
-                  "version": {
-                    "type": "integer"
-                  }
-                },
-                "required": [
-                  "repo",
-                  "path",
-                  "version"
-                ],
-                "additionalProperties": false
-              }
-            },
-            "required": [
-              "name",
-              "package_info_id",
-              "app_cap_id"
-            ],
-            "additionalProperties": false,
-            "description": "Move Registry (MVR) registration for this package. Mainnet only today."
-          }
-        },
-        "additionalProperties": false
-      }
     }
   },
   "required": [
