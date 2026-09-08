@@ -4,10 +4,12 @@ name: Codegen freshness
 # filter, so `regen` can be a required check without deadlocking PRs that
 # touch no generated inputs (a path-skipped required check sits at
 # "Expected — Waiting for status" forever; review finding). Keep this
-# paths-ignore list identical to codegen.yml's paths list.
+# paths-ignore list identical to codegen.yml's paths list — BOTH workflow
+# files appear in BOTH lists, so a PR editing either one always runs the REAL
+# regeneration job and never a modified no-op (self-certification finding).
 on:
   pull_request:
-    paths-ignore: [schema/**, scripts/**, packages/**, docs/FIELDS.md, mainnet.json, testnet.json, .github/workflows/codegen.yml]
+    paths-ignore: [schema/**, scripts/**, packages/**, docs/FIELDS.md, mainnet.json, testnet.json, .github/workflows/codegen.yml, .github/workflows/codegen-noop.yml]
 
 concurrency:
   group: codegen-noop-${{ github.ref }}

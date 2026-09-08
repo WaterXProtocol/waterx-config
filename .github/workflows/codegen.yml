@@ -6,7 +6,7 @@ name: Codegen freshness
 # generated files cannot be hand-edited.
 on:
   pull_request:
-    paths: [schema/**, scripts/**, packages/**, docs/FIELDS.md, mainnet.json, testnet.json, .github/workflows/codegen.yml]
+    paths: [schema/**, scripts/**, packages/**, docs/FIELDS.md, mainnet.json, testnet.json, .github/workflows/codegen.yml, .github/workflows/codegen-noop.yml]
 
 concurrency:
   group: codegen-${{ github.ref }}
@@ -31,6 +31,9 @@ jobs:
             -o packages/rust/src/generated.rs
           # round-trip fix: absent Options must not serialize as null
           python3 scripts/postprocess_generated_rs.py
+          # the generator's fail-closed guarantees (conflict/null/_comment/
+          # declared-requiredness) must hold before we trust its output
+          python3 scripts/test_gen_schema.py
           # one field per line: schema changes must diff reviewably, not as a 14KB one-liner
           prettier --write packages/ts/src/schema.ts
           node scripts/gen-fields-doc.mjs

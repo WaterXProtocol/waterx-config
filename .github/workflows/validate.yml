@@ -46,4 +46,4 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with: { workspaces: packages/rust }
-      - run: cd packages/rust && cargo test && cargo check --features fetch
+      - run: cd packages/rust && cargo test --all-features

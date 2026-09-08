@@ -17,9 +17,6 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gen_schema_lib import SUI_ID, apply_constraints, build_schema  # noqa: E402
 
-m = json.load(open("mainnet.json"))
-t = json.load(open("testnet.json"))
-
 _MVR = {"type": "object", "properties": {
     "name": {"type": "string"}, "package_info_id": dict(SUI_ID), "app_cap_id": dict(SUI_ID),
     "git": {"type": "object", "properties": {"repo": {"type": "string"}, "path": {"type": "string"},
@@ -105,19 +102,29 @@ def gate_schema(canonical, constraints):
     return root
 
 
-schema = build_schema(
-    m, t, TOP,
-    schema_id="https://config.waterx.app/schema/waterx-config.schema.json",
-    title="waterx-config network file",
-    description="One WaterX network deployment in the consolidated shape: one symbol universe, uniform package identity, domain-grouped shared objects, and a named per-rule oracle registry. See docs/FIELDS.md.",
-    required=["schema_version", "network", "chain_id", "symbols", "packages", "objects", "oracle_rules"],
-)
-apply_constraints(schema, CONSTRAINTS)
-# Prove the gate paths resolve in the canonical schema (fail-closed), then
-# emit the standalone gate document ajv checks alongside it.
-apply_constraints(json.loads(json.dumps(schema)), GATE_CONSTRAINTS)
-gate = gate_schema(schema, GATE_CONSTRAINTS)
+REQUIRED_TOP = ["schema_version", "network", "chain_id", "symbols", "packages", "objects", "oracle_rules"]
 
-json.dump(schema, open("schema/waterx-config.schema.json", "w"), indent=2, ensure_ascii=False)
-json.dump(gate, open("schema/waterx-config.gate.json", "w"), indent=2, ensure_ascii=False)
-print("schema/waterx-config.schema.json + schema/waterx-config.gate.json written")
+
+def generate(m, t):
+    """Build canonical + gate schemas from two instance docs. Importable so
+    scripts/test_gen_schema.py exercises the REAL TOP/constraints."""
+    schema = build_schema(
+        m, t, TOP,
+        schema_id="https://config.waterx.app/schema/waterx-config.schema.json",
+        title="waterx-config network file",
+        description="One WaterX network deployment in the consolidated shape: one symbol universe, uniform package identity, domain-grouped shared objects, and a named per-rule oracle registry. See docs/FIELDS.md.",
+        required=REQUIRED_TOP,
+    )
+    apply_constraints(schema, CONSTRAINTS)
+    # Prove the gate paths resolve in the canonical schema (fail-closed).
+    apply_constraints(json.loads(json.dumps(schema)), GATE_CONSTRAINTS)
+    return schema, gate_schema(schema, GATE_CONSTRAINTS)
+
+
+if __name__ == "__main__":
+    m = json.load(open("mainnet.json"))
+    t = json.load(open("testnet.json"))
+    schema, gate = generate(m, t)
+    json.dump(schema, open("schema/waterx-config.schema.json", "w"), indent=2, ensure_ascii=False)
+    json.dump(gate, open("schema/waterx-config.gate.json", "w"), indent=2, ensure_ascii=False)
+    print("schema/waterx-config.schema.json + schema/waterx-config.gate.json written")

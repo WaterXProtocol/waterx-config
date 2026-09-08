@@ -24,6 +24,10 @@ pub enum ConfigError {
     /// "2" from a templating layer, or a fractional/overflowing number).
     UnsupportedVersion(Option<i64>),
     NetworkMismatch { expected: String, got: String },
+    /// The base URL is a forbidden source (raw.githubusercontent.com is
+    /// rate-limited and banned by the repo README — same guard as the TS loader).
+    #[cfg(feature = "fetch")]
+    ForbiddenSource(String),
     #[cfg(feature = "fetch")]
     Http(reqwest::Error),
 }
@@ -39,6 +43,11 @@ impl std::fmt::Display for ConfigError {
             ConfigError::NetworkMismatch { expected, got } => {
                 write!(f, "network mismatch: asked for {expected}, document says {got}")
             }
+            #[cfg(feature = "fetch")]
+            ConfigError::ForbiddenSource(base) => write!(
+                f,
+                "{base} is not a config source (raw.githubusercontent.com is 429-rate-limited; README forbids it) — use the CDN"
+            ),
             #[cfg(feature = "fetch")]
             ConfigError::Http(e) => write!(f, "config fetch failed: {e}"),
         }
@@ -120,15 +129,25 @@ pub async fn load_waterx_config(network: &str) -> Result<WaterxConfig, ConfigErr
     load_waterx_config_from(CONFIG_CDN_BASE, network).await
 }
 
+/// Retry backoff base; tiny under test so the retry loop is exercisable fast.
+#[cfg(all(feature = "fetch", not(test)))]
+const BACKOFF_BASE_MS: u64 = 500;
+#[cfg(all(feature = "fetch", test))]
+const BACKOFF_BASE_MS: u64 = 1;
+
 /// Same as [`load_waterx_config`], from an alternative base URL (the staging
-/// CDN alias, a test server). Never raw.githubusercontent.com.
+/// CDN alias, a test server). raw.githubusercontent.com is refused — enforced,
+/// not just documented (same guard as the TS loader).
 #[cfg(feature = "fetch")]
 pub async fn load_waterx_config_from(base: &str, network: &str) -> Result<WaterxConfig, ConfigError> {
+    if base.to_ascii_lowercase().contains("raw.githubusercontent.com") {
+        return Err(ConfigError::ForbiddenSource(base.to_string()));
+    }
     let url = format!("{}/{network}.json", base.trim_end_matches('/'));
     let mut last: Option<ConfigError> = None;
     for attempt in 0..3u32 {
         if attempt > 0 {
-            tokio::time::sleep(std::time::Duration::from_millis(500 * (1 << (attempt - 1)))).await;
+            tokio::time::sleep(std::time::Duration::from_millis(BACKOFF_BASE_MS * (1 << (attempt - 1)))).await;
         }
         match http_client().get(&url).send().await {
             Ok(resp) => {
@@ -265,5 +284,65 @@ mod tests {
             parse_waterx_config(&fixture("mainnet.json"), Some("testnet")),
             Err(ConfigError::NetworkMismatch { .. })
         ));
+    }
+
+    /// The raw.githubusercontent ban is enforced, case-insensitively, before
+    /// any network I/O.
+    #[cfg(feature = "fetch")]
+    #[tokio::test]
+    async fn raw_githubusercontent_refused() {
+        for base in ["https://raw.githubusercontent.com/x/y/main", "https://RAW.GithubUserContent.com/x"] {
+            assert!(matches!(
+                load_waterx_config_from(base, "mainnet").await,
+                Err(ConfigError::ForbiddenSource(_))
+            ));
+        }
+    }
+
+    /// Retryable statuses are retried (3 attempts), and the final error is
+    /// the HTTP error — exercised against a real local socket.
+    #[cfg(feature = "fetch")]
+    #[tokio::test]
+    async fn retryable_status_is_retried_three_times() {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let hits = std::sync::Arc::new(std::sync::atomic::AtomicUsize::new(0));
+        let hits2 = hits.clone();
+        std::thread::spawn(move || {
+            for stream in listener.incoming() {
+                let Ok(mut s) = stream else { break };
+                let mut buf = [0u8; 1024];
+                let _ = s.read(&mut buf);
+                hits2.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+                let _ = s.write_all(b"HTTP/1.1 429 Too Many Requests\r\ncontent-length: 0\r\nconnection: close\r\n\r\n");
+            }
+        });
+        let err = load_waterx_config_from(&format!("http://{addr}"), "mainnet").await.unwrap_err();
+        assert!(matches!(err, ConfigError::Http(_)), "final error keeps the HTTP cause: {err}");
+        assert_eq!(hits.load(std::sync::atomic::Ordering::SeqCst), 3, "429 must be retried to exhaustion");
+    }
+
+    /// A permanent status (404) is NOT retried.
+    #[cfg(feature = "fetch")]
+    #[tokio::test]
+    async fn permanent_status_is_not_retried() {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let hits = std::sync::Arc::new(std::sync::atomic::AtomicUsize::new(0));
+        let hits2 = hits.clone();
+        std::thread::spawn(move || {
+            for stream in listener.incoming() {
+                let Ok(mut s) = stream else { break };
+                let mut buf = [0u8; 1024];
+                let _ = s.read(&mut buf);
+                hits2.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+                let _ = s.write_all(b"HTTP/1.1 404 Not Found\r\ncontent-length: 0\r\nconnection: close\r\n\r\n");
+            }
+        });
+        let err = load_waterx_config_from(&format!("http://{addr}"), "mainnet").await.unwrap_err();
+        assert!(matches!(err, ConfigError::Http(_)));
+        assert_eq!(hits.load(std::sync::atomic::Ordering::SeqCst), 1, "404 must not be retried");
     }
 }

@@ -49,6 +49,7 @@ def _load(name):
 
 _MAPS = _load("map-paths.json")["maps"]
 DESCRIPTIONS = {k: v for k, v in _load("descriptions.json").items() if k != "_comment"}
+OPTIONAL_FIELDS = _load("optional-fields.json")["optional"]
 
 
 MAP_PATTERNS = [m["path"] for m in _MAPS]
@@ -116,10 +117,16 @@ def _conflict(a, b, path):
         "the generator widen it silently.")
 
 
-def merge(a, b, path):
+def merge(a, b, path, opt_used=None):
     """Merge two inferred schemas (presence in either network). Any genuine
     disagreement RAISES — silent widening would loosen the contract the ajv
-    gate validates the very same data against."""
+    gate validates the very same data against. Requiredness is DECLARED, not
+    inferred: a field required on one side and missing/optional on the other
+    must be listed in schema/optional-fields.json, or the merge fails — an
+    accidental deletion must never regenerate into a valid, looser schema
+    (review finding)."""
+    if opt_used is None:
+        opt_used = set()
     if a is None or a == {}:
         return b
     if b is None or b == {}:
@@ -139,21 +146,33 @@ def merge(a, b, path):
         if a_map:
             return {"type": "object",
                     "additionalProperties": merge(a["additionalProperties"],
-                                                  b["additionalProperties"], f"{path}/*")}
+                                                  b["additionalProperties"], f"{path}/*", opt_used)}
         props = dict(a.get("properties", {}))
         for k, sc in b.get("properties", {}).items():
-            props[k] = merge(props.get(k), sc, f"{path}/{k}")
+            props[k] = merge(props.get(k), sc, f"{path}/{k}", opt_used)
         req = set(a.get("required", [])) & set(b.get("required", []))
+        for k in props:
+            if k in req:
+                continue
+            fp = f"{path}/{k}"
+            declared = [p for p in OPTIONAL_FIELDS if _path_matches(p, fp)]
+            if not declared:
+                raise SystemExit(
+                    f"gen_schema: {fp} is required on one side of a merge and missing/optional "
+                    "on the other — an undeclared field deletion? If the divergence is "
+                    "intentional, declare the path in schema/optional-fields.json; otherwise "
+                    "fix the data.")
+            opt_used.update(declared)
         out = {"type": "object", "properties": props, "additionalProperties": False}
         if req:
             out["required"] = sorted(req)
         return out
     if ta == tb == "array":
-        return {"type": "array", "items": merge(a.get("items"), b.get("items"), f"{path}/[]")}
+        return {"type": "array", "items": merge(a.get("items"), b.get("items"), f"{path}/[]", opt_used)}
     _conflict(a, b, path)
 
 
-def infer(v, path):
+def infer(v, path, opt_used=None):
     """Infer a schema for value v at /-joined `path`. Map-ness comes from the
     declared registry (is_map_path)."""
     if isinstance(v, dict):
@@ -166,18 +185,18 @@ def infer(v, path):
         if is_map_path(path):
             item = None
             for k in v:
-                item = merge(item, infer(v[k], f"{path}/*"), f"{path}/*")
+                item = merge(item, infer(v[k], f"{path}/*", opt_used), f"{path}/*", opt_used)
             return {"type": "object", "additionalProperties": item if item is not None else {}}
         props, req = {}, []
         for k, val in v.items():
-            props[k] = infer(val, f"{path}/{k}")
+            props[k] = infer(val, f"{path}/{k}", opt_used)
             req.append(k)
         return {"type": "object", "properties": props,
                 "required": sorted(req), "additionalProperties": False}
     if isinstance(v, list):
         item = None
         for x in v:
-            item = merge(item, infer(x, f"{path}/[]"), f"{path}/[]")
+            item = merge(item, infer(x, f"{path}/[]", opt_used), f"{path}/[]", opt_used)
         return {"type": "array", "items": item or {}}
     return leaf_schema(v, path)
 
@@ -237,13 +256,14 @@ def build_schema(m, t, top_extra, schema_id, title, description, required):
     the file only after this returns).
     """
     used = set()
+    opt_used = set()
     # Instance-document key order; a key owned by a hand-written top_extra
     # schema takes that schema at its natural position and is never inferred.
     props = {}
     for k in {**t, **m}:
         props[k] = top_extra[k] if k in top_extra else merge(
-            infer(m[k], k) if k in m else None,
-            infer(t[k], k) if k in t else None, k)
+            infer(m[k], k, opt_used) if k in m else None,
+            infer(t[k], k, opt_used) if k in t else None, k, opt_used)
     for k, v in top_extra.items():
         if k not in props:
             props[k] = v
@@ -262,4 +282,9 @@ def build_schema(m, t, top_extra, schema_id, title, description, required):
     stale = set(DESCRIPTIONS) - used
     if stale:
         raise SystemExit(f"stale description key(s) — no schema path matched them: {sorted(stale)}")
+    stale_opt = set(OPTIONAL_FIELDS) - opt_used
+    if stale_opt:
+        raise SystemExit(
+            f"stale optional-fields entr(ies) — the field is no longer optional anywhere, "
+            f"remove them from schema/optional-fields.json: {sorted(stale_opt)}")
     return schema
