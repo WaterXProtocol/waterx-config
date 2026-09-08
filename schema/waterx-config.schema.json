@@ -850,7 +850,9 @@
     "symbols",
     "packages",
     "objects",
-    "oracle_rules"
+    "oracle_rules",
+    "coin_registry",
+    "evm"
   ],
   "additionalProperties": false,
   "$defs": {

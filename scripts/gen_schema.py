@@ -15,7 +15,7 @@ import json
 import sys, os
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from gen_schema_lib import SUI_ID, apply_constraints, build_schema  # noqa: E402
+from gen_schema_lib import SUI_ID, apply_constraints, assert_anchors, build_schema  # noqa: E402
 
 _MVR = {"type": "object", "properties": {
     "name": {"type": "string"}, "package_info_id": dict(SUI_ID), "app_cap_id": dict(SUI_ID),
@@ -102,7 +102,11 @@ def gate_schema(canonical, constraints):
     return root
 
 
-REQUIRED_TOP = ["schema_version", "network", "chain_id", "symbols", "packages", "objects", "oracle_rules"]
+# Every top-level key must appear here or in schema/optional-fields.json —
+# build_schema fails otherwise (coin_registry and evm were silently optional;
+# review finding).
+REQUIRED_TOP = ["schema_version", "network", "chain_id", "symbols", "packages",
+                "objects", "oracle_rules", "coin_registry", "evm"]
 
 
 def generate(m, t):
@@ -116,6 +120,7 @@ def generate(m, t):
         required=REQUIRED_TOP,
     )
     apply_constraints(schema, CONSTRAINTS)
+    assert_anchors(schema)
     # Prove the gate paths resolve in the canonical schema (fail-closed).
     apply_constraints(json.loads(json.dumps(schema)), GATE_CONSTRAINTS)
     return schema, gate_schema(schema, GATE_CONSTRAINTS)

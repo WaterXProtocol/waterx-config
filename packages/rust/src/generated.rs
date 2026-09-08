@@ -22,11 +22,9 @@ pub struct WaterxConfig {
     pub chain_id: String,
 
     /// 0x-prefixed hex id/address (Sui short-form or EVM).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coin_registry: Option<String>,
+    pub coin_registry: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub evm: Option<Evm>,
+    pub evm: Evm,
 
     pub network: Network,
 

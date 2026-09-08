@@ -525,47 +525,42 @@ export default z
     coin_registry: z
       .string()
       .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
-      .describe("0x-prefixed hex id/address (Sui short-form or EVM).")
-      .optional(),
-    evm: z
-      .object({
-        bridge: z.object({
-          chains: z.record(
-            z.object({
-              chain_id: z.number().int(),
-              wormhole_chain_id: z.number().int(),
-              wormhole_core: z
-                .string()
-                .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
-                .describe(
-                  "Wormhole core contract address on this EVM chain (20-byte, 0x + 40 hex).",
-                ),
-              wormhole_executor: z
+      .describe("0x-prefixed hex id/address (Sui short-form or EVM)."),
+    evm: z.object({
+      bridge: z.object({
+        chains: z.record(
+          z.object({
+            chain_id: z.number().int(),
+            wormhole_chain_id: z.number().int(),
+            wormhole_core: z
+              .string()
+              .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
+              .describe(
+                "Wormhole core contract address on this EVM chain (20-byte, 0x + 40 hex).",
+              ),
+            wormhole_executor: z
+              .string()
+              .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
+              .describe("0x-prefixed hex id/address (Sui short-form or EVM)."),
+            block_explorer: z.string(),
+            deposit_vault: z
+              .string()
+              .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
+              .describe(
+                "Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex).",
+              ),
+            tokens: z.record(
+              z
                 .string()
                 .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
                 .describe(
                   "0x-prefixed hex id/address (Sui short-form or EVM).",
                 ),
-              block_explorer: z.string(),
-              deposit_vault: z
-                .string()
-                .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
-                .describe(
-                  "Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex).",
-                ),
-              tokens: z.record(
-                z
-                  .string()
-                  .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
-                  .describe(
-                    "0x-prefixed hex id/address (Sui short-form or EVM).",
-                  ),
-              ),
-            }),
-          ),
-        }),
-      })
-      .optional(),
+            ),
+          }),
+        ),
+      }),
+    }),
   })
   .describe(
     "One WaterX network deployment in the consolidated shape: one symbol universe, uniform package identity, domain-grouped shared objects, and a named per-rule oracle registry. See docs/FIELDS.md.",

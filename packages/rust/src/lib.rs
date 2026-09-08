@@ -107,15 +107,34 @@ fn parse_slow(json: &str, typed_err: serde_json::Error) -> Result<WaterxConfig, 
     }
 }
 
+/// Host-exact forbidden-source test, applied to the initial URL AND every
+/// redirect hop (review finding: the base-string guard alone was bypassable
+/// by an allowed URL redirecting to raw.githubusercontent.com).
+#[cfg(feature = "fetch")]
+fn forbidden_host(host: &str) -> bool {
+    let h = host.to_ascii_lowercase();
+    h == "raw.githubusercontent.com" || h.ends_with(".raw.githubusercontent.com")
+}
+
 /// One process-wide client: rebuilding it per call re-parses the root cert
 /// store and drops the connection pool — and the CDN's cache headers are
-/// tuned for re-polling consumers (review finding).
+/// tuned for re-polling consumers (review finding). The redirect policy
+/// vets every hop's host.
 #[cfg(feature = "fetch")]
 fn http_client() -> &'static reqwest::Client {
     static CLIENT: std::sync::OnceLock<reqwest::Client> = std::sync::OnceLock::new();
     CLIENT.get_or_init(|| {
         reqwest::Client::builder()
             .timeout(std::time::Duration::from_secs(10))
+            .redirect(reqwest::redirect::Policy::custom(|attempt| {
+                if attempt.url().host_str().is_some_and(forbidden_host) {
+                    attempt.error("redirect to a forbidden config source (raw.githubusercontent.com)")
+                } else if attempt.previous().len() > 5 {
+                    attempt.error("too many redirects")
+                } else {
+                    attempt.follow()
+                }
+            }))
             .build()
             .expect("default reqwest client")
     })
@@ -144,6 +163,14 @@ pub async fn load_waterx_config_from(base: &str, network: &str) -> Result<Waterx
         return Err(ConfigError::ForbiddenSource(base.to_string()));
     }
     let url = format!("{}/{network}.json", base.trim_end_matches('/'));
+    // Normalized host check on the parsed URL (the substring guard above is
+    // a fast path; this is the authoritative one — redirect hops get the
+    // same test in the client's redirect policy).
+    if let Ok(parsed) = reqwest::Url::parse(&url) {
+        if parsed.host_str().is_some_and(forbidden_host) {
+            return Err(ConfigError::ForbiddenSource(base.to_string()));
+        }
+    }
     let mut last: Option<ConfigError> = None;
     for attempt in 0..3u32 {
         if attempt > 0 {
@@ -321,6 +348,36 @@ mod tests {
         let err = load_waterx_config_from(&format!("http://{addr}"), "mainnet").await.unwrap_err();
         assert!(matches!(err, ConfigError::Http(_)), "final error keeps the HTTP cause: {err}");
         assert_eq!(hits.load(std::sync::atomic::Ordering::SeqCst), 3, "429 must be retried to exhaustion");
+    }
+
+    /// A redirect to the forbidden source must be refused mid-flight — the
+    /// initial-URL guard alone is bypassable via Location (review finding).
+    #[cfg(feature = "fetch")]
+    #[tokio::test]
+    async fn redirect_to_forbidden_source_refused() {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        std::thread::spawn(move || {
+            for stream in listener.incoming() {
+                let Ok(mut s) = stream else { break };
+                let mut buf = [0u8; 1024];
+                let _ = s.read(&mut buf);
+                let _ = s.write_all(b"HTTP/1.1 301 Moved Permanently\r\nlocation: https://raw.githubusercontent.com/WaterXProtocol/waterx-config/main/mainnet.json\r\ncontent-length: 0\r\nconnection: close\r\n\r\n");
+            }
+        });
+        let err = load_waterx_config_from(&format!("http://{addr}"), "mainnet").await.unwrap_err();
+        // reqwest wraps the policy's message: assert the refusal kind, and
+        // find our policy text in the source chain.
+        let ConfigError::Http(e) = &err else { panic!("expected Http, got {err}") };
+        assert!(e.is_redirect(), "the redirect policy must be what refused it: {e}");
+        let mut cause: Option<&dyn std::error::Error> = Some(e);
+        let mut found = false;
+        while let Some(c) = cause {
+            if c.to_string().contains("forbidden config source") { found = true; break; }
+            cause = c.source();
+        }
+        assert!(found, "policy reason must be in the error chain: {e:?}");
     }
 
     /// A permanent status (404) is NOT retried.

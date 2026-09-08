@@ -50,6 +50,7 @@ def _load(name):
 _MAPS = _load("map-paths.json")["maps"]
 DESCRIPTIONS = {k: v for k, v in _load("descriptions.json").items() if k != "_comment"}
 OPTIONAL_FIELDS = _load("optional-fields.json")["optional"]
+REQUIRED_ANCHORS = _load("required-anchors.json")["anchors"]
 
 
 MAP_PATTERNS = [m["path"] for m in _MAPS]
@@ -224,6 +225,37 @@ def annotate(node, used, path=""):
     return node
 
 
+def assert_anchors(schema):
+    """Every anchored path must exist in the generated schema AND be required
+    in its parent — a single-instance subtree (only one network testifies)
+    must not silently shrink when a field is deleted (review finding)."""
+    for path in REQUIRED_ANCHORS:
+        node = schema
+        segs = path.split("/")
+        try:
+            for i, seg in enumerate(segs):
+                if seg == "*":
+                    node = node["additionalProperties"]
+                elif seg == "[]":
+                    node = node["items"]
+                else:
+                    if i == len(segs) - 1:
+                        if seg not in node.get("properties", {}):
+                            raise KeyError(seg)  # → the "missing" error below
+                        if seg not in node.get("required", []):
+                            raise SystemExit(
+                                f"gen_schema: anchored field {path} is present but OPTIONAL — "
+                                "a required anchor must stay required (or be removed from "
+                                "schema/required-anchors.json in the same deliberate PR)")
+                    node = node["properties"][seg]
+        except (KeyError, TypeError):
+            raise SystemExit(
+                f"gen_schema: anchored field {path} is missing from the generated schema — "
+                "a field deletion in the data? Anchors exist so a single-instance subtree "
+                "cannot silently shrink; remove the anchor only when removing the field "
+                "deliberately.") from None
+
+
 def apply_constraints(schema, constraints):
     """Overlay hand-written constraints onto the generated schema at data
     paths ('*' = map item, '[]' = array items). A path that no longer resolves
@@ -267,6 +299,17 @@ def build_schema(m, t, top_extra, schema_id, title, description, required):
     for k, v in top_extra.items():
         if k not in props:
             props[k] = v
+    for k in props:
+        if k in top_extra or k in required:
+            continue
+        declared = [p for p in OPTIONAL_FIELDS if _path_matches(p, k)]
+        if not declared:
+            raise SystemExit(
+                f"gen_schema: top-level key '{k}' is neither in the required list nor declared "
+                "in schema/optional-fields.json — requiredness must be a decision, not an "
+                "observation (an accidental one-network deletion would otherwise regenerate "
+                "it as globally optional).")
+        opt_used.update(declared)
     schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "$id": schema_id,
