@@ -85,8 +85,8 @@ fail ajv here — deliberately, rather than silently reintroducing the old shape
 - The ruleset currently targets no refs (`ref_name.include: []`) so NO check
   is enforced — point it at `refs/heads/main` and require
   `schema-consistency-and-ts-parser`, `rust-parser-parses-instances`, `regen`
-  and the guard. `regen` is now safe to require: `codegen-noop.yml` reports
-  the same job name on the inverse path filter, so path-skipped PRs cannot
-  deadlock on it.
+  and the guard. `regen` is safe to require: codegen.yml runs on every PR as
+  the check's SINGLE producer and decides internally whether regeneration is
+  needed — no path filter, so no deadlock and no ambiguous duplicate context.
 - npm: add this repo as a **Trusted Publisher** for `@waterx/config` on
   npmjs.com (the org's existing OIDC model; publish.yml carries no token).

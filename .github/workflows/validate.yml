@@ -31,9 +31,10 @@ jobs:
           # repo-only strictness the canonical schema deliberately omits so
           # pinned parsers survive vocabulary growth.
           ajv validate --spec=draft2020 -s schema/waterx-config.gate.json -d mainnet.json -d testnet.json
-      - name: Consistency + repo-state coherence
+      - name: Consistency + repo-state coherence (and their fail-closed tests)
         run: |
           node scripts/check-consistency.mjs
+          node scripts/test_check_consistency.mjs
           node scripts/check-flip-state.mjs
       - name: TS parser tests + typecheck
         run: cd packages/ts && npm test && npx tsc -p . --noEmit

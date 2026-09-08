@@ -1,80 +1,138 @@
 {
-  "_comment": "Declared open-keyed maps for the schema INFERENCE (map-ness is a schema fact, never inferred from instance key counts). `path` may contain '*' segments (each matches exactly one map key) so maps nested inside map items are declarable — a new bridge token or reward coin must extend the DATA, not the schema. Top-level `symbols` and `packages` are absent on purpose: their schemas are hand-written in scripts/gen_schema.py (TOP), which is the sole source of their map-ness. base:'symbols' maps are checked ⊆ the symbol universe by check-consistency.mjs ('*' paths included — it expands them with the same semantics); base:'open' maps are unconstrained keyspaces. This _comment convention is for the three tool-owned schema/*.json files only — a _comment in the served DATA fails the generator (audit P5).",
+  "_comment": "Declared open-keyed maps for the schema INFERENCE (map-ness is a schema fact, never inferred from instance key counts). `path` may contain '*' segments (each matches exactly one map key) so maps nested inside map items are declarable — a new bridge token or reward coin must extend the DATA, not the schema. `networks` declares where each map must exist: check-consistency.mjs FAILS if a declared map is missing/untraversable (a path typo or a data regression must never read as 'nothing to check' — review finding) and if an undeclared one appears. Top-level `symbols` and `packages` are absent on purpose: their schemas are hand-written in scripts/gen_schema.py (TOP), which is the sole source of their map-ness. base:'symbols' maps are checked ⊆ the symbol universe ('*' paths included); base:'open' maps are unconstrained keyspaces (presence-checked only). This _comment convention is for the three tool-owned schema/*.json files only — a _comment in the served DATA fails the generator (audit P5).",
   "maps": [
     {
       "id": "venue_feeds",
       "path": "oracle_rules/waterx/venue_feeds",
-      "base": "symbols"
+      "base": "symbols",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "pyth_price_feeds",
       "path": "oracle_rules/pyth/pyth_price_feeds",
-      "base": "symbols"
+      "base": "symbols",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "lazer_feed_ids",
       "path": "oracle_rules/pyth_lazer/lazer_feed_ids",
-      "base": "symbols"
+      "base": "symbols",
+      "networks": [
+        "mainnet"
+      ]
     },
     {
       "id": "supra_pair_ids",
       "path": "oracle_rules/supra/pair_ids",
-      "base": "symbols"
+      "base": "symbols",
+      "networks": [
+        "testnet"
+      ]
     },
     {
       "id": "constant_prices",
       "path": "oracle_rules/constant/constant_prices",
-      "base": "symbols"
+      "base": "symbols",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "aggregators",
       "path": "objects/oracle/aggregators",
-      "base": "symbols"
+      "base": "symbols",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "perp_markets",
       "path": "objects/perp/markets",
-      "base": "symbols"
+      "base": "symbols",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "wlp_pool_tokens",
       "path": "objects/wlp/pool_tokens",
-      "base": "open"
+      "base": "open",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "staking_pools",
       "path": "objects/staking/pools",
-      "base": "open"
+      "base": "open",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "staking_rewarders",
       "path": "objects/staking/rewarders",
-      "base": "open"
+      "base": "open",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "staking_rewarder_coins",
       "path": "objects/staking/rewarders/*",
-      "base": "open"
+      "base": "open",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "prediction_market_registries",
       "path": "objects/prediction/market_registries",
-      "base": "open"
+      "base": "open",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "prediction_settlement_coin_types",
       "path": "objects/prediction/settlement_coin_types",
-      "base": "open"
+      "base": "open",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "evm_bridge_chains",
       "path": "evm/bridge/chains",
-      "base": "open"
+      "base": "open",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     },
     {
       "id": "evm_chain_tokens",
       "path": "evm/bridge/chains/*/tokens",
-      "base": "open"
+      "base": "open",
+      "networks": [
+        "mainnet",
+        "testnet"
+      ]
     }
   ]
 }
