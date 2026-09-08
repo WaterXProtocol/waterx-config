@@ -1,9 +1,13 @@
 # waterx-config format flip — decision record (EXECUTED)
 
 Status: **done** — the served `mainnet.json`/`testnet.json` ARE the
-consolidated shape (`schema_version: 2`) as of the staging-v2/main-v2 branch
-line. There is no legacy format, no lift, and no parallel serving; this file
-is the record of what changed and what consumers must do.
+consolidated shape (`schema_version: 2`) as of the `v2` branch. There is no
+legacy format, no lift, and no parallel serving; this file is the record of
+what changed and what consumers must do.
+
+Promotion flow: `v2` merges into **staging** first (flipping the staging CDN
+alias), then reaches main — and config.waterx.app — through the normal
+staging→main promotion. The guard needs no special allowance for this.
 
 ## The shape
 
@@ -25,7 +29,9 @@ migration) BEFORE the staging merge.
 
 **Verified per-repo blast radius** (traced 2026-09-08; no consumer repo has a
 migration in flight — every one must migrate to the generated parsers
-(`@waterx/config` / the `waterx-config` crate) or repoint its reads first):
+(`@waterx/config` / the `waterx-config` crate) or repoint its reads first).
+Note the SDK-CI hazard above bites at the **v2→staging** merge; the rest bite
+at the staging→main promotion:
 
 | consumer | what happens on flip | mode |
 |---|---|---|
@@ -82,9 +88,5 @@ fail ajv here — deliberately, rather than silently reintroducing the old shape
   and the guard. `regen` is now safe to require: `codegen-noop.yml` reports
   the same job name on the inverse path filter, so path-skipped PRs cannot
   deadlock on it.
-- The `main-v2` allowance in guard-main-merges.yml now **self-expires**: it is
-  keyed on main still serving the pre-flip shape, so after the promotion it
-  rejects main-v2 PRs with an instruction to delete it. Deleting the dead
-  allowance (and the -v2 branches) after promotion is cleanup, not a guard fix.
 - npm: add this repo as a **Trusted Publisher** for `@waterx/config` on
   npmjs.com (the org's existing OIDC model; publish.yml carries no token).
