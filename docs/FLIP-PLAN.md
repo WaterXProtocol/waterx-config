@@ -38,9 +38,9 @@ at the staging→main promotion:
 | waterx-quote-center | boots `bail!("no packages.waterx_rule.feeds")` → CrashLoopBackOff, no signed prices, both networks | loud |
 | bucket-backend-mono | `Object.entries(undefined)` in registry `onModuleInit` → whole app restart loop | loud |
 | data-infra **oracle service** | boot throw under both `ORACLE_SOURCE` values (this consumer was previously missing from this list) | loud |
-| waterx-keeper | one `warn`, then **permanent fallback to the bundled snapshot**; refresh worker rejects every later remote config | **silent** |
+| waterx-keeper | one `warn`, then **permanent fallback to the bundled snapshot**; refresh worker rejects every later remote config. The snapshot is also STALE: its `waterx_rule`/`pyth_lazer_rule` `published_at` predate the v1→v2 package upgrades, so fallback pins the keeper to pre-upgrade rule packages | **silent** |
 | waterx-sdk | `validateConfig` passes (checks `published_at` only) but every object-id read is `undefined` → tx-build throws deep in @mysten/sui; `isConstantTicker("USDCUSD")` goes false → **the WLP collateral price stops refreshing** (no Pyth fallback exists for USDCUSD) | **silent** |
-| waterx-fe | reads raw.githubusercontent.com @ `main` (violating this repo's own CDN rule) → flips at merge instant; read-plane serves **$0 prices** for unresolved tickers | **silent** |
+| waterx-fe | reads raw.githubusercontent.com @ `main` (violating this repo's own CDN rule) → flips the moment v2 reaches `main` (only escape hatch: set `WATERX_CONFIG_REF`). Fails **loud at client-create**: `getMarketTickers` reads `packages.waterx_perp.markets` → TypeError rejects all 82 server call sites. The silent **$0-price** read-plane mode surfaces only after that is fixed | loud, then **silent** |
 | waterx-contract | next config PR red on ajv (intended), but the `price_info_object` backfill also SKIPS silently and nothing writes `objects.*`/`oracle_rules.*` | mixed |
 
 The old→new path map:
@@ -51,6 +51,8 @@ The old→new path map:
 | `packages.waterx_rule.enclave*` | `oracle_rules.waterx.enclave.{object,cap,config,pubkey}` |
 | `packages.pyth_rule.{config,feeds}` | `oracle_rules.pyth.{pyth_config_object,pyth_price_feeds}` |
 | `packages.pyth_lazer_rule.feeds` | `oracle_rules.pyth_lazer.lazer_feed_ids` |
+| `packages.pyth_lazer_rule.{config,state}` | `oracle_rules.pyth_lazer.{lazer_config_object,lazer_state_object}` |
+| `packages.{waterx,constant,supra}_rule.config` | `oracle_rules.{waterx,constant,supra}.rule_config_object` |
 | `packages.constant_rule.feeds` | `oracle_rules.constant.constant_prices` |
 | `packages.supra_rule.feeds[].pair_id` | `oracle_rules.supra.pair_ids` |
 | `packages.waterx_oracle.{oracle,listing_cap,aggregators}` | `objects.oracle.*` |
@@ -61,9 +63,9 @@ The old→new path map:
 | `packages.waterx_referral.referral_table` | `objects.referral.table` |
 | `packages.waterx_credit.*` | `objects.credit.*` |
 | `packages.native_custody.{vault,assets}` | `objects.custody.*` |
-| `packages.wormhole_bridge.*` | `objects.bridge.*` (limits under `objects.bridge.limits`) |
+| `packages.wormhole_bridge.*` | `objects.bridge.*` — note `bridge`→**`state`**; `daily_mint_limit`→`limits.daily_mint`, `daily_burn_limit`→`limits.daily_burn`, `personal_burn_cap`→`limits.personal_burn` |
 | `packages.withdrawal_queue.*` | `objects.withdrawal_queue.*` |
-| `packages.waterx_prediction*.*` | `objects.prediction.*` |
+| `packages.waterx_prediction*.*` | `objects.prediction.*` — the gift package flattens in: `waterx_prediction_gift.admin_cap`→`gift_admin_cap` (a naive merge collides with `waterx_prediction.admin_cap`) |
 | `packages.*.{published_at,original_id,version,upgrade_capability,mvr}` | **unchanged** |
 | `packages.waterx_rule.enabled` (testnet) | **dropped** — never read by any repo; last value `true`; recorded here, not archived in deploys/ |
 
@@ -71,6 +73,36 @@ Truly identity-only readers are unaffected — of the consumers traced, that is
 **only data-infra's two indexers** (they read `packages.*.original_id` +
 `network` and nothing else). The SDK is NOT identity-only (see the table
 above), despite validating only `published_at`.
+
+Migration gotchas proven by the 2026-09-08 consumer audit (a mechanical
+leaf-path rename misses every one):
+
+- **`kind` is a JOIN, not a move**: `venue_feeds[sym]` no longer carries it;
+  read `symbols[sym].kind`. quote-service's `default_kind()` would silently
+  absorb a missed join and mis-schedule 19/31 mainnet feeds.
+- **Presence-as-signal moved root**: `packages.X` truthiness used to mean
+  "feature deployed on this network" (backend bridge/staking/referral/queue
+  guards). In v2 `packages.X` is pure identity and always present — those
+  guards must repoint at `objects.X` or they are permanently true.
+- **`waterx_staking`/`waterx_referral` reads straddle two roots** now
+  (`published_at` in `packages`, ids in `objects`) — single-root guards
+  must become two-root conjunctions.
+- **Rule-registry keys renamed**: consumers keying rules by the legacy
+  package-name strings (`'waterx_rule'`, `'pyth_lazer_rule'`) must switch to
+  the registry names (`waterx`, `pyth_lazer`) — a silent empty-plan failure
+  otherwise.
+- **Dormant capabilities are now unrepresentable** (no live value lost —
+  none of these ever existed in the legacy data): `supra_rule.enabled`,
+  `supra_rule.oracle_holder`, and the whole `pyth_sponsor_rule` block have
+  no v2 home. Activating the Supra leg or the sponsor-fee flow requires a
+  schema addition first. Likewise `oracle_rules.supra.pair_ids` flattens
+  `{pair_id: N}`→`N`, so any future per-symbol supra field needs a shape
+  change.
+- **Required objects narrow expressiveness**: `objects.{bridge, staking,
+  referral, credit, account, withdrawal_queue}` and `objects.wlp.aum` are
+  required, so "this network has no bridge/queue/aum" is no longer
+  expressible; declare a path in `schema/optional-fields.json` first if a
+  future network needs that.
 
 ## Producer impact — ACTION REQUIRED in waterx-contract
 
