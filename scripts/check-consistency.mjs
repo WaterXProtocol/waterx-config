@@ -35,6 +35,17 @@ const expand = (node, segs, at) => {
 const SEG = /^(\*|[A-Za-z0-9_.-]+)$/;
 const NETWORKS = ["mainnet", "testnet"];
 
+// The base classification is a CONTRACT, pinned here independently of the
+// mutable registry (review finding: flipping a symbol map's base to 'open'
+// in map-paths.json alone would silently disable its ⊆-symbols check).
+// Reclassifying a map, adding a symbol-keyed one, or removing one must edit
+// this reviewed list in the same PR — and deleting a registry row for a
+// pinned map fails outright.
+const SYMBOL_KEYED_MAPS = new Set([
+  "venue_feeds", "pyth_price_feeds", "lazer_feed_ids", "supra_pair_ids",
+  "constant_prices", "aggregators", "perp_markets",
+]);
+
 /** Run every check. Pure: takes the registry, exceptions, and {net: doc};
  *  returns { failures: string[], log: string[] }. The CLI below feeds it the
  *  real files; scripts/test_check_consistency.mjs feeds it mutations. */
@@ -50,10 +61,18 @@ export function runChecks(registry, exceptions, docs) {
     if (!e.id || ids.has(e.id)) fail(`registry: missing or duplicate id '${e.id ?? "?"}'`);
     ids.add(e.id);
     if (!["symbols", "open"].includes(e.base)) fail(`registry ${e.id}: base must be 'symbols' or 'open', got '${e.base}'`);
+    else {
+      const expected = SYMBOL_KEYED_MAPS.has(e.id) ? "symbols" : "open";
+      if (e.base !== expected)
+        fail(`registry ${e.id}: base '${e.base}' contradicts the pinned contract ('${expected}') — reclassifying a map must update SYMBOL_KEYED_MAPS in check-consistency.mjs in the same PR`);
+    }
     if (!Array.isArray(e.networks) || e.networks.length === 0 || !e.networks.every((n) => NETWORKS.includes(n)))
       fail(`registry ${e.id}: networks must be a non-empty subset of ${NETWORKS.join("/")}`);
     if (!e.path || !e.path.split("/").every((s) => SEG.test(s)))
       fail(`registry ${e.id}: malformed path '${e.path}'`);
+  }
+  for (const id of SYMBOL_KEYED_MAPS) {
+    if (!ids.has(id)) fail(`registry: pinned symbol-keyed map '${id}' is missing from map-paths.json — deleting its row would silently drop its keyspace check`);
   }
   const symbolIds = new Set(registry.filter((m) => m.base === "symbols").map((m) => m.id));
 

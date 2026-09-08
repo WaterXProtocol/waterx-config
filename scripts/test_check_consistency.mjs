@@ -41,12 +41,33 @@ const expectFail = (label, needle, reg, exc, dd) => {
   expectFail("missing wildcard parent fails", "missing or untraversable", registry(), exceptions(), dd);
 }
 
-// 3. Flipping a base to 'open' while exceptions reference it must FAIL
-//    (the ⊆-symbols check cannot silently vanish out from under its exceptions).
+// 3. Flipping ANY symbol map's base to 'open' must FAIL against the pinned
+//    contract — including one with NO live coverage exception (review
+//    finding: the exception path only caught this incidentally).
+{
+  const reg = registry();
+  reg.find((e) => e.id === "venue_feeds").base = "open";
+  expectFail("base flip (no exceptions) fails", "pinned contract", reg, exceptions(), docs());
+}
 {
   const reg = registry();
   reg.find((e) => e.id === "constant_prices").base = "open";
-  expectFail("base flip with live exceptions fails", "open-keyspace map", reg, exceptions(), docs());
+  expectFail("base flip (live exceptions) fails", "pinned contract", reg, exceptions(), docs());
+}
+
+// 3b. Deleting a pinned symbol map's registry row must FAIL — a keyspace
+//     check cannot vanish by removing its declaration.
+{
+  const reg = registry().filter((e) => e.id !== "perp_markets");
+  expectFail("deleted symbol-map row fails", "missing from map-paths.json", reg, exceptions(), docs());
+}
+
+// 3c. A NEW symbol-keyed map not in the pinned contract must FAIL — adding
+//     one is a deliberate, two-file change.
+{
+  const reg = registry();
+  reg.push({ id: "surprise_feeds", path: "oracle_rules/waterx/venue_feeds", base: "symbols", networks: ["mainnet", "testnet"] });
+  expectFail("unpinned new symbol map fails", "pinned contract", reg, exceptions(), docs());
 }
 
 // 4. Data losing a declared map must FAIL (regression, not absence).
