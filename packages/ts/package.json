@@ -11,7 +11,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc -p .",
     "test": "node --test --experimental-strip-types test/*.test.ts",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "zod": "^3.23.0"
