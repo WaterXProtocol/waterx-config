@@ -1,0 +1,827 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://config.waterx.app/schema/waterx-config.schema.json",
+  "title": "waterx-config network file",
+  "description": "One WaterX network deployment in the consolidated shape: one symbol universe, uniform package identity, domain-grouped shared objects, and a named per-rule oracle registry. See docs/FIELDS.md.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "enum": [
+        2
+      ],
+      "description": "Format discriminator. This repo serves only version 2 (the consolidated shape); parsers reject anything else."
+    },
+    "network": {
+      "enum": [
+        "mainnet",
+        "testnet"
+      ]
+    },
+    "chain_id": {
+      "type": "string",
+      "minLength": 4
+    },
+    "symbols": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "perp",
+              "spot",
+              "xstock",
+              "commodity",
+              "fx",
+              "prediction"
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "additionalProperties": false
+      },
+      "description": "The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map elsewhere must reference a key from here (CI-enforced)."
+    },
+    "packages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "published_at": {
+            "$ref": "#/$defs/suiId",
+            "description": "Package id of the current latest version — the tx-call target. Changes on every upgrade."
+          },
+          "original_id": {
+            "$ref": "#/$defs/suiId",
+            "description": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type)."
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "On-chain package version: 1 at first publish, +1 per upgrade."
+          },
+          "upgrade_capability": {
+            "$ref": "#/$defs/suiId",
+            "description": "UpgradeCap object id. Deploy-time artifact; no runtime consumer."
+          },
+          "mvr": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "package_info_id": {
+                "$ref": "#/$defs/suiId"
+              },
+              "app_cap_id": {
+                "$ref": "#/$defs/suiId"
+              },
+              "git": {
+                "type": "object",
+                "properties": {
+                  "repo": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "repo",
+                  "path",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "package_info_id",
+              "app_cap_id"
+            ],
+            "additionalProperties": false,
+            "description": "Move Registry (MVR) registration for this package. Mainnet only today."
+          }
+        },
+        "required": [
+          "published_at",
+          "original_id",
+          "version"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "objects": {
+      "type": "object",
+      "properties": {
+        "oracle": {
+          "type": "object",
+          "properties": {
+            "oracle": {
+              "$ref": "#/$defs/suiId"
+            },
+            "listing_cap": {
+              "$ref": "#/$defs/suiId",
+              "description": "ListingCap object id. Deploy-time artifact (asset-listing tooling); no runtime consumer."
+            },
+            "aggregators": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/suiId"
+              },
+              "description": "Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation point."
+            }
+          },
+          "required": [
+            "aggregators",
+            "listing_cap",
+            "oracle"
+          ],
+          "additionalProperties": false
+        },
+        "perp": {
+          "type": "object",
+          "properties": {
+            "global_config": {
+              "$ref": "#/$defs/suiId"
+            },
+            "admin_cap": {
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
+            },
+            "market_registry_wlp": {
+              "$ref": "#/$defs/suiId"
+            },
+            "markets": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "market": {
+                    "$ref": "#/$defs/suiId"
+                  },
+                  "config": {
+                    "$ref": "#/$defs/suiId"
+                  }
+                },
+                "required": [
+                  "config",
+                  "market"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-symbol perp market: market + config object ids."
+            }
+          },
+          "required": [
+            "admin_cap",
+            "global_config",
+            "market_registry_wlp",
+            "markets"
+          ],
+          "additionalProperties": false
+        },
+        "wlp": {
+          "type": "object",
+          "properties": {
+            "pool": {
+              "$ref": "#/$defs/suiId"
+            },
+            "aum": {
+              "$ref": "#/$defs/suiId"
+            },
+            "currency_type": {
+              "$ref": "#/$defs/suiId"
+            },
+            "metadata_cap": {
+              "$ref": "#/$defs/suiId"
+            },
+            "pool_tokens": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/suiType"
+              }
+            }
+          },
+          "required": [
+            "aum",
+            "currency_type",
+            "metadata_cap",
+            "pool",
+            "pool_tokens"
+          ],
+          "additionalProperties": false
+        },
+        "staking": {
+          "type": "object",
+          "properties": {
+            "admin_cap": {
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
+            },
+            "pools": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/suiId"
+              }
+            },
+            "rewarders": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "rewarder_id": {
+                      "$ref": "#/$defs/suiId"
+                    },
+                    "coin_type": {
+                      "$ref": "#/$defs/suiType"
+                    },
+                    "decimals": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "coin_type",
+                    "decimals",
+                    "rewarder_id"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "required": [
+            "admin_cap",
+            "pools",
+            "rewarders"
+          ],
+          "additionalProperties": false
+        },
+        "account": {
+          "type": "object",
+          "properties": {
+            "registry": {
+              "$ref": "#/$defs/suiId"
+            },
+            "admin_cap": {
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
+            }
+          },
+          "required": [
+            "admin_cap",
+            "registry"
+          ],
+          "additionalProperties": false
+        },
+        "referral": {
+          "type": "object",
+          "properties": {
+            "table": {
+              "$ref": "#/$defs/suiId"
+            }
+          },
+          "required": [
+            "table"
+          ],
+          "additionalProperties": false
+        },
+        "credit": {
+          "type": "object",
+          "properties": {
+            "registry": {
+              "$ref": "#/$defs/suiId"
+            },
+            "credit_type": {
+              "$ref": "#/$defs/suiType"
+            }
+          },
+          "required": [
+            "credit_type",
+            "registry"
+          ],
+          "additionalProperties": false
+        },
+        "custody": {
+          "type": "object",
+          "properties": {
+            "vault": {
+              "$ref": "#/$defs/suiId"
+            },
+            "assets": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "$ref": "#/$defs/suiType"
+                  },
+                  "decimal": {
+                    "type": "integer"
+                  },
+                  "mint_fee_scaled": {
+                    "$ref": "#/$defs/decString"
+                  },
+                  "burn_fee_scaled": {
+                    "$ref": "#/$defs/decString"
+                  },
+                  "min_burn_amount": {
+                    "$ref": "#/$defs/decString"
+                  }
+                },
+                "required": [
+                  "burn_fee_scaled",
+                  "decimal",
+                  "min_burn_amount",
+                  "mint_fee_scaled",
+                  "name",
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Native-custody asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled (0 = no fee; 1_000_000 = 0.1%; 1_000_000_000 = 100%). min_burn_amount is the dust floor in the asset's smallest unit."
+            }
+          },
+          "required": [
+            "assets",
+            "vault"
+          ],
+          "additionalProperties": false
+        },
+        "bridge": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "$ref": "#/$defs/suiId"
+            },
+            "emitter_cap": {
+              "$ref": "#/$defs/suiId"
+            },
+            "wormhole_state": {
+              "$ref": "#/$defs/suiId"
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "max_mint_per_tx": {
+                  "$ref": "#/$defs/decString"
+                },
+                "max_burn_per_tx": {
+                  "$ref": "#/$defs/decString"
+                },
+                "daily_mint": {
+                  "$ref": "#/$defs/decString"
+                },
+                "daily_burn": {
+                  "$ref": "#/$defs/decString"
+                },
+                "personal_burn": {
+                  "type": "object",
+                  "properties": {
+                    "cap_amount": {
+                      "$ref": "#/$defs/decString"
+                    },
+                    "window_ms": {
+                      "$ref": "#/$defs/decString"
+                    }
+                  },
+                  "required": [
+                    "cap_amount",
+                    "window_ms"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "daily_burn",
+                "daily_mint",
+                "max_burn_per_tx",
+                "max_mint_per_tx",
+                "personal_burn"
+              ],
+              "additionalProperties": false,
+              "description": "Bridge limit values recorded at deploy; runtime reads live limits from chain (getBridgeLimits RPC) — no runtime consumer."
+            }
+          },
+          "required": [
+            "emitter_cap",
+            "limits",
+            "state",
+            "wormhole_state"
+          ],
+          "additionalProperties": false
+        },
+        "withdrawal_queue": {
+          "type": "object",
+          "properties": {
+            "queue": {
+              "$ref": "#/$defs/suiId"
+            },
+            "executors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/suiId"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "queue"
+          ]
+        },
+        "prediction": {
+          "type": "object",
+          "properties": {
+            "global_config": {
+              "$ref": "#/$defs/suiId"
+            },
+            "admin_cap": {
+              "$ref": "#/$defs/suiId",
+              "description": "Admin capability object id."
+            },
+            "market_registries": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/suiId"
+              }
+            },
+            "settlement_coin_types": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/suiType"
+              }
+            },
+            "claimable_link_config": {
+              "$ref": "#/$defs/suiId"
+            },
+            "gift_admin_cap": {
+              "$ref": "#/$defs/suiId"
+            }
+          },
+          "required": [
+            "admin_cap",
+            "claimable_link_config",
+            "gift_admin_cap",
+            "global_config",
+            "market_registries",
+            "settlement_coin_types"
+          ],
+          "additionalProperties": false
+        },
+        "usd": {
+          "type": "object",
+          "properties": {
+            "metadata_cap": {
+              "$ref": "#/$defs/suiId"
+            }
+          },
+          "required": [
+            "metadata_cap"
+          ],
+          "additionalProperties": false
+        },
+        "faucet": {
+          "type": "object",
+          "properties": {
+            "faucet": {
+              "$ref": "#/$defs/suiId"
+            },
+            "whitelist": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/suiId"
+              }
+            }
+          },
+          "required": [
+            "faucet",
+            "whitelist"
+          ],
+          "additionalProperties": false
+        },
+        "mock_usdsui": {
+          "type": "object",
+          "properties": {
+            "currency_type": {
+              "$ref": "#/$defs/suiId"
+            },
+            "metadata_cap": {
+              "$ref": "#/$defs/suiId"
+            },
+            "treasury_cap": {
+              "$ref": "#/$defs/suiId"
+            }
+          },
+          "required": [
+            "currency_type",
+            "metadata_cap",
+            "treasury_cap"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "account",
+        "bridge",
+        "credit",
+        "custody",
+        "oracle",
+        "perp",
+        "prediction",
+        "referral",
+        "staking",
+        "usd",
+        "withdrawal_queue",
+        "wlp"
+      ]
+    },
+    "oracle_rules": {
+      "type": "object",
+      "properties": {
+        "waterx": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "rule_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "enclave": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "$ref": "#/$defs/suiId"
+                },
+                "cap": {
+                  "$ref": "#/$defs/suiId"
+                },
+                "config": {
+                  "$ref": "#/$defs/suiId"
+                },
+                "pubkey": {
+                  "type": "string",
+                  "description": "Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an independent env copy by design (boot-without-enclave).",
+                  "pattern": "^[0-9a-fA-F]{64}$"
+                }
+              },
+              "required": [
+                "cap",
+                "config",
+                "object",
+                "pubkey"
+              ],
+              "additionalProperties": false,
+              "description": "The ONE home for enclave identity (object, cap, config, pubkey)."
+            }
+          },
+          "required": [
+            "enclave",
+            "package",
+            "rule_config_object"
+          ],
+          "additionalProperties": false
+        },
+        "pyth": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "pyth_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "pyth_price_feeds": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "feed_id": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "Pyth price-feed identifier (32-byte hex). NOT a Sui object id."
+                  },
+                  "price_info_object": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object; passing the wrapper is the classic mistake."
+                  }
+                },
+                "required": [
+                  "feed_id",
+                  "price_info_object"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes)."
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "package",
+            "pyth_config_object",
+            "pyth_price_feeds"
+          ]
+        },
+        "pyth_lazer": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "lazer_state_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "lazer_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "lazer_feed_ids": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "description": "Per-symbol Pyth Lazer numeric feed id, as used by the keeper's Lazer WS subscription."
+            }
+          },
+          "required": [
+            "lazer_config_object",
+            "lazer_feed_ids",
+            "lazer_state_object",
+            "package"
+          ],
+          "additionalProperties": false
+        },
+        "constant": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "rule_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "constant_prices": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "price": {
+                    "$ref": "#/$defs/decString"
+                  }
+                },
+                "required": [
+                  "price"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-symbol constant price, 1e9-scaled decimal string (e.g. \"1000000000\" = 1.0)."
+            }
+          },
+          "required": [
+            "constant_prices",
+            "package",
+            "rule_config_object"
+          ],
+          "additionalProperties": false
+        },
+        "supra": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "rule_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "pair_ids": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer"
+              }
+            }
+          },
+          "required": [
+            "package",
+            "pair_ids",
+            "rule_config_object"
+          ],
+          "additionalProperties": false,
+          "description": "Dormant rule: kept as deployment ledger — no runtime consumer. Activating Supra needs schema additions first (enabled/oracle_holder have no v2 home)."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "constant",
+        "pyth",
+        "waterx"
+      ]
+    },
+    "evm": {
+      "type": "object",
+      "properties": {
+        "bridge": {
+          "type": "object",
+          "properties": {
+            "chains": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "chain_id": {
+                    "type": "integer"
+                  },
+                  "wormhole_chain_id": {
+                    "type": "integer"
+                  },
+                  "wormhole_core": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "Wormhole core contract address on this EVM chain (20-byte, 0x + 40 hex)."
+                  },
+                  "wormhole_executor": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+                  },
+                  "block_explorer": {
+                    "type": "string"
+                  },
+                  "deposit_vault": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                    "description": "Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex)."
+                  },
+                  "tokens": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "pattern": "^0x[0-9a-fA-F]{1,64}$",
+                      "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
+                    }
+                  }
+                },
+                "required": [
+                  "block_explorer",
+                  "chain_id",
+                  "deposit_vault",
+                  "tokens",
+                  "wormhole_chain_id",
+                  "wormhole_core",
+                  "wormhole_executor"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "chains"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "bridge"
+      ],
+      "additionalProperties": false,
+      "description": "EVM-side bridge deployment ledger (chains, core/vault addresses, tokens); source of truth for trusted emitters at DEPLOY time — no runtime consumer."
+    }
+  },
+  "required": [
+    "schema_version",
+    "network",
+    "chain_id",
+    "symbols",
+    "packages",
+    "objects",
+    "oracle_rules",
+    "evm"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "suiId": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$",
+      "description": "32-byte Sui object/package id."
+    },
+    "suiType": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{1,64}::[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*$",
+      "description": "Fully-qualified Move type tag."
+    },
+    "decString": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices)."
+    }
+  }
+}

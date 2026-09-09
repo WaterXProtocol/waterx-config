@@ -1,0 +1,10 @@
+{
+  "_comment": "Fields that are ALLOWED to be absent on one network or in some map entries. Inference marks every present field required; optionality can only arise from a merge (present on one side, missing on the other), and any optionality NOT declared here fails the generator — an accidental field deletion must never regenerate into a valid, looser schema (review finding). '*' matches one map key, '[]' array items. The generator fails on stale entries, so this list can only shrink.",
+  "optional": [
+    "objects/faucet",
+    "objects/mock_usdsui",
+    "objects/withdrawal_queue/executors",
+    "oracle_rules/pyth_lazer",
+    "oracle_rules/supra"
+  ]
+}
