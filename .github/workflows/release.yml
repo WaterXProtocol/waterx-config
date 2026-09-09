@@ -1,0 +1,61 @@
+name: Release config to production CDN
+
+# Decouples "merged to main" from "live on config.waterx.app".
+#
+# Mechanism: Cloudflare Pages' production branch is `release` (a one-time
+# dashboard change: Pages → waterx-config → Settings → Builds → production
+# branch = release). Merges land on main without deploying anything; RELEASING
+# is running this workflow, which — after the required-reviewer approval on
+# the `cdn-production` environment — fast-forwards/force-pushes `release` to
+# the chosen commit. Cloudflare then builds + purges the edge exactly once,
+# at release time. Branch aliases (staging / staging-v2 / main-v2 pages.dev
+# previews) keep auto-deploying from their branches, untouched.
+#
+# ROLLBACK is the same button: run with `ref` set to any earlier commit on
+# main — the ancestry gate below allows anything main contains, so a rollback
+# never requires a revert commit.
+#
+# Why not `wrangler pages deploy`: direct upload is unsupported on
+# git-connected Pages projects; converting would mean a NEW project (new
+# pages.dev subdomain, custom-domain migration) and hand-rolled deploys for
+# every preview branch. The environment approval gives the same control
+# surface without touching the Cloudflare wiring or managing an API token.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Commit/branch to release (must be on main; default = main head)"
+        required: false
+        default: "main"
+
+permissions:
+  contents: write # push to the release branch
+
+concurrency:
+  group: cdn-release
+  cancel-in-progress: false # releases queue; they must not cancel each other
+
+jobs:
+  release:
+    name: approve-and-release
+    runs-on: ubuntu-latest
+    environment: cdn-production # required reviewers = the release approval gate
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0, filter: "blob:none" }
+      - name: Resolve and gate the ref (must be on main — no releasing unmerged code)
+        id: gate
+        env:
+          REF: ${{ inputs.ref }}
+        run: |
+          SHA=$(git rev-parse --verify "origin/${REF}^{commit}" 2>/dev/null || git rev-parse --verify "${REF}^{commit}")
+          if ! git merge-base --is-ancestor "$SHA" origin/main; then
+            echo "::error::$REF ($SHA) is not on main — merge first (or pick an earlier main commit to roll back to)."
+            exit 1
+          fi
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "Releasing $SHA ($(git log -1 --format='%s' "$SHA"))"
+      - name: Point release at it (Cloudflare deploys from the release branch)
+        run: |
+          git push origin "${{ steps.gate.outputs.sha }}:refs/heads/release" --force
+          echo "release -> ${{ steps.gate.outputs.sha }} — Cloudflare Pages will build and purge the edge now."
