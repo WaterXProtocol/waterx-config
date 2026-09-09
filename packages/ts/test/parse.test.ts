@@ -19,9 +19,7 @@ for (const net of ["mainnet", "testnet"] as const) {
     assert.equal(cfg.schema_version, 2);
     assert.ok(Object.keys(cfg.symbols).length > 0);
     assert.ok(cfg.symbols["BTCUSD"], "the flagship symbol must exist in the universe");
-    const btc = cfg.oracle_rules.waterx.venue_feeds["BTCUSD"];
-    assert.ok(btc);
-    assert.ok(btc.sources.every((s) => typeof s.name === "string" && Number.isInteger(s.weight)));
+    assert.match(cfg.objects.oracle.aggregators["BTCUSD"] ?? "", /^0x[0-9a-fA-F]{64}$/);
     assert.ok(cfg.packages.waterx_rule, "waterx_rule identity block");
     assert.match(cfg.packages.waterx_rule.published_at, /^0x[0-9a-fA-F]{64}$/);
   });

@@ -5,7 +5,7 @@
  *
  *   import { loadWaterxConfig } from "@waterx/config";
  *   const cfg = await loadWaterxConfig("mainnet");
- *   cfg.oracle_rules.waterx.venue_feeds["BTCUSD"].sources; // fully typed
+ *   cfg.objects.oracle.aggregators["BTCUSD"]; // fully typed
  *
  * The validator is GENERATED from schema/waterx-config.schema.json; CI fails
  * if it drifts. Do not edit schema.ts by hand.
@@ -30,10 +30,10 @@ export type WaterxConfig = z.infer<typeof waterxConfigSchema>;
 export type WaterxPackages = WaterxConfig["packages"];
 export type SymbolsRegistry = WaterxConfig["symbols"];
 export type OracleRules = WaterxConfig["oracle_rules"];
-// Direct index types — the schema marks these required, and if that ever
-// changes the compiler should break these aliases loudly (review finding:
+// Direct index type — the schema marks this required, and if that ever
+// changes the compiler should break the alias loudly (review finding:
 // NonNullable<> wrappers taught consumers the wrong nullability).
-export type VenueFeed = OracleRules["waterx"]["venue_feeds"][string];
+// (VenueFeed retired with oracle_rules.waterx.venue_feeds — quote-center #191.)
 export type PerpMarket = WaterxConfig["objects"]["perp"]["markets"][string];
 
 export type Network = "mainnet" | "testnet";

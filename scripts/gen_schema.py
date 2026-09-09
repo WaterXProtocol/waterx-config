@@ -56,19 +56,12 @@ CONSTRAINTS = {
     "oracle_rules/waterx/enclave/pubkey": {"pattern": "^[0-9a-fA-F]{64}$"},
 }
 
-# Repo-only strictness: the wire vocabularies, pinned exactly. The canonical
-# names are the ones quote-service resolve.rs canonicalizes to (legacy aliases
-# it tolerates are deliberately NOT blessed here).
-SOURCE_NAMES = [
-    "binance_spot", "binance_spot_ws", "binance_usdm_perp_ws",
-    "bybit_linear_perp_ws", "gateio_usdt_perp_ws", "bybit_spot_ws",
-    "xstock_equity_rest", "okx_spot_ws", "hyperliquid_perp_ws",
-    "gateio_spot_ws", "kraken_spot_ws", "pyth_lazer_ws",
-]
-GATE_CONSTRAINTS = {
-    "oracle_rules/waterx/venue_feeds/*/sources/[]/name": {"enum": SOURCE_NAMES},
-    "oracle_rules/waterx/venue_feeds/*/method": {"enum": ["direct", "median", "confidence"]},
-}
+# Repo-only strictness (exact-vocabulary enums that would break pinned
+# parsers if made canonical). Empty since venue_feeds retired (quote-center
+# #191: venue composition moved to quote-service's BBO config; the source
+# wire vocabulary no longer lives in this repo) — the mechanism stays for
+# the next growable vocabulary.
+GATE_CONSTRAINTS = {}
 
 
 def gate_schema(canonical, constraints):

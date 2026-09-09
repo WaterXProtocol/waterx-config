@@ -379,13 +379,6 @@ pub struct Waterx {
     pub package: String,
 
     pub rule_config_object: String,
-
-    /// QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY:
-    /// waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of
-    /// weights, so a weight change moves the signed price via a parameter no on-chain check can
-    /// see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface
-    /// change.
-    pub venue_feeds: HashMap<String, VenueFeed>,
 }
 
 /// The ONE home for enclave identity (object, cap, config, pubkey).
@@ -400,32 +393,6 @@ pub struct Enclave {
     /// Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an
     /// independent env copy by design (boot-without-enclave).
     pub pubkey: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct VenueFeed {
-    pub method: String,
-
-    pub min_sources: i64,
-
-    /// Venue set feeding the aggregate. Source names are a wire vocabulary shared with
-    /// waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws
-    /// / binance_spot [REST], 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4
-    /// gateio_usdt_perp_ws, 5 bybit_spot_ws, 6 xstock_equity_rest, 7 okx_spot_ws, 8
-    /// hyperliquid_perp_ws, 9 gateio_spot_ws, 10 kraken_spot_ws, 11 pyth_lazer_ws). A source id
-    /// must be REGISTERED ON-CHAIN for the target network before a feed lists it — an
-    /// unregistered id aborts on-chain validation at feed time (per-network registration is
-    /// tracked in WL-1968).
-    pub sources: Vec<Source>,
-
-    pub ticker: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Source {
-    pub name: String,
-
-    pub weight: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

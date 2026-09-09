@@ -157,16 +157,6 @@ Every package carries the same identity block (the map is uniform — new packag
 | `package` | string | ✓ |  |
 | `rule_config_object` | suiId | ✓ |  |
 | `enclave` | object | ✓ | The ONE home for enclave identity (object, cap, config, pubkey). |
-| `venue_feeds` | map<string, object> | ✓ | QC feed registry, keyed by oracle symbol. The `weights` inside are OFF-CHAIN ONLY: waterx_rule on-chain validates sources/ticker/method/min_sources but has no notion of weights, so a weight change moves the signed price via a parameter no on-chain check can see (waterx-quote-center audit-scope I-16). Review weight changes as a trust-surface change. |
-
-#### `oracle_rules.waterx.venue_feeds` — each entry
-
-| field | type | required | notes |
-|---|---|---|---|
-| `ticker` | string | ✓ |  |
-| `sources` | array<object> | ✓ | Venue set feeding the aggregate. Source names are a wire vocabulary shared with waterx_rule.move's on-chain u64 registry and quote-service resolve.rs (1 binance_spot_ws / binance_spot [REST], 2 binance_usdm_perp_ws, 3 bybit_linear_perp_ws, 4 gateio_usdt_perp_ws, 5 bybit_spot_ws, 6 xstock_equity_rest, 7 okx_spot_ws, 8 hyperliquid_perp_ws, 9 gateio_spot_ws, 10 kraken_spot_ws, 11 pyth_lazer_ws). A source id must be REGISTERED ON-CHAIN for the target network before a feed lists it — an unregistered id aborts on-chain validation at feed time (per-network registration is tracked in WL-1968). |
-| `method` | string | ✓ |  |
-| `min_sources` | integer | ✓ |  |
 
 ### `oracle_rules.pyth`
 

@@ -54,22 +54,13 @@ drift); edit the schema, never the generated files.
   **never derive one from the other**. Crude oil is the standing example:
   `WTIUSD`/`BRENTUSD` trade as `CLUSDT`/`BZUSDT`, not `WTIUSDT`/`BRENTUSDT`.
   A wrong ticker does not error — the feed silently never fetches.
-- `oracle_rules.waterx.venue_feeds[].sources[].name` and `method` are a **wire
-  vocabulary** shared with `waterx_rule.move`'s on-chain u64 source registry
-  and quote-service `resolve.rs`; CI pins the exact spelling
-  (`schema/waterx-config.gate.json`). A source id must be **registered
-  on-chain for the target network** before a feed lists it — an unregistered
-  id aborts on-chain validation at feed time. Ids 1–11 are registered on BOTH
-  networks (verified on-chain 2026-09-08; per-network registration history:
-  WL-1968). The full id table is in [FIELDS.md](./docs/FIELDS.md) under
-  `oracle_rules.waterx.venue_feeds — each entry`.
-- The on-chain `FeedConfig` (`set_perp_feed`) pins `ticker`, `sources` and
-  `method` **field-for-field**: a config entry that disagrees with the
-  on-chain record aborts every publish tick for that symbol
-  (`ESourceMismatch`). `kind` (in `symbols`) is NOT on-chain — it only drives
-  per-kind publish cadence off-chain, so a kind change can never abort.
-- `weights` are **off-chain only** (audit I-16): review weight changes as
-  trust-surface changes.
+- Venue composition (which exchanges feed a symbol, with what weights and
+  method) does **not** live in this repo any more: quote-center #191 moved it
+  to quote-service's Spot-BBO consensus config (`BBO_CONFIG_PATH` /
+  `BBO_SIGNING_CONFIG_PATH`), which retired `venue_feeds` — and with it the
+  audit-I-16 off-chain weights trust surface — from the served files. The
+  symbol universe here is `symbols` (and the per-symbol on-chain objects in
+  `objects.oracle.aggregators`).
 - `oracle_rules.pyth.pyth_price_feeds[].feed_id` is usually **different
   between testnet and mainnet** — look each up in its own Hermes
   (hermes-beta.pyth.network vs hermes.pyth.network); `price_info_object` must

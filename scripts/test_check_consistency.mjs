@@ -46,7 +46,7 @@ const expectFail = (label, needle, reg, exc, dd) => {
 //    finding: the exception path only caught this incidentally).
 {
   const reg = registry();
-  reg.find((e) => e.id === "venue_feeds").base = "open";
+  reg.find((e) => e.id === "pyth_price_feeds").base = "open";
   expectFail("base flip (no exceptions) fails", "pinned contract", reg, exceptions(), docs());
 }
 {
@@ -66,7 +66,7 @@ const expectFail = (label, needle, reg, exc, dd) => {
 //     one is a deliberate, two-file change.
 {
   const reg = registry();
-  reg.push({ id: "surprise_feeds", path: "oracle_rules/waterx/venue_feeds", base: "symbols", networks: ["mainnet", "testnet"] });
+  reg.push({ id: "surprise_feeds", path: "objects/oracle/aggregators", base: "symbols", networks: ["mainnet", "testnet"] });
   expectFail("unpinned new symbol map fails", "pinned contract", reg, exceptions(), docs());
 }
 

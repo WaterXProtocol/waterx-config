@@ -42,7 +42,7 @@ const NETWORKS = ["mainnet", "testnet"];
 // this reviewed list in the same PR — and deleting a registry row for a
 // pinned map fails outright.
 const SYMBOL_KEYED_MAPS = new Set([
-  "venue_feeds", "pyth_price_feeds", "lazer_feed_ids", "supra_pair_ids",
+  "pyth_price_feeds", "lazer_feed_ids", "supra_pair_ids",
   "constant_prices", "aggregators", "perp_markets",
 ]);
 

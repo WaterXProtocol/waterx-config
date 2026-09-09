@@ -219,7 +219,7 @@ mod tests {
             assert_eq!(cfg.schema_version, 2);
             assert!(!cfg.symbols.is_empty() && cfg.symbols.contains_key("BTCUSD"),
                 "{net}: the symbols universe must exist and hold the flagship symbol");
-            assert!(cfg.oracle_rules.waterx.venue_feeds.contains_key("BTCUSD"));
+            assert!(cfg.objects.oracle.aggregators.contains_key("BTCUSD"));
             let wr = cfg.packages.get("waterx_rule").expect("waterx_rule identity");
             // published_at is a REQUIRED String now (identity trio; review finding)
             assert!(wr.published_at.starts_with("0x"));
@@ -281,7 +281,7 @@ mod tests {
     #[test]
     fn shape_errors_keep_position_info() {
         let mut doc: serde_json::Value = serde_json::from_str(&fixture("mainnet.json")).unwrap();
-        doc["oracle_rules"]["waterx"]["venue_feeds"]["BTCUSD"]["min_sources"] = serde_json::json!("two");
+        doc["packages"]["waterx_rule"]["version"] = serde_json::json!("two");
         let err = parse_waterx_config(&serde_json::to_string_pretty(&doc).unwrap(), None).unwrap_err();
         match err {
             ConfigError::Parse(e) => {

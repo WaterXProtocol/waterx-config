@@ -47,7 +47,7 @@ The old→new path map:
 
 | old path | new path |
 |---|---|
-| `packages.waterx_rule.feeds` | `oracle_rules.waterx.venue_feeds` (feed `kind` moved to `symbols`) |
+| `packages.waterx_rule.feeds` | **removed 2026-09-09** — venue composition moved to quote-service's BBO config (quote-center #191); feed `kind` lives in `symbols` |
 | `packages.waterx_rule.enclave*` | `oracle_rules.waterx.enclave.{object,cap,config,pubkey}` |
 | `packages.pyth_rule.{config,feeds}` | `oracle_rules.pyth.{pyth_config_object,pyth_price_feeds}` |
 | `packages.pyth_lazer_rule.feeds` | `oracle_rules.pyth_lazer.lazer_feed_ids` |
@@ -77,9 +77,8 @@ above), despite validating only `published_at`.
 Migration gotchas proven by the 2026-09-08 consumer audit (a mechanical
 leaf-path rename misses every one):
 
-- **`kind` is a JOIN, not a move**: `venue_feeds[sym]` no longer carries it;
-  read `symbols[sym].kind`. quote-service's `default_kind()` would silently
-  absorb a missed join and mis-schedule 19/31 mainnet feeds.
+- **`kind` lives in `symbols[sym].kind`** (per-feed `kind` is gone with
+  venue_feeds itself, removed 2026-09-09 — quote-center #191).
 - **Presence-as-signal moved root**: `packages.X` truthiness used to mean
   "feature deployed on this network" (backend bridge/staking/referral/queue
   guards). In v2 `packages.X` is pure identity and always present — those
