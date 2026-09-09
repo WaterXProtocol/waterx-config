@@ -11,7 +11,11 @@ import { existsSync, readFileSync } from "node:fs";
 const root = new URL("..", import.meta.url);
 let failures = 0;
 
-// The old shape's signature read paths (from docs/FLIP-PLAN.md's path map).
+// Every DELIBERATELY-REMOVED path — the pre-flip shape's signature read
+// paths (from docs/FLIP-PLAN.md's path map) plus later removals. A removal
+// PR appends its path here, the same way required-anchors demands an anchor
+// be removed alongside its field; a revert or cherry-pick from any older
+// branch then fails loudly instead of resurfacing the field.
 const LEGACY_DATA_PATHS = [
   // (the packages themselves stay — as pure identity blocks; the legacy
   // signature is their domain FIELDS)
@@ -25,6 +29,10 @@ const LEGACY_DATA_PATHS = [
   "packages/waterx_perp/markets",
   "packages/wlp/wlp_pool",
   "deploy_tx_log",
+  // removed 2026-09-09 (not pre-flip): venue composition → quote-service BBO
+  // config (quote-center #191); coin_registry was the Sui system constant 0xc
+  "oracle_rules/waterx/venue_feeds",
+  "coin_registry",
 ];
 const dig = (doc, path) => path.split("/").reduce((o, k) => o?.[k], doc);
 for (const net of ["mainnet", "testnet"]) {

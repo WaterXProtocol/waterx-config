@@ -23,14 +23,10 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json }
       - run: cd packages/ts && npm ci
-      - name: Instances match the canonical schema AND the repo-only gate
+      - name: Instances match the canonical schema
         run: |
           export PATH="$PWD/packages/ts/node_modules/.bin:$PATH"
           ajv validate --spec=draft2020 -s schema/waterx-config.schema.json -d mainnet.json -d testnet.json
-          # The gate pins wire vocabularies (source names, methods) exactly —
-          # repo-only strictness the canonical schema deliberately omits so
-          # pinned parsers survive vocabulary growth.
-          ajv validate --spec=draft2020 -s schema/waterx-config.gate.json -d mainnet.json -d testnet.json
       - name: Consistency + repo-state coherence (and their fail-closed tests)
         run: |
           node scripts/check-consistency.mjs

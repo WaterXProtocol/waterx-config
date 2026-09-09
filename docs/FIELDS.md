@@ -12,7 +12,7 @@
 | `symbols` | map<string, object> | The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map elsewhere must reference a key from here (CI-enforced). |
 | `objects` | object |  |
 | `oracle_rules` | object |  |
-| `evm` | object |  |
+| `evm` | object | EVM-side bridge deployment ledger (chains, core/vault addresses, tokens); source of truth for trusted emitters at DEPLOY time — no runtime consumer. |
 
 ## Packages
 
@@ -34,7 +34,7 @@ Every package carries the same identity block (the map is uniform — new packag
 | field | type | required | notes |
 |---|---|---|---|
 | `oracle` | suiId | ✓ |  |
-| `listing_cap` | suiId | ✓ |  |
+| `listing_cap` | suiId | ✓ | ListingCap object id. Deploy-time artifact (asset-listing tooling); no runtime consumer. |
 | `aggregators` | map<string, suiId> | ✓ | Per-symbol on-chain Aggregator object id — the cross-rule weighted-median aggregation point. |
 
 ### `objects.perp`
@@ -105,7 +105,7 @@ Every package carries the same identity block (the map is uniform — new packag
 | `state` | suiId | ✓ |  |
 | `emitter_cap` | suiId | ✓ |  |
 | `wormhole_state` | suiId | ✓ |  |
-| `limits` | object | ✓ |  |
+| `limits` | object | ✓ | Bridge limit values recorded at deploy; runtime reads live limits from chain (getBridgeLimits RPC) — no runtime consumer. |
 
 ### `objects.withdrawal_queue`
 

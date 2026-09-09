@@ -1,5 +1,5 @@
 {
-  "_comment": "Schema descriptions keyed by wildcarded paths ('*' = one segment; applied at every depth incl. map items and array elements by gen_schema_lib.annotate()).",
+  "_comment": "Schema descriptions keyed by wildcarded paths ('*' = one segment; applied at every depth incl. map items and array elements by gen_schema_lib.annotate()). POLICY — every field is one of two kinds: the RUNTIME READ SURFACE (consumers load it at boot; removal needs consumer-rev coordination) or the DEPLOYMENT LEDGER, marked by the phrase 'no runtime consumer' (the on-chain record of what a deploy created; removable as a data-only change once truly unread). Unmarked = runtime surface.",
   "packages/*/published_at": "Package id of the current latest version — the tx-call target. Changes on every upgrade.",
   "packages/*/original_id": "Package id of the FIRST publish. Never changes across upgrades; used to build type tags (<original_id>::module::Type).",
   "packages/*/version": "On-chain package version: 1 at first publish, +1 per upgrade.",
@@ -18,5 +18,9 @@
   "objects/perp/markets": "Per-symbol perp market: market + config object ids.",
   "objects/custody/assets": "Native-custody asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled (0 = no fee; 1_000_000 = 0.1%; 1_000_000_000 = 100%). min_burn_amount is the dust floor in the asset's smallest unit.",
   "evm/bridge/chains/*/wormhole_core": "Wormhole core contract address on this EVM chain (20-byte, 0x + 40 hex).",
-  "evm/bridge/chains/*/deposit_vault": "Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex)."
+  "evm/bridge/chains/*/deposit_vault": "Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex).",
+  "objects/oracle/listing_cap": "ListingCap object id. Deploy-time artifact (asset-listing tooling); no runtime consumer.",
+  "objects/bridge/limits": "Bridge limit values recorded at deploy; runtime reads live limits from chain (getBridgeLimits RPC) — no runtime consumer.",
+  "evm": "EVM-side bridge deployment ledger (chains, core/vault addresses, tokens); source of truth for trusted emitters at DEPLOY time — no runtime consumer.",
+  "oracle_rules/supra": "Dormant rule: kept as deployment ledger — no runtime consumer. Activating Supra needs schema additions first (enabled/oracle_holder have no v2 home)."
 }

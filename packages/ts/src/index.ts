@@ -33,7 +33,6 @@ export type OracleRules = WaterxConfig["oracle_rules"];
 // Direct index type — the schema marks this required, and if that ever
 // changes the compiler should break the alias loudly (review finding:
 // NonNullable<> wrappers taught consumers the wrong nullability).
-// (VenueFeed retired with oracle_rules.waterx.venue_feeds — quote-center #191.)
 export type PerpMarket = WaterxConfig["objects"]["perp"]["markets"][string];
 
 export type Network = "mainnet" | "testnet";

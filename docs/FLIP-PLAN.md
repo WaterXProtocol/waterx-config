@@ -35,7 +35,7 @@ at the staging→main promotion:
 
 | consumer | what happens on flip | mode |
 |---|---|---|
-| waterx-quote-center | boots `bail!("no packages.waterx_rule.feeds")` → CrashLoopBackOff, no signed prices, both networks | loud |
+| waterx-quote-center | boots `bail!("no packages.waterx_rule.feeds")` → CrashLoopBackOff, no signed prices, both networks. Remedy is NOT a repoint (venue_feeds was later removed outright): the fix is quote-center #191's BBO-consensus migration | loud |
 | bucket-backend-mono | `Object.entries(undefined)` in registry `onModuleInit` → whole app restart loop | loud |
 | data-infra **oracle service** | boot throw under both `ORACLE_SOURCE` values (this consumer was previously missing from this list) | loud |
 | waterx-keeper | one `warn`, then **permanent fallback to the bundled snapshot**; refresh worker rejects every later remote config. The snapshot is also STALE: its `waterx_rule`/`pyth_lazer_rule` `published_at` predate the v1→v2 package upgrades, so fallback pins the keeper to pre-upgrade rule packages | **silent** |
@@ -48,6 +48,7 @@ The old→new path map:
 | old path | new path |
 |---|---|
 | `packages.waterx_rule.feeds` | **removed 2026-09-09** — venue composition moved to quote-service's BBO config (quote-center #191); feed `kind` lives in `symbols` |
+| `coin_registry` | **removed 2026-09-09** — it held the Sui SYSTEM address `0xc` (`sui::coin_registry`), a network-invariant constant like `0x6` Clock; use the constant |
 | `packages.waterx_rule.enclave*` | `oracle_rules.waterx.enclave.{object,cap,config,pubkey}` |
 | `packages.pyth_rule.{config,feeds}` | `oracle_rules.pyth.{pyth_config_object,pyth_price_feeds}` |
 | `packages.pyth_lazer_rule.feeds` | `oracle_rules.pyth_lazer.lazer_feed_ids` |
@@ -77,8 +78,8 @@ above), despite validating only `published_at`.
 Migration gotchas proven by the 2026-09-08 consumer audit (a mechanical
 leaf-path rename misses every one):
 
-- **`kind` lives in `symbols[sym].kind`** (per-feed `kind` is gone with
-  venue_feeds itself, removed 2026-09-09 — quote-center #191).
+- **`kind` lives only in `symbols[sym].kind`** — a pre-flip consumer reading
+  it per-feed finds nothing.
 - **Presence-as-signal moved root**: `packages.X` truthiness used to mean
   "feature deployed on this network" (backend bridge/staking/referral/queue
   guards). In v2 `packages.X` is pure identity and always present — those

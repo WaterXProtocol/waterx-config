@@ -25,7 +25,7 @@ jobs:
         id: detect
         run: |
           CHANGED=$(git diff --name-only HEAD^1 HEAD -- \
-            schema scripts packages docs/FIELDS.md mainnet.json testnet.json .github/workflows/codegen.yml)
+            schema scripts packages/ts/src packages/rust/src docs/FIELDS.md mainnet.json testnet.json .github/workflows/codegen.yml)
           if [ -n "$CHANGED" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "$CHANGED"

@@ -80,7 +80,7 @@ expect_exit("undeclared top-level key fails", copy.deepcopy(M), t2,
 #    in the schema (so ajv rejects the mutated instance) — never demote it.
 t2 = copy.deepcopy(T)
 del t2["evm"]
-schema8, _ = build(copy.deepcopy(M), t2)
+schema8 = build(copy.deepcopy(M), t2)
 assert "evm" in schema8["required"], "evm must stay in root required"
 print("  ok one-network top-level deletion cannot demote requiredness")
 

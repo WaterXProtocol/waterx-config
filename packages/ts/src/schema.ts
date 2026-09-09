@@ -87,7 +87,9 @@ export default z
         listing_cap: z
           .string()
           .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
-          .describe("32-byte Sui object/package id."),
+          .describe(
+            "ListingCap object id. Deploy-time artifact (asset-listing tooling); no runtime consumer.",
+          ),
         aggregators: z
           .record(
             z
@@ -271,46 +273,50 @@ export default z
           .string()
           .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
           .describe("32-byte Sui object/package id."),
-        limits: z.object({
-          max_mint_per_tx: z
-            .string()
-            .regex(new RegExp("^[0-9]+$"))
-            .describe(
-              "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
-            ),
-          max_burn_per_tx: z
-            .string()
-            .regex(new RegExp("^[0-9]+$"))
-            .describe(
-              "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
-            ),
-          daily_mint: z
-            .string()
-            .regex(new RegExp("^[0-9]+$"))
-            .describe(
-              "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
-            ),
-          daily_burn: z
-            .string()
-            .regex(new RegExp("^[0-9]+$"))
-            .describe(
-              "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
-            ),
-          personal_burn: z.object({
-            cap_amount: z
+        limits: z
+          .object({
+            max_mint_per_tx: z
               .string()
               .regex(new RegExp("^[0-9]+$"))
               .describe(
                 "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
               ),
-            window_ms: z
+            max_burn_per_tx: z
               .string()
               .regex(new RegExp("^[0-9]+$"))
               .describe(
                 "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
               ),
-          }),
-        }),
+            daily_mint: z
+              .string()
+              .regex(new RegExp("^[0-9]+$"))
+              .describe(
+                "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
+              ),
+            daily_burn: z
+              .string()
+              .regex(new RegExp("^[0-9]+$"))
+              .describe(
+                "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
+              ),
+            personal_burn: z.object({
+              cap_amount: z
+                .string()
+                .regex(new RegExp("^[0-9]+$"))
+                .describe(
+                  "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
+                ),
+              window_ms: z
+                .string()
+                .regex(new RegExp("^[0-9]+$"))
+                .describe(
+                  "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
+                ),
+            }),
+          })
+          .describe(
+            "Bridge limit values recorded at deploy; runtime reads live limits from chain (getBridgeLimits RPC) — no runtime consumer.",
+          ),
       }),
       withdrawal_queue: z.object({
         queue: z
@@ -504,43 +510,52 @@ export default z
             .describe("32-byte Sui object/package id."),
           pair_ids: z.record(z.number().int()),
         })
+        .describe(
+          "Dormant rule: kept as deployment ledger — no runtime consumer. Activating Supra needs schema additions first (enabled/oracle_holder have no v2 home).",
+        )
         .optional(),
     }),
-    evm: z.object({
-      bridge: z.object({
-        chains: z.record(
-          z.object({
-            chain_id: z.number().int(),
-            wormhole_chain_id: z.number().int(),
-            wormhole_core: z
-              .string()
-              .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
-              .describe(
-                "Wormhole core contract address on this EVM chain (20-byte, 0x + 40 hex).",
-              ),
-            wormhole_executor: z
-              .string()
-              .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
-              .describe("0x-prefixed hex id/address (Sui short-form or EVM)."),
-            block_explorer: z.string(),
-            deposit_vault: z
-              .string()
-              .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
-              .describe(
-                "Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex).",
-              ),
-            tokens: z.record(
-              z
+    evm: z
+      .object({
+        bridge: z.object({
+          chains: z.record(
+            z.object({
+              chain_id: z.number().int(),
+              wormhole_chain_id: z.number().int(),
+              wormhole_core: z
+                .string()
+                .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
+                .describe(
+                  "Wormhole core contract address on this EVM chain (20-byte, 0x + 40 hex).",
+                ),
+              wormhole_executor: z
                 .string()
                 .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
                 .describe(
                   "0x-prefixed hex id/address (Sui short-form or EVM).",
                 ),
-            ),
-          }),
-        ),
-      }),
-    }),
+              block_explorer: z.string(),
+              deposit_vault: z
+                .string()
+                .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
+                .describe(
+                  "Deposit vault contract address on this EVM chain (20-byte, 0x + 40 hex).",
+                ),
+              tokens: z.record(
+                z
+                  .string()
+                  .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
+                  .describe(
+                    "0x-prefixed hex id/address (Sui short-form or EVM).",
+                  ),
+              ),
+            }),
+          ),
+        }),
+      })
+      .describe(
+        "EVM-side bridge deployment ledger (chains, core/vault addresses, tokens); source of truth for trusted emitters at DEPLOY time — no runtime consumer.",
+      ),
   })
   .describe(
     "One WaterX network deployment in the consolidated shape: one symbol universe, uniform package identity, domain-grouped shared objects, and a named per-rule oracle registry. See docs/FIELDS.md.",

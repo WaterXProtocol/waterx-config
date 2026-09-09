@@ -7,7 +7,7 @@ shape, `schema_version: 2`), generated from the canonical JSON Schema in
 ```ts
 import { loadWaterxConfig } from "@waterx/config";
 const cfg = await loadWaterxConfig("mainnet"); // fetches config.waterx.app, retries 429/5xx
-cfg.oracle_rules.waterx.venue_feeds["BTCUSD"].sources; // fully typed
+cfg.objects.oracle.aggregators["BTCUSD"]; // fully typed
 ```
 
 - **Never** read `raw.githubusercontent.com` — it is 429-rate-limited; the

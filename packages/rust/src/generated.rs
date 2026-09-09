@@ -21,6 +21,8 @@ use std::collections::HashMap;
 pub struct WaterxConfig {
     pub chain_id: String,
 
+    /// EVM-side bridge deployment ledger (chains, core/vault addresses, tokens); source of truth
+    /// for trusted emitters at DEPLOY time — no runtime consumer.
     pub evm: Evm,
 
     pub network: Network,
@@ -40,6 +42,8 @@ pub struct WaterxConfig {
     pub symbols: HashMap<String, Symbol>,
 }
 
+/// EVM-side bridge deployment ledger (chains, core/vault addresses, tokens); source of truth
+/// for trusted emitters at DEPLOY time — no runtime consumer.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Evm {
     pub bridge: EvmBridge,
@@ -123,6 +127,8 @@ pub struct Account {
 pub struct ObjectsBridge {
     pub emitter_cap: String,
 
+    /// Bridge limit values recorded at deploy; runtime reads live limits from chain
+    /// (getBridgeLimits RPC) — no runtime consumer.
     pub limits: Limits,
 
     pub state: String,
@@ -130,6 +136,8 @@ pub struct ObjectsBridge {
     pub wormhole_state: String,
 }
 
+/// Bridge limit values recorded at deploy; runtime reads live limits from chain
+/// (getBridgeLimits RPC) — no runtime consumer.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Limits {
     pub daily_burn: String,
@@ -205,6 +213,7 @@ pub struct Oracle {
     /// point.
     pub aggregators: HashMap<String, String>,
 
+    /// ListingCap object id. Deploy-time artifact (asset-listing tooling); no runtime consumer.
     pub listing_cap: String,
 
     pub oracle: String,
@@ -305,6 +314,8 @@ pub struct OracleRules {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pyth_lazer: Option<PythLazer>,
 
+    /// Dormant rule: kept as deployment ledger — no runtime consumer. Activating Supra needs
+    /// schema additions first (enabled/oracle_holder have no v2 home).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supra: Option<Supra>,
 
@@ -359,6 +370,8 @@ pub struct PythLazer {
     pub package: String,
 }
 
+/// Dormant rule: kept as deployment ledger — no runtime consumer. Activating Supra needs
+/// schema additions first (enabled/oracle_holder have no v2 home).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Supra {
     pub package: String,

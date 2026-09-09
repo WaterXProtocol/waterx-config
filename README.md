@@ -50,17 +50,15 @@ drift); edit the schema, never the generated files.
 
 ## Listing a feed — read this first
 
-- `symbol` is the oracle key (`BTCUSD`); `ticker` is the venue's own spelling —
-  **never derive one from the other**. Crude oil is the standing example:
-  `WTIUSD`/`BRENTUSD` trade as `CLUSDT`/`BZUSDT`, not `WTIUSDT`/`BRENTUSDT`.
-  A wrong ticker does not error — the feed silently never fetches.
 - Venue composition (which exchanges feed a symbol, with what weights and
   method) does **not** live in this repo any more: quote-center #191 moved it
   to quote-service's Spot-BBO consensus config (`BBO_CONFIG_PATH` /
   `BBO_SIGNING_CONFIG_PATH`), which retired `venue_feeds` — and with it the
   audit-I-16 off-chain weights trust surface — from the served files. The
   symbol universe here is `symbols` (and the per-symbol on-chain objects in
-  `objects.oracle.aggregators`).
+  `objects.oracle.aggregators`). The old symbol-vs-ticker gotcha (oracle
+  `WTIUSD` trades as venue `CLUSDT`, never `WTIUSDT` — a wrong ticker fetches
+  nothing, silently) moved with it: it now applies to the BBO config files.
 - `oracle_rules.pyth.pyth_price_feeds[].feed_id` is usually **different
   between testnet and mainnet** — look each up in its own Hermes
   (hermes-beta.pyth.network vs hermes.pyth.network); `price_info_object` must

@@ -127,7 +127,8 @@
               "$ref": "#/$defs/suiId"
             },
             "listing_cap": {
-              "$ref": "#/$defs/suiId"
+              "$ref": "#/$defs/suiId",
+              "description": "ListingCap object id. Deploy-time artifact (asset-listing tooling); no runtime consumer."
             },
             "aggregators": {
               "type": "object",
@@ -409,7 +410,8 @@
                 "max_mint_per_tx",
                 "personal_burn"
               ],
-              "additionalProperties": false
+              "additionalProperties": false,
+              "description": "Bridge limit values recorded at deploy; runtime reads live limits from chain (getBridgeLimits RPC) — no runtime consumer."
             }
           },
           "required": [
@@ -713,7 +715,8 @@
             "pair_ids",
             "rule_config_object"
           ],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "description": "Dormant rule: kept as deployment ledger — no runtime consumer. Activating Supra needs schema additions first (enabled/oracle_holder have no v2 home)."
         }
       },
       "additionalProperties": false,
@@ -789,7 +792,8 @@
       "required": [
         "bridge"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "EVM-side bridge deployment ledger (chains, core/vault addresses, tokens); source of truth for trusted emitters at DEPLOY time — no runtime consumer."
     }
   },
   "required": [
