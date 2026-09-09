@@ -21,9 +21,6 @@ use std::collections::HashMap;
 pub struct WaterxConfig {
     pub chain_id: String,
 
-    /// 0x-prefixed hex id/address (Sui short-form or EVM).
-    pub coin_registry: String,
-
     pub evm: Evm,
 
     pub network: Network,

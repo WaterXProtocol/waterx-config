@@ -723,11 +723,6 @@
         "waterx"
       ]
     },
-    "coin_registry": {
-      "type": "string",
-      "pattern": "^0x[0-9a-fA-F]{1,64}$",
-      "description": "0x-prefixed hex id/address (Sui short-form or EVM)."
-    },
     "evm": {
       "type": "object",
       "properties": {
@@ -805,7 +800,6 @@
     "packages",
     "objects",
     "oracle_rules",
-    "coin_registry",
     "evm"
   ],
   "additionalProperties": false,

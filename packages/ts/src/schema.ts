@@ -506,10 +506,6 @@ export default z
         })
         .optional(),
     }),
-    coin_registry: z
-      .string()
-      .regex(new RegExp("^0x[0-9a-fA-F]{1,64}$"))
-      .describe("0x-prefixed hex id/address (Sui short-form or EVM)."),
     evm: z.object({
       bridge: z.object({
         chains: z.record(

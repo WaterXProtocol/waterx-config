@@ -558,7 +558,6 @@
       }
     }
   },
-  "coin_registry": "0xc",
   "evm": {
     "bridge": {
       "chains": {

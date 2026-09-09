@@ -12,7 +12,6 @@
 | `symbols` | map<string, object> | The single symbol universe: the ONLY place a symbol is introduced. Every symbol-keyed map elsewhere must reference a key from here (CI-enforced). |
 | `objects` | object |  |
 | `oracle_rules` | object |  |
-| `coin_registry` | string | 0x-prefixed hex id/address (Sui short-form or EVM). |
 | `evm` | object |  |
 
 ## Packages

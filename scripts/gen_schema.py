@@ -96,10 +96,12 @@ def gate_schema(canonical, constraints):
 
 
 # Every top-level key must appear here or in schema/optional-fields.json —
-# build_schema fails otherwise (coin_registry and evm were silently optional;
-# review finding).
+# build_schema fails otherwise (review finding: evm was silently optional).
+# coin_registry was removed outright 2026-09-09: it held the Sui SYSTEM
+# address 0xc (sui::coin_registry), a network-invariant constant like 0x6
+# Clock — deployment config is not the place for it, and nothing ever read it.
 REQUIRED_TOP = ["schema_version", "network", "chain_id", "symbols", "packages",
-                "objects", "oracle_rules", "coin_registry", "evm"]
+                "objects", "oracle_rules", "evm"]
 
 
 def generate(m, t):

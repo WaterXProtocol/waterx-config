@@ -79,10 +79,6 @@ expect_exit("undeclared top-level key fails", copy.deepcopy(M), t2,
 # 8. Deleting a REQUIRED top-level key from one network must keep it required
 #    in the schema (so ajv rejects the mutated instance) — never demote it.
 t2 = copy.deepcopy(T)
-del t2["coin_registry"]
-schema7, _ = build(copy.deepcopy(M), t2)
-assert "coin_registry" in schema7["required"], "coin_registry must stay in root required"
-t2 = copy.deepcopy(T)
 del t2["evm"]
 schema8, _ = build(copy.deepcopy(M), t2)
 assert "evm" in schema8["required"], "evm must stay in root required"
