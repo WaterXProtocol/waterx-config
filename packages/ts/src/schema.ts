@@ -217,6 +217,41 @@ export default z
             ),
           )
           .describe("Fully-qualified Move type tag."),
+        registries: z
+          .record(
+            z.object({
+              registry: z
+                .string()
+                .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+                .describe("Shared CreditRegistry<CREDIT> for this credit."),
+              credit_type: z
+                .string()
+                .regex(
+                  new RegExp(
+                    "^0x[0-9a-fA-F]{1,64}::[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*$",
+                  ),
+                )
+                .describe(
+                  "Fully-qualified CREDIT coin type, <original_id>::<asset>::<ASSET> (e.g. …::sui::SUI).",
+                ),
+              decimals: z
+                .number()
+                .int()
+                .describe(
+                  "Decimals of the credit coin itself (always 6; the backing asset's decimals live on the custody vault's asset row).",
+                ),
+              metadata_cap: z
+                .string()
+                .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+                .describe(
+                  "coin_registry::MetadataCap for the credit coin (the USD entry duplicates objects.usd.metadata_cap).",
+                ),
+            }),
+          )
+          .describe(
+            "Per-credit CreditRegistry<CREDIT> map keyed by the credit's short name (USD, SUI, DEEP, WAL). The USD entry mirrors the singular registry / credit_type; the other credits are NativeCustody-only (no Wormhole leg). Every credit coin is 6-decimal — native_custody scales each backing asset to 6 decimals.",
+          )
+          .optional(),
       }),
       custody: z.object({
         vault: z
@@ -259,6 +294,55 @@ export default z
           .describe(
             "Native-custody asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled (0 = no fee; 1_000_000 = 0.1%; 1_000_000_000 = 100%). min_burn_amount is the dust floor in the asset's smallest unit.",
           ),
+        vaults: z
+          .record(
+            z.object({
+              vault: z
+                .string()
+                .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+                .describe("Shared CustodyVault<CREDIT> for this credit."),
+              assets: z
+                .array(
+                  z.object({
+                    name: z.string(),
+                    type: z
+                      .string()
+                      .regex(
+                        new RegExp(
+                          "^0x[0-9a-fA-F]{1,64}::[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*$",
+                        ),
+                      )
+                      .describe("Fully-qualified Move type tag."),
+                    decimal: z.number().int(),
+                    mint_fee_scaled: z
+                      .string()
+                      .regex(new RegExp("^[0-9]+$"))
+                      .describe(
+                        "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
+                      ),
+                    burn_fee_scaled: z
+                      .string()
+                      .regex(new RegExp("^[0-9]+$"))
+                      .describe(
+                        "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
+                      ),
+                    min_burn_amount: z
+                      .string()
+                      .regex(new RegExp("^[0-9]+$"))
+                      .describe(
+                        "Unsigned integer as a decimal string — used where values may exceed 2^53 (u64/u128 amounts, 1e9-scaled prices).",
+                      ),
+                  }),
+                )
+                .describe(
+                  "Native-custody asset rows for this credit's vault (same shape and units as objects.custody.assets).",
+                ),
+            }),
+          )
+          .describe(
+            "Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a 9-decimal SUI / WAL deposit must be a multiple of 1_000 base units.",
+          )
+          .optional(),
       }),
       bridge: z.object({
         state: z
@@ -329,6 +413,29 @@ export default z
               .string()
               .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
               .describe("32-byte Sui object/package id."),
+          )
+          .optional(),
+        queues: z
+          .record(
+            z.object({
+              queue: z
+                .string()
+                .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+                .describe("Shared Queue<CREDIT> for this credit."),
+              executors: z
+                .array(
+                  z
+                    .string()
+                    .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+                    .describe("32-byte Sui object/package id."),
+                )
+                .describe(
+                  "Executor allowlist of this queue (keepers that may run execute_native / execute_wormhole), read off the on-chain Queue.",
+                ),
+            }),
+          )
+          .describe(
+            "Per-credit withdrawal Queue<CREDIT> map keyed by credit name, written from live chain state; the USD entry mirrors the singular queue / executors. This map is the authoritative executor allowlist — the singular executors field is a best-effort legacy mirror.",
           )
           .optional(),
       }),

@@ -22,5 +22,16 @@
   "objects/oracle/listing_cap": "ListingCap object id. Deploy-time artifact (asset-listing tooling); no runtime consumer.",
   "objects/bridge/limits": "Bridge limit values recorded at deploy; runtime reads live limits from chain (getBridgeLimits RPC) — no runtime consumer.",
   "evm": "EVM-side bridge deployment ledger (chains, core/vault addresses, tokens); source of truth for trusted emitters at DEPLOY time — no runtime consumer.",
-  "oracle_rules/supra": "Dormant rule: kept as deployment ledger — no runtime consumer. Activating Supra needs schema additions first (enabled/oracle_holder have no v2 home)."
+  "oracle_rules/supra": "Dormant rule: kept as deployment ledger — no runtime consumer. Activating Supra needs schema additions first (enabled/oracle_holder have no v2 home).",
+  "objects/credit/registries": "Per-credit CreditRegistry<CREDIT> map keyed by the credit's short name (USD, SUI, DEEP, WAL). The USD entry mirrors the singular registry / credit_type; the other credits are NativeCustody-only (no Wormhole leg). Every credit coin is 6-decimal — native_custody scales each backing asset to 6 decimals.",
+  "objects/credit/registries/*/registry": "Shared CreditRegistry<CREDIT> for this credit.",
+  "objects/credit/registries/*/credit_type": "Fully-qualified CREDIT coin type, <original_id>::<asset>::<ASSET> (e.g. …::sui::SUI).",
+  "objects/credit/registries/*/decimals": "Decimals of the credit coin itself (always 6; the backing asset's decimals live on the custody vault's asset row).",
+  "objects/credit/registries/*/metadata_cap": "coin_registry::MetadataCap for the credit coin (the USD entry duplicates objects.usd.metadata_cap).",
+  "objects/custody/vaults": "Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a 9-decimal SUI / WAL deposit must be a multiple of 1_000 base units.",
+  "objects/custody/vaults/*/vault": "Shared CustodyVault<CREDIT> for this credit.",
+  "objects/custody/vaults/*/assets": "Native-custody asset rows for this credit's vault (same shape and units as objects.custody.assets).",
+  "objects/withdrawal_queue/queues": "Per-credit withdrawal Queue<CREDIT> map keyed by credit name, written from live chain state; the USD entry mirrors the singular queue / executors. This map is the authoritative executor allowlist — the singular executors field is a best-effort legacy mirror.",
+  "objects/withdrawal_queue/queues/*/queue": "Shared Queue<CREDIT> for this credit.",
+  "objects/withdrawal_queue/queues/*/executors": "Executor allowlist of this queue (keepers that may run execute_native / execute_wormhole), read off the on-chain Queue."
 }
