@@ -626,10 +626,16 @@
       "global_config": "0x3e2d7bfce29e077f13f9feaf68af62410872817be476b2708540a0d5b23c5936",
       "admin_cap": "0x31acc29c6f6171a86ad5583e4610d75bdd9bcc71e16b46b1b994770743cdc782",
       "market_registries": {
-        "USD": "0x6571c67131ea645bd3fd747c2b4c387f23ac80d83317f82f495cabfeadc512e0"
+        "USD": "0x6571c67131ea645bd3fd747c2b4c387f23ac80d83317f82f495cabfeadc512e0",
+        "SUI": "0x41c0daf309850eb88fd56d37d94bb98d4318d2ccdaaf031e4295385ea402398b",
+        "DEEP": "0xe7813d2dacc115471d99daf3a5c289df0b4fb41bc61e94ef40316904d00edca5",
+        "WAL": "0x3c812e467f5c52c538bfff11e55d7a8bc15cbfc8fb7080a5aa318fedc3589c6a"
       },
       "settlement_coin_types": {
-        "USD": "0x6321b712685d4c4921c15ff4790d7a9a2b2b7d3b44f8b19a2304e60ca3ad26c7::usd::USD"
+        "USD": "0x6321b712685d4c4921c15ff4790d7a9a2b2b7d3b44f8b19a2304e60ca3ad26c7::usd::USD",
+        "SUI": "0x0298bfd43fbb86f7b990190aa513e09764320d0dcac66b55aca575caa7cdb314::sui::SUI",
+        "DEEP": "0xf6cd7dfe0f1838a58676991f25e3d76768437f68fe31b0fba628f1a4e381b1f1::deep::DEEP",
+        "WAL": "0x7e8e28d8f3951984b7bb109961216a5b0e156ab6309f6b3a9a4d78b565726576::wal::WAL"
       },
       "claimable_link_config": "0x39e9b1fa73e5a544acbe94409f6784c737ff5f64aab9094bbfa1043abc848eb2",
       "gift_admin_cap": "0xaf093dcf28e2f09efdc821d7f9837a0c0fa5e01943d88d116d899c65afbd4baa"
