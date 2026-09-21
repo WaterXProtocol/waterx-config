@@ -107,7 +107,7 @@ Every package carries the same identity block (the map is uniform — new packag
 |---|---|---|---|
 | `vault` | suiId | ✓ |  |
 | `assets` | array<object> | ✓ | Native-custody asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled (0 = no fee; 1_000_000 = 0.1%; 1_000_000_000 = 100%). min_burn_amount is the dust floor in the asset's smallest unit. |
-| `vaults` | map<string, object> |  | Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a 9-decimal SUI / WAL deposit must be a multiple of 1_000 base units. |
+| `vaults` | map<string, object> |  | Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a deposit of any amount mints the 6-decimal floor and the remainder below that grain stays in the vault as surplus (native_custody v4). |
 
 #### `objects.custody.vaults` — each entry
 

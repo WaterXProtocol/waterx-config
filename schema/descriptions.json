@@ -28,7 +28,7 @@
   "objects/credit/registries/*/credit_type": "Fully-qualified CREDIT coin type, <original_id>::<asset>::<ASSET> (e.g. …::sui::SUI).",
   "objects/credit/registries/*/decimals": "Decimals of the credit coin itself (always 6; the backing asset's decimals live on the custody vault's asset row).",
   "objects/credit/registries/*/metadata_cap": "coin_registry::MetadataCap for the credit coin (the USD entry duplicates objects.usd.metadata_cap).",
-  "objects/custody/vaults": "Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a 9-decimal SUI / WAL deposit must be a multiple of 1_000 base units.",
+  "objects/custody/vaults": "Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a deposit of any amount mints the 6-decimal floor and the remainder below that grain stays in the vault as surplus (native_custody v4).",
   "objects/custody/vaults/*/vault": "Shared CustodyVault<CREDIT> for this credit.",
   "objects/custody/vaults/*/assets": "Native-custody asset rows for this credit's vault (same shape and units as objects.custody.assets).",
   "objects/withdrawal_queue/queues": "Per-credit withdrawal Queue<CREDIT> map keyed by credit name, written from live chain state; the USD entry mirrors the singular queue / executors. This map is the authoritative executor allowlist — the singular executors field is a best-effort legacy mirror.",

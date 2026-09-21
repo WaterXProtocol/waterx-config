@@ -336,6 +336,34 @@
       "digest": "ACmYnxUL6qdz4iCiYfh3V57643Aon8L6RWHJHGseqPu6",
       "checkpoint": "386051797",
       "timestamp": "2026-09-21T07:17:53.000Z"
+    },
+    {
+      "phase": "credit.gates",
+      "action": "credit-module-versions add 4 on native_custody (4 registries + 4 vaults)",
+      "digest": "Fh7uJ6CDfCiDakZpjc2xhTe1xVjQs1HFrhPyPQdmXWHz",
+      "checkpoint": "386183206",
+      "timestamp": "2026-09-21T16:06:03.000Z"
+    },
+    {
+      "phase": "1.upgrade:native_custody",
+      "action": "upgrade native_custody v2→v3 (PACKAGE_VERSION 4: mint floors to the credit grain, remainder stays as vault surplus) → 0xcc54cc7b2b072d558f6e81b049f14c16cae67f6df1bee50e908d03e942bc3875",
+      "digest": "3T2ouLjhqXafrCbiyuXPZqi3ukpth9s4qiMKocwW9yGm",
+      "checkpoint": "386267846",
+      "timestamp": "2026-09-21T21:21:11.000Z"
+    },
+    {
+      "phase": "1.upgrade:withdrawal_queue",
+      "action": "upgrade withdrawal_queue v4→v5 (dependency relink to native_custody 0xcc54cc7b…, no source change) → 0x3b55ec8853a7100219077f940af64691b10d991ac8b25623d06f1de83331de2c",
+      "digest": "DBG4KmtaagH5gUWziSRVE7eWcsMGhRk3kznCNRn8nhHE",
+      "checkpoint": "386268365",
+      "timestamp": "2026-09-21T21:23:01.000Z"
+    },
+    {
+      "phase": "credit.gates",
+      "action": "credit-module-versions remove 3 on native_custody (kill-switch of the pre-v4 code)",
+      "digest": "D51aRPwFGrHizv1z8xtWReb6YhWz8DhHcFM2Rfm8gg1J",
+      "checkpoint": "386268420",
+      "timestamp": "2026-09-21T21:23:13.000Z"
     }
   ],
   "package_publish": {
