@@ -124,6 +124,30 @@
         "mainnet",
         "testnet"
       ]
+    },
+    {
+      "id": "credit_registries",
+      "path": "objects/credit/registries",
+      "base": "open",
+      "networks": [
+        "testnet"
+      ]
+    },
+    {
+      "id": "custody_vaults",
+      "path": "objects/custody/vaults",
+      "base": "open",
+      "networks": [
+        "testnet"
+      ]
+    },
+    {
+      "id": "withdrawal_queues",
+      "path": "objects/withdrawal_queue/queues",
+      "base": "open",
+      "networks": [
+        "testnet"
+      ]
     }
   ]
 }

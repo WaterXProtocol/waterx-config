@@ -302,13 +302,45 @@
             },
             "credit_type": {
               "$ref": "#/$defs/suiType"
+            },
+            "registries": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "registry": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "Shared CreditRegistry<CREDIT> for this credit."
+                  },
+                  "credit_type": {
+                    "$ref": "#/$defs/suiType",
+                    "description": "Fully-qualified CREDIT coin type, <original_id>::<asset>::<ASSET> (e.g. …::sui::SUI)."
+                  },
+                  "decimals": {
+                    "type": "integer",
+                    "description": "Decimals of the credit coin itself (always 6; the backing asset's decimals live on the custody vault's asset row)."
+                  },
+                  "metadata_cap": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "coin_registry::MetadataCap for the credit coin (the USD entry duplicates objects.usd.metadata_cap)."
+                  }
+                },
+                "required": [
+                  "credit_type",
+                  "decimals",
+                  "metadata_cap",
+                  "registry"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-credit CreditRegistry<CREDIT> map keyed by the credit's short name (USD, SUI, DEEP, WAL). The USD entry mirrors the singular registry / credit_type; the other credits are NativeCustody-only (no Wormhole leg). Every credit coin is 6-decimal — native_custody scales each backing asset to 6 decimals."
             }
           },
+          "additionalProperties": false,
           "required": [
             "credit_type",
             "registry"
-          ],
-          "additionalProperties": false
+          ]
         },
         "custody": {
           "type": "object",
@@ -351,13 +383,67 @@
                 "additionalProperties": false
               },
               "description": "Native-custody asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled (0 = no fee; 1_000_000 = 0.1%; 1_000_000_000 = 100%). min_burn_amount is the dust floor in the asset's smallest unit."
+            },
+            "vaults": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "vault": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "Shared CustodyVault<CREDIT> for this credit."
+                  },
+                  "assets": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "$ref": "#/$defs/suiType"
+                        },
+                        "decimal": {
+                          "type": "integer"
+                        },
+                        "mint_fee_scaled": {
+                          "$ref": "#/$defs/decString"
+                        },
+                        "burn_fee_scaled": {
+                          "$ref": "#/$defs/decString"
+                        },
+                        "min_burn_amount": {
+                          "$ref": "#/$defs/decString"
+                        }
+                      },
+                      "required": [
+                        "burn_fee_scaled",
+                        "decimal",
+                        "min_burn_amount",
+                        "mint_fee_scaled",
+                        "name",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "description": "Native-custody asset rows for this credit's vault (same shape and units as objects.custody.assets)."
+                  }
+                },
+                "required": [
+                  "assets",
+                  "vault"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a 9-decimal SUI / WAL deposit must be a multiple of 1_000 base units."
             }
           },
+          "additionalProperties": false,
           "required": [
             "assets",
             "vault"
-          ],
-          "additionalProperties": false
+          ]
         },
         "bridge": {
           "type": "object",
@@ -433,6 +519,31 @@
               "items": {
                 "$ref": "#/$defs/suiId"
               }
+            },
+            "queues": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "queue": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "Shared Queue<CREDIT> for this credit."
+                  },
+                  "executors": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/suiId"
+                    },
+                    "description": "Executor allowlist of this queue (keepers that may run execute_native / execute_wormhole), read off the on-chain Queue."
+                  }
+                },
+                "required": [
+                  "executors",
+                  "queue"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-credit withdrawal Queue<CREDIT> map keyed by credit name, written from live chain state; the USD entry mirrors the singular queue / executors. This map is the authoritative executor allowlist — the singular executors field is a best-effort legacy mirror."
             }
           },
           "additionalProperties": false,

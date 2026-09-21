@@ -301,6 +301,41 @@
       "digest": "2MnNzy2QK9JgkCAsX12fpTGv73kzWkCexSBiA2bBoTax",
       "checkpoint": "359678270",
       "timestamp": "2026-07-13T07:40:12.000Z"
+    },
+    {
+      "phase": "credit.publish",
+      "action": "Publish coins/sui_credit + coins/deep + coins/wal",
+      "digest": "3MEauLc13gfRq8wer8b1rxLVGkK9tLMZvGA9HRhZsSWf",
+      "checkpoint": "386045381",
+      "timestamp": "2026-09-21T06:51:18.098Z"
+    },
+    {
+      "phase": "credit.registries",
+      "action": "create_credit_registry SUI + DEEP + WAL",
+      "digest": "5g54FHYQEDRs3divRXhY7nGrysYBCC4UDKi3CK5xUPCc",
+      "checkpoint": "386045391",
+      "timestamp": "2026-09-21T06:51:20.546Z"
+    },
+    {
+      "phase": "credit.wiring",
+      "action": "wxa policies + add_version/set_supply_limit + create_vault + create_queue (SUI, DEEP, WAL)",
+      "digest": "24NJuo6E84DZeXMnRgZf7k8qiRVAv4DZ2e8AUfRMm2T5",
+      "checkpoint": "386045559",
+      "timestamp": "2026-09-21T06:52:02.141Z"
+    },
+    {
+      "phase": "credit.assets",
+      "action": "add_asset + add_executor (SUI, DEEP, WAL)",
+      "digest": "GvkjeuyRm2LUoybNink6DjgX2EVs8n1ZmQWHgZMA93w5",
+      "checkpoint": "386045569",
+      "timestamp": "2026-09-21T06:52:04.609Z"
+    },
+    {
+      "phase": "caps.transfer",
+      "action": "transfer 31 caps waterx-testnet-admin → waterx-admin (every recorded AdminCap / UpgradeCap / ListingCap / MetadataCap; transfer-caps.ts)",
+      "digest": "ACmYnxUL6qdz4iCiYfh3V57643Aon8L6RWHJHGseqPu6",
+      "checkpoint": "386051797",
+      "timestamp": "2026-09-21T07:17:53.000Z"
     }
   ],
   "package_publish": {
@@ -388,13 +423,25 @@
       "publish_digest": "5ioVM4hEZzxVqV43tKg9VPxAqwYEgs7cfiCs5wUHnVSd",
       "publish_checkpoint": "338586209"
     },
-    "usd": {
-      "publish_digest": "98beQbLMCrRYYBPGwofyvRkkgePhjjNcVFnR5FS9eEyw",
-      "publish_checkpoint": "343899445"
-    },
     "supra_rule": {
       "publish_digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
       "publish_checkpoint": "349406324"
+    },
+    "usd_credit": {
+      "publish_digest": "98beQbLMCrRYYBPGwofyvRkkgePhjjNcVFnR5FS9eEyw",
+      "publish_checkpoint": "343899445"
+    },
+    "sui_credit": {
+      "publish_digest": "3MEauLc13gfRq8wer8b1rxLVGkK9tLMZvGA9HRhZsSWf",
+      "publish_checkpoint": "386045381"
+    },
+    "deep_credit": {
+      "publish_digest": "3MEauLc13gfRq8wer8b1rxLVGkK9tLMZvGA9HRhZsSWf",
+      "publish_checkpoint": "386045381"
+    },
+    "wal_credit": {
+      "publish_digest": "3MEauLc13gfRq8wer8b1rxLVGkK9tLMZvGA9HRhZsSWf",
+      "publish_checkpoint": "386045381"
     }
   }
 }
