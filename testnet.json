@@ -799,6 +799,7 @@
       "version": 4,
       "upgrade_capability": "0x49337f0f96bb4850ad21ed3bd56e7ff6e1373ad71e51518bd181e82c74b386ac",
       "executors": [
+        "0xeaadff7edd13268918f649adbe9de20984646645e750b44bac929f35a12e0abe",
         "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
       ],
       "queue": "0x1ffa684735e601fb6454ef6dc3196d6c0bb945ee1b527094789f59027924e366",
