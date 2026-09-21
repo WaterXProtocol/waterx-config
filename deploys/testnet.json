@@ -364,6 +364,20 @@
       "digest": "D51aRPwFGrHizv1z8xtWReb6YhWz8DhHcFM2Rfm8gg1J",
       "checkpoint": "386268420",
       "timestamp": "2026-09-21T21:23:13.000Z"
+    },
+    {
+      "phase": "1.upgrade:native_custody",
+      "action": "upgrade native_custody v3→v4 (manual `sui client upgrade` from CLI 1.80.0 by waterx-admin; bytecode identical to 0xcc54cc7b…) → 0x4edb6e43f1366e12e71ba18a68e547b8515638b64c07e9e79b384b32c61c1afe",
+      "digest": "G6RFxniRaQ1xxihYNjLXHqQbhXZFyBxq3rVmXy5WBE1F",
+      "checkpoint": "386274404",
+      "timestamp": "2026-09-21T21:46:31.000Z"
+    },
+    {
+      "phase": "1.upgrade:withdrawal_queue",
+      "action": "upgrade withdrawal_queue v5→v6 (dependency relink to native_custody 0x4edb6e43…, no source change) → 0xb31e967139ea09a373cc546e9371f7ae5a26a5e4aecacb6ef290879b895cd78f",
+      "digest": "13vhB8ycf9GaDWLUj7XpRTAEtmcEFanZ8EfeTUGUANwB",
+      "checkpoint": "386283747",
+      "timestamp": "2026-09-21T22:22:23.000Z"
     }
   ],
   "package_publish": {
