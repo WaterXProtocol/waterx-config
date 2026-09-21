@@ -259,10 +259,16 @@
       "admin_cap": "0x31acc29c6f6171a86ad5583e4610d75bdd9bcc71e16b46b1b994770743cdc782",
       "global_config": "0x3e2d7bfce29e077f13f9feaf68af62410872817be476b2708540a0d5b23c5936",
       "market_registries": {
-        "USD": "0x6571c67131ea645bd3fd747c2b4c387f23ac80d83317f82f495cabfeadc512e0"
+        "USD": "0x6571c67131ea645bd3fd747c2b4c387f23ac80d83317f82f495cabfeadc512e0",
+        "SUI": "0x41c0daf309850eb88fd56d37d94bb98d4318d2ccdaaf031e4295385ea402398b",
+        "DEEP": "0xe7813d2dacc115471d99daf3a5c289df0b4fb41bc61e94ef40316904d00edca5",
+        "WAL": "0x3c812e467f5c52c538bfff11e55d7a8bc15cbfc8fb7080a5aa318fedc3589c6a"
       },
       "settlement_coin_types": {
-        "USD": "0x6321b712685d4c4921c15ff4790d7a9a2b2b7d3b44f8b19a2304e60ca3ad26c7::usd::USD"
+        "USD": "0x6321b712685d4c4921c15ff4790d7a9a2b2b7d3b44f8b19a2304e60ca3ad26c7::usd::USD",
+        "SUI": "0x0298bfd43fbb86f7b990190aa513e09764320d0dcac66b55aca575caa7cdb314::sui::SUI",
+        "DEEP": "0xf6cd7dfe0f1838a58676991f25e3d76768437f68fe31b0fba628f1a4e381b1f1::deep::DEEP",
+        "WAL": "0x7e8e28d8f3951984b7bb109961216a5b0e156ab6309f6b3a9a4d78b565726576::wal::WAL"
       },
       "publish_digest": "NhubZx3SJwvTnjxfW9qGdc7KaKV97gA36J6xXUN78Fc",
       "publish_checkpoint": "343899458"
@@ -1328,6 +1334,13 @@
       "digest": "13vhB8ycf9GaDWLUj7XpRTAEtmcEFanZ8EfeTUGUANwB",
       "checkpoint": "386283747",
       "timestamp": "2026-09-21T22:22:23.000Z"
+    },
+    {
+      "phase": "18.prediction",
+      "action": "allow_protocol_asset<WaterXPrediction, T> + create_market_registry<T> (SUI, DEEP, WAL)",
+      "digest": "D1iVtZnPQyE8BpqBXLHHE9GiNG4H3gsipByMLa5Hf1Ni",
+      "checkpoint": "386300766",
+      "timestamp": "2026-09-21T23:27:31.000Z"
     }
   ]
 }
