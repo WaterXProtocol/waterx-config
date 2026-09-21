@@ -686,9 +686,9 @@
       }
     },
     "native_custody": {
-      "published_at": "0x45910f4c3ba9942c0e69bd81fba71d28a290950691a42baa96f82a8112ae44bd",
+      "published_at": "0x4edb6e43f1366e12e71ba18a68e547b8515638b64c07e9e79b384b32c61c1afe",
       "original_id": "0x562e3c8071095e3df61c6a1841f9383eeb6439e55e6e5f5b5392aecb526b5f96",
-      "version": 2,
+      "version": 4,
       "upgrade_capability": "0x0607a4eba626ddc758f3db924ecdabbd3d9b701c89c8aa6531fde13c81085798",
       "assets": [
         {
@@ -794,9 +794,9 @@
       }
     },
     "withdrawal_queue": {
-      "published_at": "0x4475962d06d4c21aa88276bb5de8d772aaace9fe54a350ad12e7f485f49c44ad",
+      "published_at": "0xb31e967139ea09a373cc546e9371f7ae5a26a5e4aecacb6ef290879b895cd78f",
       "original_id": "0xd9698d972226c1c4f8180a059403fe808b4d92b5f88c878334d0efea830d0886",
-      "version": 4,
+      "version": 6,
       "upgrade_capability": "0x49337f0f96bb4850ad21ed3bd56e7ff6e1373ad71e51518bd181e82c74b386ac",
       "executors": [
         "0xeaadff7edd13268918f649adbe9de20984646645e750b44bac929f35a12e0abe",
@@ -1286,6 +1286,48 @@
       "digest": "ACmYnxUL6qdz4iCiYfh3V57643Aon8L6RWHJHGseqPu6",
       "checkpoint": "386051797",
       "timestamp": "2026-09-21T07:17:53.000Z"
+    },
+    {
+      "phase": "credit.gates",
+      "action": "credit-module-versions add 4 on native_custody (4 registries + 4 vaults)",
+      "digest": "Fh7uJ6CDfCiDakZpjc2xhTe1xVjQs1HFrhPyPQdmXWHz",
+      "checkpoint": "386183206",
+      "timestamp": "2026-09-21T16:06:03.000Z"
+    },
+    {
+      "phase": "1.upgrade:native_custody",
+      "action": "upgrade native_custody v2→v3 (PACKAGE_VERSION 4: mint floors to the credit grain, remainder stays as vault surplus) → 0xcc54cc7b2b072d558f6e81b049f14c16cae67f6df1bee50e908d03e942bc3875",
+      "digest": "3T2ouLjhqXafrCbiyuXPZqi3ukpth9s4qiMKocwW9yGm",
+      "checkpoint": "386267846",
+      "timestamp": "2026-09-21T21:21:11.000Z"
+    },
+    {
+      "phase": "1.upgrade:withdrawal_queue",
+      "action": "upgrade withdrawal_queue v4→v5 (dependency relink to native_custody 0xcc54cc7b…, no source change) → 0x3b55ec8853a7100219077f940af64691b10d991ac8b25623d06f1de83331de2c",
+      "digest": "DBG4KmtaagH5gUWziSRVE7eWcsMGhRk3kznCNRn8nhHE",
+      "checkpoint": "386268365",
+      "timestamp": "2026-09-21T21:23:01.000Z"
+    },
+    {
+      "phase": "credit.gates",
+      "action": "credit-module-versions remove 3 on native_custody (kill-switch of the pre-v4 code)",
+      "digest": "D51aRPwFGrHizv1z8xtWReb6YhWz8DhHcFM2Rfm8gg1J",
+      "checkpoint": "386268420",
+      "timestamp": "2026-09-21T21:23:13.000Z"
+    },
+    {
+      "phase": "1.upgrade:native_custody",
+      "action": "upgrade native_custody v3→v4 (manual `sui client upgrade` from CLI 1.80.0 by waterx-admin; bytecode identical to 0xcc54cc7b…) → 0x4edb6e43f1366e12e71ba18a68e547b8515638b64c07e9e79b384b32c61c1afe",
+      "digest": "G6RFxniRaQ1xxihYNjLXHqQbhXZFyBxq3rVmXy5WBE1F",
+      "checkpoint": "386274404",
+      "timestamp": "2026-09-21T21:46:31.000Z"
+    },
+    {
+      "phase": "1.upgrade:withdrawal_queue",
+      "action": "upgrade withdrawal_queue v5→v6 (dependency relink to native_custody 0x4edb6e43…, no source change) → 0xb31e967139ea09a373cc546e9371f7ae5a26a5e4aecacb6ef290879b895cd78f",
+      "digest": "13vhB8ycf9GaDWLUj7XpRTAEtmcEFanZ8EfeTUGUANwB",
+      "checkpoint": "386283747",
+      "timestamp": "2026-09-21T22:22:23.000Z"
     }
   ]
 }
