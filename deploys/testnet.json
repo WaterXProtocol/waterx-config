@@ -378,6 +378,13 @@
       "digest": "13vhB8ycf9GaDWLUj7XpRTAEtmcEFanZ8EfeTUGUANwB",
       "checkpoint": "386283747",
       "timestamp": "2026-09-21T22:22:23.000Z"
+    },
+    {
+      "phase": "18.prediction",
+      "action": "allow_protocol_asset<WaterXPrediction, T> + create_market_registry<T> (SUI, DEEP, WAL)",
+      "digest": "D1iVtZnPQyE8BpqBXLHHE9GiNG4H3gsipByMLa5Hf1Ni",
+      "checkpoint": "386300766",
+      "timestamp": "2026-09-21T23:27:31.000Z"
     }
   ],
   "package_publish": {
