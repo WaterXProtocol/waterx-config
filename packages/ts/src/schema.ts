@@ -250,8 +250,7 @@ export default z
           )
           .describe(
             "Per-credit CreditRegistry<CREDIT> map keyed by the credit's short name (USD, SUI, DEEP, WAL). The USD entry mirrors the singular registry / credit_type; the other credits are NativeCustody-only (no Wormhole leg). Every credit coin is 6-decimal — native_custody scales each backing asset to 6 decimals.",
-          )
-          .optional(),
+          ),
       }),
       custody: z.object({
         vault: z
@@ -341,8 +340,7 @@ export default z
           )
           .describe(
             "Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a deposit of any amount mints the 6-decimal floor and the remainder below that grain stays in the vault as surplus (native_custody v4).",
-          )
-          .optional(),
+          ),
       }),
       bridge: z.object({
         state: z
@@ -407,14 +405,12 @@ export default z
           .string()
           .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
           .describe("32-byte Sui object/package id."),
-        executors: z
-          .array(
-            z
-              .string()
-              .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
-              .describe("32-byte Sui object/package id."),
-          )
-          .optional(),
+        executors: z.array(
+          z
+            .string()
+            .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+            .describe("32-byte Sui object/package id."),
+        ),
         queues: z
           .record(
             z.object({
@@ -436,8 +432,7 @@ export default z
           )
           .describe(
             "Per-credit withdrawal Queue<CREDIT> map keyed by credit name, written from live chain state; the USD entry mirrors the singular queue / executors. This map is the authoritative executor allowlist — the singular executors field is a best-effort legacy mirror.",
-          )
-          .optional(),
+          ),
       }),
       prediction: z.object({
         global_config: z

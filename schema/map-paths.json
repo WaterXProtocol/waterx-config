@@ -130,6 +130,7 @@
       "path": "objects/credit/registries",
       "base": "open",
       "networks": [
+        "mainnet",
         "testnet"
       ]
     },
@@ -138,6 +139,7 @@
       "path": "objects/custody/vaults",
       "base": "open",
       "networks": [
+        "mainnet",
         "testnet"
       ]
     },
@@ -146,6 +148,7 @@
       "path": "objects/withdrawal_queue/queues",
       "base": "open",
       "networks": [
+        "mainnet",
         "testnet"
       ]
     }

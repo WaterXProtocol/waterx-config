@@ -166,8 +166,7 @@ pub struct Credit {
     /// WAL). The USD entry mirrors the singular registry / credit_type; the other credits are
     /// NativeCustody-only (no Wormhole leg). Every credit coin is 6-decimal — native_custody
     /// scales each backing asset to 6 decimals.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub registries: Option<HashMap<String, Registry>>,
+    pub registries: HashMap<String, Registry>,
 
     pub registry: String,
 }
@@ -202,8 +201,7 @@ pub struct Custody {
     /// singular vault / assets. assets[].decimal is the BACKING asset's decimals — a deposit of
     /// any amount mints the 6-decimal floor and the remainder below that grain stays in the
     /// vault as surplus (native_custody v4).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vaults: Option<HashMap<String, Vault>>,
+    pub vaults: HashMap<String, Vault>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -343,8 +341,7 @@ pub struct Usd {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WithdrawalQueue {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub executors: Option<Vec<String>>,
+    pub executors: Vec<String>,
 
     pub queue: String,
 
@@ -352,8 +349,7 @@ pub struct WithdrawalQueue {
     /// state; the USD entry mirrors the singular queue / executors. This map is the
     /// authoritative executor allowlist — the singular executors field is a best-effort legacy
     /// mirror.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub queues: Option<HashMap<String, Queue>>,
+    pub queues: HashMap<String, Queue>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
