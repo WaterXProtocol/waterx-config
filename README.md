@@ -59,11 +59,18 @@ drift); edit the schema, never the generated files.
   `objects.oracle.aggregators`). The old symbol-vs-ticker gotcha (oracle
   `WTIUSD` trades as venue `CLUSDT`, never `WTIUSDT` — a wrong ticker fetches
   nothing, silently) moved with it: it now applies to the BBO config files.
-- `oracle_rules.pyth.pyth_price_feeds[].feed_id` is usually **different
-  between testnet and mainnet** — look each up in its own Hermes
-  (hermes-beta.pyth.network vs hermes.pyth.network); `price_info_object` must
-  be the shared `PriceInfoObject` itself, **not** the
-  `Field<PriceIdentifier, ID>` wrapper.
+- **Which rules a symbol is fed by is declared per rule, not inferred from
+  `symbols`.** `oracle_rules.pyth_lazer.lazer_feed_ids` lists the symbols
+  that get a `pyth_lazer_rule` leg; `oracle_rules.waterx.feeds` lists the
+  ones that get a `waterx_rule` leg (and a quote-center fetch). A symbol in
+  neither list is priced by no off-chain source and every SDK tx build skips
+  it; a rule with no list (or an empty one) stays published but is fed
+  nowhere — mainnet ships no `waterx.feeds` today. Keep each list a superset
+  of what the chain weights for that rule, or trades on the shortfall abort
+  `EMissingPriceSource`.
+- Pyth Core (`oracle_rules.pyth`) was removed 2026-09-22: the SDK retired
+  `pyth_rule` and nothing read the block. `packages.pyth_rule` remains as
+  package identity only.
 - The end-to-end listing runbook (create aggregator → wire the rule → create
   market) lives in
   [`waterx-contract/.claude/skills/list-perp-asset/SKILL.md`](https://github.com/WaterXProtocol/waterx-contract/blob/main/.claude/skills/list-perp-asset/SKILL.md).

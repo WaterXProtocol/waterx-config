@@ -30,7 +30,7 @@ const expectFail = (label, needle, reg, exc, dd) => {
 // 1. A path typo in a symbol-keyed map must FAIL, not skip.
 {
   const reg = registry();
-  reg.find((e) => e.id === "pyth_price_feeds").path = "oracle_rules/pyth/price_feeds";
+  reg.find((e) => e.id === "lazer_feed_ids").path = "oracle_rules/pyth_lazer/feed_ids";
   expectFail("path typo fails", "missing or untraversable", reg, exceptions(), docs());
 }
 
@@ -46,7 +46,7 @@ const expectFail = (label, needle, reg, exc, dd) => {
 //    finding: the exception path only caught this incidentally).
 {
   const reg = registry();
-  reg.find((e) => e.id === "pyth_price_feeds").base = "open";
+  reg.find((e) => e.id === "lazer_feed_ids").base = "open";
   expectFail("base flip (no exceptions) fails", "pinned contract", reg, exceptions(), docs());
 }
 {
