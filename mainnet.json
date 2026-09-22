@@ -115,9 +115,9 @@
       "upgrade_capability": "0x3feabd72d8ae3b4ad29bfb1658a204bc38a265d9f364b412d1db3873b624aea7"
     },
     "waterx_rule": {
-      "published_at": "0x0a974d1987f0538c4124da2071642586f06fcc9121b1de51497b568d7906001b",
+      "published_at": "0xce1792d86236f523b1d49b1b331a35e3e58b4f7db67d0089200714a5c7aa7db0",
       "original_id": "0x1f1207ccde07c5c1c2c7395d0f5771370bf7e8a99acf28f0a341fbd1ed3f3384",
-      "version": 2,
+      "version": 4,
       "upgrade_capability": "0x7c5e7c23895ae73bf8bba06f28d609a3fb7f5f8c09507792a1809ca136885a81"
     },
     "pyth_rule": {
@@ -299,9 +299,9 @@
       }
     },
     "waterx_prediction": {
-      "published_at": "0x972184710f3ea2d54973d325ca4035c8d44d1a9571da7ee42a34cf8da72facbd",
+      "published_at": "0x082328867e8b188412f5214342de5fa1524a398d01acefbdeb00ac08003b1745",
       "original_id": "0xa5cfafe6660a8bf37eedf1a09dba633048da374c30b835668473689668f9ef57",
-      "version": 6,
+      "version": 7,
       "upgrade_capability": "0x168e6d530c04a595736b4269d5100cb2d2df893b8ec629a6603b369992f5ae4a",
       "mvr": {
         "name": "@waterx-protocol/prediction",

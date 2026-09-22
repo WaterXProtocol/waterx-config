@@ -385,6 +385,34 @@
       "digest": "D1iVtZnPQyE8BpqBXLHHE9GiNG4H3gsipByMLa5Hf1Ni",
       "checkpoint": "386300766",
       "timestamp": "2026-09-21T23:27:31.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_rule",
+      "action": "upgrade waterx_rule v4→v5 (Spot-BBO feed registration: set_bbo_feed / bbo_consensus_v1 / route IDs 1001,1002,1012,1021,1031,1041 — waterx-contract#145; no feed registered yet) → 0xce5ed8808bed132509fe8eea4669095049415b0156b00d915fed506c6b30e672",
+      "digest": "C9ireB3H6iXG8aL8vs2jUdCXjs2snLEzpFU5spfzZC6V",
+      "checkpoint": "386366936",
+      "timestamp": "2026-09-22T03:39:16.000Z"
+    },
+    {
+      "phase": "prediction.gates",
+      "action": "global_config::allow_version(6) on waterx_prediction GlobalConfig — gate {4,5} → {4,5,6} (4 stays: waterx_prediction_gift links the PACKAGE_VERSION-4 build 0x160532e7…; 5 retired once consumers move)",
+      "digest": "4wHZsAmPf6fHBTNs9tw9cUi73syctvLmFvyRbxeDKnHv",
+      "checkpoint": "386378176",
+      "timestamp": "2026-09-22T04:23:41.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v4→v5 (PACKAGE_VERSION 6: additive events::MarketSettlementSnapshot on every resolution — waterx-contract#122) → 0x688e74bc696ca2532b4cf8da46dd10847abe3caf1dd24730c91ff24afc09a914",
+      "digest": "DaTnzJkRuSXLovCcfcD5F7uvu3hduUmW7uCG6dZ8uq1C",
+      "checkpoint": "386378420",
+      "timestamp": "2026-09-22T04:24:37.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_rule",
+      "action": "upgrade waterx_rule v5→v6 (full BBO source allowlist: is_bbo_source adds 1003,1011,1032,1033 for the 12-asset quote-center config; 1023 rejected — waterx-contract#151; no feed registered yet) → 0x3ba062eb44c512bc36b0cc347e5d7df268879b6aa68c49d6c84581a6e311112d",
+      "digest": "EmpYK8bxAVXYd5a8yfddBDttiTGMTucLsbK9kc54hTvd",
+      "checkpoint": "386422993",
+      "timestamp": "2026-09-22T07:23:59.000Z"
     }
   ],
   "package_publish": {
