@@ -1,0 +1,65 @@
+name: Codegen freshness
+
+# The schema, parsers and docs are GENERATED. This workflow is the SINGLE
+# producer of the required `regen` check: it runs on EVERY pull request and
+# decides INSIDE the job whether anything needs regenerating. (A paths/
+# paths-ignore workflow pair produced duplicate `regen` contexts on mixed
+# PRs — GitHub's required-status matching is ambiguous across same-named
+# jobs, and a PR could run a modified no-op; review findings.)
+on:
+  pull_request:
+
+concurrency:
+  group: codegen-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth 2: the PR merge commit plus both parents, so HEAD^1 (the
+      # base) is diffable without a full clone.
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - name: Did this PR touch any generated inputs?
+        id: detect
+        run: |
+          CHANGED=$(git diff --name-only HEAD^1 HEAD -- \
+            schema scripts packages/ts/src packages/rust/src docs/FIELDS.md mainnet.json testnet.json .github/workflows/codegen.yml)
+          if [ -n "$CHANGED" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "$CHANGED"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No generated inputs touched — codegen freshness trivially holds."
+          fi
+      - if: steps.detect.outputs.changed == 'true'
+        uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: scripts/package-lock.json }
+      - if: steps.detect.outputs.changed == 'true'
+        run: cd scripts && npm ci
+      - name: Regenerate everything (schema → parsers → docs)
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          export PATH="$PWD/scripts/node_modules/.bin:$PATH"
+          python3 scripts/gen_schema.py
+          node scripts/deref-schema.mjs schema/waterx-config.schema.json /tmp/deref.json
+          json-schema-to-zod -i /tmp/deref.json -o packages/ts/src/schema.ts
+          quicktype --src-lang schema --src schema/waterx-config.schema.json --lang rust \
+            --visibility public --derive-debug --derive-clone --top-level WaterxConfig \
+            -o packages/rust/src/generated.rs
+          # round-trip fix: absent Options must not serialize as null
+          python3 scripts/postprocess_generated_rs.py
+          # one field per line: schema changes must diff reviewably, not as a 14KB one-liner
+          prettier --write packages/ts/src/schema.ts
+          node scripts/gen-fields-doc.mjs
+      - name: Fail-closed generator + consistency guarantees (mutation tests)
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          python3 scripts/test_gen_schema.py
+          node scripts/test_check_consistency.mjs
+      - name: Generated artifacts must match their sources (tracked AND new files)
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          git add -A -- schema packages/ts/src packages/rust/src docs/FIELDS.md
+          git diff --cached --exit-code -- schema packages/ts/src packages/rust/src docs/FIELDS.md

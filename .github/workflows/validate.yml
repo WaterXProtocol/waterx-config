@@ -1,0 +1,46 @@
+name: Validate config
+
+# Every PR: both instances must satisfy the canonical schema, keyspace drift
+# must be declared, the repo must hold the consolidated shape with no legacy
+# artifacts, and both parsers must parse both instances. Mark these jobs
+# required in the ruleset — and note the ruleset must actually target
+# refs/heads/main (an empty include list matches nothing).
+on:
+  pull_request:
+  push:
+    branches: [main, staging]
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  node:
+    name: schema-consistency-and-ts-parser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json }
+      - run: cd packages/ts && npm ci
+      - name: Instances match the canonical schema
+        run: |
+          export PATH="$PWD/packages/ts/node_modules/.bin:$PATH"
+          ajv validate --spec=draft2020 -s schema/waterx-config.schema.json -d mainnet.json -d testnet.json
+      - name: Consistency + repo-state coherence (and their fail-closed tests)
+        run: |
+          node scripts/check-consistency.mjs
+          node scripts/test_check_consistency.mjs
+          node scripts/check-flip-state.mjs
+      - name: TS parser tests + typecheck
+        run: cd packages/ts && npm test && npx tsc -p . --noEmit
+
+  rust-parser:
+    name: rust-parser-parses-instances
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with: { workspaces: packages/rust }
+      - run: cd packages/rust && cargo test --all-features

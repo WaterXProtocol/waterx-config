@@ -1,0 +1,11 @@
+{
+  "_comment": "Declared, reviewed exceptions to the symbol-universe rule, keyed by the map's stable `id` from schema/map-paths.json. check-consistency FAILS on a stale exception (excepted symbol no longer present in its map), so this list can only shrink.",
+  "mainnet": {
+    "constant_prices": ["USDCUSD"],
+    "aggregators": ["USDCUSD"]
+  },
+  "testnet": {
+    "constant_prices": ["USDCUSD"],
+    "aggregators": ["USDCUSD"]
+  }
+}
