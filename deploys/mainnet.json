@@ -245,6 +245,13 @@
       "digest": "6DvW7nrGWS82KWxAT8JAqKaHfZvQVX2rp2KXUey1pRvp",
       "checkpoint": "325471961",
       "timestamp": "2026-09-22T04:26:49.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_rule",
+      "action": "upgrade waterx_rule v3→v4 (full BBO source allowlist: is_bbo_source adds 1003,1011,1032,1033 for the 12-asset quote-center config; 1023 rejected — waterx-contract#151; no feed registered yet) → 0xce1792d86236f523b1d49b1b331a35e3e58b4f7db67d0089200714a5c7aa7db0 — M1",
+      "digest": "4RApcPuVQQwwb8twVqD2SzCrP1RtkBgbgZAAuAtLPryV",
+      "checkpoint": "325519738",
+      "timestamp": "2026-09-22T07:25:07.000Z"
     }
   ],
   "package_publish": {

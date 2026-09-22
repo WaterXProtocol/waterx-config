@@ -176,9 +176,9 @@
       "upgrade_capability": "0x6dde87344688df59a7639c65b5c1e1b5bee5c449fcee9baa0fbe840a91505313"
     },
     "waterx_rule": {
-      "published_at": "0xce5ed8808bed132509fe8eea4669095049415b0156b00d915fed506c6b30e672",
+      "published_at": "0x3ba062eb44c512bc36b0cc347e5d7df268879b6aa68c49d6c84581a6e311112d",
       "original_id": "0xa74191aad31907bbbd870626dd251b797a12a3841b0fdaf2af1e1cb5952572fb",
-      "version": 5,
+      "version": 6,
       "upgrade_capability": "0x1449637a6505cae414bd405e0f2023a3f0f327d8ef0ca5063a7151595c9160c5"
     },
     "waterx_staking": {
