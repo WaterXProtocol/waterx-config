@@ -115,9 +115,9 @@
       "upgrade_capability": "0x3feabd72d8ae3b4ad29bfb1658a204bc38a265d9f364b412d1db3873b624aea7"
     },
     "waterx_rule": {
-      "published_at": "0x0a974d1987f0538c4124da2071642586f06fcc9121b1de51497b568d7906001b",
+      "published_at": "0x2e1fcba0d24ffdb8a4663d36e16d781f58dc81fec6bfeba2e0570c4db63d4ead",
       "original_id": "0x1f1207ccde07c5c1c2c7395d0f5771370bf7e8a99acf28f0a341fbd1ed3f3384",
-      "version": 2,
+      "version": 3,
       "upgrade_capability": "0x7c5e7c23895ae73bf8bba06f28d609a3fb7f5f8c09507792a1809ca136885a81"
     },
     "pyth_rule": {

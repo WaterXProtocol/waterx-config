@@ -385,6 +385,13 @@
       "digest": "D1iVtZnPQyE8BpqBXLHHE9GiNG4H3gsipByMLa5Hf1Ni",
       "checkpoint": "386300766",
       "timestamp": "2026-09-21T23:27:31.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_rule",
+      "action": "upgrade waterx_rule v4→v5 (Spot-BBO feed registration: set_bbo_feed / bbo_consensus_v1 / route IDs 1001,1002,1012,1021,1031,1041 — waterx-contract#145; no feed registered yet) → 0xce5ed8808bed132509fe8eea4669095049415b0156b00d915fed506c6b30e672",
+      "digest": "C9ireB3H6iXG8aL8vs2jUdCXjs2snLEzpFU5spfzZC6V",
+      "checkpoint": "386366936",
+      "timestamp": "2026-09-22T03:39:16.000Z"
     }
   ],
   "package_publish": {
