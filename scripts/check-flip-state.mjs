@@ -1,11 +1,17 @@
-// Repo-state gate: nothing of the pre-flip era may resurface — neither the
-// two-format tooling FILES (a revert of the flip commit) nor the legacy READ
-// PATHS in the served DATA (a partial revert or a cherry-pick that restores
-// old-shaped mainnet.json/testnet.json under the unchanged filenames; review
-// finding: the filename list alone misses that case). The schema_version pin
-// itself is NOT re-checked here — ajv (schema enum) and both parsers already
-// enforce it in the same CI job. This is a migration-window tripwire, not a
-// permanent invariant: delete the script once no live branch predates the flip.
+// Repo-state gate: nothing deliberately removed may resurface — neither the
+// two-format tooling FILES of the pre-flip era (a revert of the flip commit)
+// nor any REMOVED READ PATH in the served DATA (a partial revert or a
+// cherry-pick that restores an old-shaped mainnet.json/testnet.json under the
+// unchanged filenames; review finding: the filename list alone misses that
+// case). The schema_version pin itself is NOT re-checked here — ajv (schema
+// enum) and both parsers already enforce it in the same CI job.
+//
+// PERMANENT, not a migration-window tripwire: the schema is regenerated FROM
+// the data, so a resurfaced block would regenerate a schema that accepts it
+// and nothing else would notice. LEGACY_DATA_PATHS is the repo's removed-path
+// ledger (venue_feeds, coin_registry, oracle_rules/pyth joined it after the
+// flip); only LEGACY_ARTIFACTS is genuinely pre-flip and could be retired once
+// no live branch predates the flip.
 import { existsSync, readFileSync } from "node:fs";
 
 const root = new URL("..", import.meta.url);
