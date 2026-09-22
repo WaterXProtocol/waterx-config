@@ -72,9 +72,14 @@ drift); edit the schema, never the generated files.
   nowhere — mainnet ships no `waterx.feeds` today. Keep each list a superset
   of what the chain weights for that rule, or trades on the shortfall abort
   `EMissingPriceSource`.
-- Pyth Core (`oracle_rules.pyth`) was removed 2026-09-22: the SDK retired
-  `pyth_rule` and nothing read the block. `packages.pyth_rule` remains as
-  package identity only.
+- `oracle_rules.pyth` (Pyth Core) is RETIRED — no SDK rule module can feed it
+  (`ORACLE_SOURCES` is `[pyth_lazer_rule, waterx_rule]`) — but the block stays
+  served: consumers pinned to an older parser still require it, so removing it
+  is a coordinated change, not an edit here. `oracle_rules.pyth.pyth_price_feeds[].feed_id`
+  is usually **different between testnet and mainnet** — look each up in its own
+  Hermes (hermes-beta.pyth.network vs hermes.pyth.network); `price_info_object`
+  must be the shared `PriceInfoObject` itself, **not** the
+  `Field<PriceIdentifier, ID>` wrapper.
 - The end-to-end listing runbook (create aggregator → wire the rule → create
   market) lives in
   [`waterx-contract/.claude/skills/list-perp-asset/SKILL.md`](https://github.com/WaterXProtocol/waterx-contract/blob/main/.claude/skills/list-perp-asset/SKILL.md).

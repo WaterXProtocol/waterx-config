@@ -441,6 +441,33 @@ export default z
           )
           .optional(),
       }),
+      pyth: z.object({
+        package: z.string(),
+        pyth_config_object: z
+          .string()
+          .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+          .describe("32-byte Sui object/package id."),
+        pyth_price_feeds: z
+          .record(
+            z.object({
+              feed_id: z
+                .string()
+                .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+                .describe(
+                  "Pyth price-feed identifier (32-byte hex). NOT a Sui object id.",
+                ),
+              price_info_object: z
+                .string()
+                .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+                .describe(
+                  "The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object; passing the wrapper is the classic mistake.",
+                ),
+            }),
+          )
+          .describe(
+            "Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes).",
+          ),
+      }),
       pyth_lazer: z
         .object({
           package: z.string(),
