@@ -158,9 +158,9 @@
       "upgrade_capability": "0x8faf7b3b3af5e53d940ea2f9efb6a8aa843a0bf43bb68fd61e4a424356c27872"
     },
     "waterx_prediction": {
-      "published_at": "0x0274cc0502d43d177d9422c0dc4bfa510da83789bfe10e86e73ae1bd04277290",
+      "published_at": "0x688e74bc696ca2532b4cf8da46dd10847abe3caf1dd24730c91ff24afc09a914",
       "original_id": "0x99be07b27dbbd846eec72213f0ec221b3e7d38c8bfdee3cbf578b9bfa5df3481",
-      "version": 4,
+      "version": 5,
       "upgrade_capability": "0x4455efe909425bf55247b18c8ca744f2c84d79a1e36b82cdf3cd5d20c96702b9"
     },
     "waterx_prediction_gift": {

@@ -392,6 +392,20 @@
       "digest": "C9ireB3H6iXG8aL8vs2jUdCXjs2snLEzpFU5spfzZC6V",
       "checkpoint": "386366936",
       "timestamp": "2026-09-22T03:39:16.000Z"
+    },
+    {
+      "phase": "prediction.gates",
+      "action": "global_config::allow_version(6) on waterx_prediction GlobalConfig — gate {4,5} → {4,5,6} (4 stays: waterx_prediction_gift links the PACKAGE_VERSION-4 build 0x160532e7…; 5 retired once consumers move)",
+      "digest": "4wHZsAmPf6fHBTNs9tw9cUi73syctvLmFvyRbxeDKnHv",
+      "checkpoint": "386378176",
+      "timestamp": "2026-09-22T04:23:41.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v4→v5 (PACKAGE_VERSION 6: additive events::MarketSettlementSnapshot on every resolution — waterx-contract#122) → 0x688e74bc696ca2532b4cf8da46dd10847abe3caf1dd24730c91ff24afc09a914",
+      "digest": "DaTnzJkRuSXLovCcfcD5F7uvu3hduUmW7uCG6dZ8uq1C",
+      "checkpoint": "386378420",
+      "timestamp": "2026-09-22T04:24:37.000Z"
     }
   ],
   "package_publish": {
