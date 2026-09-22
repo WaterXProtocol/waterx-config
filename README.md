@@ -50,11 +50,11 @@ Hosted on Cloudflare Pages, wired to this repo's `main` branch. Pushing to main 
 | `waterx_prediction` | `admin_cap`, `global_config`, `market_registries` (per-settlement-coin `MarketRegistry` id), `settlement_coin_types` |
 | `waterx_prediction_gift` | `admin_cap`, `claimable_link_config` |
 | `waterx_staking` | `admin_cap`, `pools`, `rewarders` |
-| `waterx_credit` | `credit_registry`, `credit_type` |
+| `waterx_credit` | `credit_registry`, `credit_type` (the USD stack — legacy singular aliases of `credit_registries.USD`), `credit_registries` (per-credit `{ registry, credit_type, decimals }`; see below) |
 | `wlp` | `currency`, `metadata_cap`, `wlp_pool`, `wlp_aum` (shared `lp_pool::WlpAum<WLP>` object), `pool_tokens` (per-ticker CoinType bound via `lp_pool::add_token<WLP, C>`) |
-| `usd` | `metadata_cap` |
-| `native_custody` | `vault`, `assets` (per-asset backing config) |
-| `withdrawal_queue` | `queue`, `executors` |
+| `usd_credit`, `sui_credit`, `deep_credit`, `wal_credit` | `metadata_cap` — the credit coin packages, each `<asset>_credit::<asset>::<ASSET>` (`…::usd::USD`, `…::sui::SUI`, `…::deep::DEEP`, `…::wal::WAL`). `usd` remains a byte-identical legacy alias of `usd_credit` for existing v1 consumers. While a coin is published but its registry not yet created the block also carries `proof` (the one-shot `create_credit_registry` input) |
+| `native_custody` | `vault`, `assets` (the USD vault — legacy singular aliases of `vaults.USD`), `vaults` (per-credit `{ vault, assets[] }`; see below) |
+| `withdrawal_queue` | `queue`, `executors` (the USD queue — legacy singular aliases of `queues.USD`), `queues` (per-credit `{ queue, executors[] }`; see below) |
 | `wormhole_bridge` | `bridge`, `wormhole_state`, `emitter_cap`, `personal_burn_cap`, `daily_mint_limit`, `daily_burn_limit`, `max_mint_per_tx`, `max_burn_per_tx` |
 | `mock_usdsui` | `currency`, `treasury_cap`, `metadata_cap` |
 | `supra_rule` | `config`, `feeds` |
@@ -66,6 +66,40 @@ Packages may also carry `publish_checkpoint` / `publish_digest`, recording the c
 Testnet-only packages, absent from `mainnet.json`: `mock_sui`, `mock_usdc`, `mock_usdsui` (mainnet uses real CoinTypes), plus `testnet_faucet` and `supra_rule`. There are no mainnet-only packages.
 
 `waterx_rule` is a special case: its on-chain package (`published_at` / `original_id` / …) is not yet deployed to mainnet (pending WL-1965), but its `feeds` registry — which the off-chain quote-service reads and which is independent of the package addresses — is carried on **both** networks so the service can boot with `NETWORK=mainnet`.
+
+### Per-credit maps (`credit_registries` / `vaults` / `queues`)
+
+The credit umbrella is generic over the `CREDIT` coin, and there is one stack per credit: a `CreditRegistry<CREDIT>` (on `waterx_credit`), a `CustodyVault<CREDIT>` (on `native_custody`) and a `Queue<CREDIT>` (on `withdrawal_queue`). Each of those packages carries a map keyed by the credit's short name — `"USD"` (backed by USDC / USDSUI), `"SUI"`, `"DEEP"`, `"WAL"` (each backed 1:1 by the asset it is named after, NativeCustody only, no Wormhole leg) — and the three maps always carry the same key set:
+
+```jsonc
+"waterx_credit": {
+  // ...
+  "credit_registry": "0x…",                       // legacy: same as credit_registries.USD.registry
+  "credit_type":     "0x…::usd::USD",             // legacy: same as credit_registries.USD.credit_type
+  "credit_registries": {
+    "USD": { "registry": "0x…", "credit_type": "0x…::usd::USD",     "decimals": 6 },
+    "SUI": { "registry": "0x…", "credit_type": "0x…::sui::SUI",     "decimals": 6 }
+  }
+},
+"native_custody": {
+  // ...
+  "vault": "0x…", "assets": [ /* … */ ],          // legacy: same as vaults.USD
+  "vaults": {
+    "USD": { "vault": "0x…", "assets": [ { "name": "USDC", "type": "0x…::usdc::USDC", "decimal": 6, "mint_fee_scaled": "0", "burn_fee_scaled": "500000", "min_burn_amount": "0" } ] },
+    "SUI": { "vault": "0x…", "assets": [ { "name": "SUI",  "type": "0x2::sui::SUI",   "decimal": 9, "mint_fee_scaled": "0", "burn_fee_scaled": "500000", "min_burn_amount": "0" } ] }
+  }
+},
+"withdrawal_queue": {
+  // ...
+  "queue": "0x…", "executors": [ "0x…" ],         // legacy: same as queues.USD
+  "queues": {
+    "USD": { "queue": "0x…", "executors": [ "0x…" ] },
+    "SUI": { "queue": "0x…", "executors": [ "0x…" ] }
+  }
+}
+```
+
+Every credit is a 6-decimal coin (`native_custody` scales each backing asset to 6 decimals), so `decimals` is the credit's, while `assets[].decimal` is the backing asset's — a deposit of any amount mints the 6-decimal floor and the remainder below that grain stays in the custody vault as surplus (native_custody v4). `mint_fee_scaled` / `burn_fee_scaled` are 1e9-scaled `Float` rates (`500000` = 0.05%). The per-credit maps are the authoritative record — they are written from live chain state by the bring-up runner (`executors` in particular is read off the on-chain `Queue` allowlist). The singular `credit_registry` / `credit_type` / `vault` / `assets` / `queue` / `executors` fields are legacy mirrors of the `USD` entry kept for consumers that still read only the USD stack; they are maintained best-effort and can lag the maps, so an authorization list such as `executors` must be taken from `queues.USD`, not from the singular field. New code should read the maps. Bring-up of an additional credit is driven by [`waterx-contract/scripts/deploy/create-credit-registries.ts`](../waterx-contract/scripts/deploy/create-credit-registries.ts), which writes these entries (and the coin's package block) as each step lands.
 
 ### Per-ticker maps (`aggregators` / `markets` / `feeds`)
 
