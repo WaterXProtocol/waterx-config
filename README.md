@@ -33,8 +33,12 @@ changed and the old→new path map).
 
 - TypeScript: [`packages/ts`](./packages/ts) — `@waterx/config` (Zod
   validator + CDN loader; refuses raw.githubusercontent, retries 429/5xx).
-  *Not yet published* — first publish happens on the first `v*` tag once npm
-  trusted publishing is configured (see `publish.yml`).
+  Published as `@waterx/config` by dispatching `publish.yml` (Actions ->
+  Publish package): `prerelease` from any branch numbers the version by the
+  run (`X.Y.Z-<tag>.<run>`, dist-tag `<tag>`, default `staging`); an official
+  release is dispatched from `main-v2` and pushes the bump back. Who may
+  publish is the repo variables `RELEASE_PUBLISHERS` / `PRERELEASE_PUBLISHERS`
+  (space-separated GitHub user ids). Consumers pin exact versions.
 - Rust: [`packages/rust`](./packages/rust) — `waterx-config` crate, consumed
   via git tag (tolerant serde types — the strict gate is this repo's ajv CI —
   optional `fetch` feature with a `load_waterx_config_from(base, network)`
