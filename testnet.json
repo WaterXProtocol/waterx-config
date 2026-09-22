@@ -854,6 +854,15 @@
       "publish_digest": "5ioVM4hEZzxVqV43tKg9VPxAqwYEgs7cfiCs5wUHnVSd",
       "publish_checkpoint": "338586209"
     },
+    "usd": {
+      "published_at": "0x6321b712685d4c4921c15ff4790d7a9a2b2b7d3b44f8b19a2304e60ca3ad26c7",
+      "original_id": "0x6321b712685d4c4921c15ff4790d7a9a2b2b7d3b44f8b19a2304e60ca3ad26c7",
+      "version": 1,
+      "upgrade_capability": "0xc62f0ec95f6fe8da033abe683f1abd1c5480652de2062fa861f4565f173df658",
+      "metadata_cap": "0xb650df8765c5735e478df589961494d90aef70eca805b4591e0483d513d82c69",
+      "publish_digest": "98beQbLMCrRYYBPGwofyvRkkgePhjjNcVFnR5FS9eEyw",
+      "publish_checkpoint": "343899445"
+    },
     "usd_credit": {
       "published_at": "0x6321b712685d4c4921c15ff4790d7a9a2b2b7d3b44f8b19a2304e60ca3ad26c7",
       "original_id": "0x6321b712685d4c4921c15ff4790d7a9a2b2b7d3b44f8b19a2304e60ca3ad26c7",
