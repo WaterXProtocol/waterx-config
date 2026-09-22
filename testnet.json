@@ -252,9 +252,9 @@
       "publish_checkpoint": "367394500"
     },
     "waterx_prediction": {
-      "published_at": "0x0274cc0502d43d177d9422c0dc4bfa510da83789bfe10e86e73ae1bd04277290",
+      "published_at": "0x688e74bc696ca2532b4cf8da46dd10847abe3caf1dd24730c91ff24afc09a914",
       "original_id": "0x99be07b27dbbd846eec72213f0ec221b3e7d38c8bfdee3cbf578b9bfa5df3481",
-      "version": 4,
+      "version": 5,
       "upgrade_capability": "0x4455efe909425bf55247b18c8ca744f2c84d79a1e36b82cdf3cd5d20c96702b9",
       "admin_cap": "0x31acc29c6f6171a86ad5583e4610d75bdd9bcc71e16b46b1b994770743cdc782",
       "global_config": "0x3e2d7bfce29e077f13f9feaf68af62410872817be476b2708540a0d5b23c5936",
@@ -1348,6 +1348,20 @@
       "digest": "C9ireB3H6iXG8aL8vs2jUdCXjs2snLEzpFU5spfzZC6V",
       "checkpoint": "386366936",
       "timestamp": "2026-09-22T03:39:16.000Z"
+    },
+    {
+      "phase": "prediction.gates",
+      "action": "global_config::allow_version(6) on waterx_prediction GlobalConfig — gate {4,5} → {4,5,6} (4 stays: waterx_prediction_gift links the PACKAGE_VERSION-4 build 0x160532e7…; 5 retired once consumers move)",
+      "digest": "4wHZsAmPf6fHBTNs9tw9cUi73syctvLmFvyRbxeDKnHv",
+      "checkpoint": "386378176",
+      "timestamp": "2026-09-22T04:23:41.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v4→v5 (PACKAGE_VERSION 6: additive events::MarketSettlementSnapshot on every resolution — waterx-contract#122) → 0x688e74bc696ca2532b4cf8da46dd10847abe3caf1dd24730c91ff24afc09a914",
+      "digest": "DaTnzJkRuSXLovCcfcD5F7uvu3hduUmW7uCG6dZ8uq1C",
+      "checkpoint": "386378420",
+      "timestamp": "2026-09-22T04:24:37.000Z"
     }
   ]
 }
