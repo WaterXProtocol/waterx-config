@@ -90,7 +90,7 @@ Every package carries the same identity block (the map is uniform — new packag
 |---|---|---|---|
 | `registry` | suiId | ✓ |  |
 | `credit_type` | suiType | ✓ |  |
-| `registries` | map<string, object> |  | Per-credit CreditRegistry<CREDIT> map keyed by the credit's short name (USD, SUI, DEEP, WAL). The USD entry mirrors the singular registry / credit_type; the other credits are NativeCustody-only (no Wormhole leg). Every credit coin is 6-decimal — native_custody scales each backing asset to 6 decimals. |
+| `registries` | map<string, object> | ✓ | Per-credit CreditRegistry<CREDIT> map keyed by the credit's short name (USD, SUI, DEEP, WAL). The USD entry mirrors the singular registry / credit_type; the other credits are NativeCustody-only (no Wormhole leg). Every credit coin is 6-decimal — native_custody scales each backing asset to 6 decimals. |
 
 #### `objects.credit.registries` — each entry
 
@@ -107,7 +107,7 @@ Every package carries the same identity block (the map is uniform — new packag
 |---|---|---|---|
 | `vault` | suiId | ✓ |  |
 | `assets` | array<object> | ✓ | Native-custody asset rows. mint_fee_scaled / burn_fee_scaled are u128 1e9-scaled (0 = no fee; 1_000_000 = 0.1%; 1_000_000_000 = 100%). min_burn_amount is the dust floor in the asset's smallest unit. |
-| `vaults` | map<string, object> |  | Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a deposit of any amount mints the 6-decimal floor and the remainder below that grain stays in the vault as surplus (native_custody v4). |
+| `vaults` | map<string, object> | ✓ | Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a deposit of any amount mints the 6-decimal floor and the remainder below that grain stays in the vault as surplus (native_custody v4). |
 
 #### `objects.custody.vaults` — each entry
 
@@ -130,8 +130,8 @@ Every package carries the same identity block (the map is uniform — new packag
 | field | type | required | notes |
 |---|---|---|---|
 | `queue` | suiId | ✓ |  |
-| `executors` | array<suiId> |  |  |
-| `queues` | map<string, object> |  | Per-credit withdrawal Queue<CREDIT> map keyed by credit name, written from live chain state; the USD entry mirrors the singular queue / executors. This map is the authoritative executor allowlist — the singular executors field is a best-effort legacy mirror. |
+| `executors` | array<suiId> | ✓ |  |
+| `queues` | map<string, object> | ✓ | Per-credit withdrawal Queue<CREDIT> map keyed by credit name, written from live chain state; the USD entry mirrors the singular queue / executors. This map is the authoritative executor allowlist — the singular executors field is a best-effort legacy mirror. |
 
 #### `objects.withdrawal_queue.queues` — each entry
 

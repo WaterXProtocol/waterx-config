@@ -161,6 +161,69 @@
       "digest": "RCD2qayFvDYgC3iG1D36xxtt7BemSfqQuUycuuaMrzc",
       "checkpoint": "285451733",
       "timestamp": "2026-06-10T17:10:16.986Z"
+    },
+    {
+      "phase": "credit.publish",
+      "action": "Publish coins/sui_credit + coins/deep_credit + coins/wal_credit",
+      "digest": "Cq7gGgvq2jyP1NXpBhHdknfwopEfc8v3GBWg5k56GWmK",
+      "checkpoint": "325409361",
+      "timestamp": "2026-09-22T00:31:01.126Z"
+    },
+    {
+      "phase": "credit.registries",
+      "action": "create_credit_registry SUI + DEEP + WAL",
+      "digest": "Dq3jJZNQBPT2qJsye8ccdQwCYtpMpMe3sqm2tQjfts9t",
+      "checkpoint": "325409426",
+      "timestamp": "2026-09-22T00:31:15.766Z"
+    },
+    {
+      "phase": "credit.wiring",
+      "action": "wxa policies + add_version/set_supply_limit + create_vault + create_queue (SUI, DEEP, WAL)",
+      "digest": "DUMhx6gz1V7nFCYmL6rMGJ7n3LEC8LUdSirEicYK6oYB",
+      "checkpoint": "325409447",
+      "timestamp": "2026-09-22T00:31:20.694Z"
+    },
+    {
+      "phase": "credit.assets",
+      "action": "add_asset + add_executor (SUI, DEEP, WAL)",
+      "digest": "AWQcrqvbNbE2WcWA1pMDyLgSMbsxawN8wH1GVThU6VrF",
+      "checkpoint": "325409468",
+      "timestamp": "2026-09-22T00:31:25.356Z"
+    },
+    {
+      "phase": "18.prediction",
+      "action": "allow_protocol_asset<WaterXPrediction, T> + create_market_registry<T> (SUI, DEEP, WAL)",
+      "digest": "51ZketU5d23Fk8XtkuszG8pVVFttFHouwj3RjnbbNTgn",
+      "checkpoint": "325409821",
+      "timestamp": "2026-09-22T00:32:44.000Z"
+    },
+    {
+      "phase": "credit.gates",
+      "action": "credit-module-versions add 4 on native_custody (4 registries + 4 vaults) — M1",
+      "digest": "4gSzGbSxAR6gpCw8AXt385rLth7VVh6VLbXPKcRacCNT",
+      "checkpoint": "325409563",
+      "timestamp": "2026-09-22T00:31:46.000Z"
+    },
+    {
+      "phase": "1.upgrade:native_custody",
+      "action": "upgrade native_custody v3→v4 (PACKAGE_VERSION 4: mint floors to the credit grain, remainder stays as vault surplus) → 0xb92ce2e086cd12366255695228fdb148b9f5af5e72ac74126fe23a64dcacf831 — M1",
+      "digest": "DnYQ8K5UHqdbohCExYmXSXJz2q5tU2uGvybCFb5Bnjcd",
+      "checkpoint": "325409629",
+      "timestamp": "2026-09-22T00:32:01.000Z"
+    },
+    {
+      "phase": "1.upgrade:withdrawal_queue",
+      "action": "upgrade withdrawal_queue v4→v5 (dependency relink to native_custody 0xb92ce2e0…, no source change) → 0x5599b5f5de0d762920afb9158b1df8b3df84822394eecba617a6fbdf865b10cb — M1",
+      "digest": "AuYMW4tPxnGHnQvBkYLTgfC9bXtrz7MJFtdHuC7xYPRn",
+      "checkpoint": "325409719",
+      "timestamp": "2026-09-22T00:32:21.000Z"
+    },
+    {
+      "phase": "credit.gates",
+      "action": "credit-module-versions remove 3 on native_custody (kill-switch of the pre-v4 code) — M1",
+      "digest": "8aqrhamooo8uTNfMZpGDS7CRnAUqrjSsU3pyRQirze2q",
+      "checkpoint": "325409799",
+      "timestamp": "2026-09-22T00:32:39.000Z"
     }
   ],
   "package_publish": {
@@ -181,6 +244,18 @@
     "waterx_prediction_gift": {
       "publish_digest": "DHPAvyfvN9PiXiYvAFQ2rFksdMyR59VVqCrLd2W5NiFq",
       "publish_checkpoint": "286567975"
+    },
+    "sui_credit": {
+      "publish_digest": "Cq7gGgvq2jyP1NXpBhHdknfwopEfc8v3GBWg5k56GWmK",
+      "publish_checkpoint": "325409361"
+    },
+    "deep_credit": {
+      "publish_digest": "Cq7gGgvq2jyP1NXpBhHdknfwopEfc8v3GBWg5k56GWmK",
+      "publish_checkpoint": "325409361"
+    },
+    "wal_credit": {
+      "publish_digest": "Cq7gGgvq2jyP1NXpBhHdknfwopEfc8v3GBWg5k56GWmK",
+      "publish_checkpoint": "325409361"
     }
   }
 }

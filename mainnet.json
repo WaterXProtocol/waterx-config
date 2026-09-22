@@ -251,9 +251,9 @@
       }
     },
     "native_custody": {
-      "published_at": "0x84e1f8aa9456205e6e38e878988e5ee4714f2254d7408ee40b455f0e8a1446c0",
+      "published_at": "0xb92ce2e086cd12366255695228fdb148b9f5af5e72ac74126fe23a64dcacf831",
       "original_id": "0xebd4336ac8d5a12fc7d314b84f8c06a8190dcdfc3c9ef4133ffb53e0aed3c70a",
-      "version": 3,
+      "version": 4,
       "upgrade_capability": "0xde3946cd9575f19bd02b77af1c4f2ec8a85bacd145bcfab2d43a8c62a24913f0",
       "mvr": {
         "name": "@waterx-protocol/native-custody",
@@ -283,9 +283,9 @@
       }
     },
     "withdrawal_queue": {
-      "published_at": "0x200752ac52233e07a8814d93d626bb88621f6c066e2252e5d77c9c0903aa0bcf",
+      "published_at": "0x5599b5f5de0d762920afb9158b1df8b3df84822394eecba617a6fbdf865b10cb",
       "original_id": "0x257a2e2574ba118fb25ee2bb110db032a827a70e2b621dfc0005c8cffbc24a48",
-      "version": 4,
+      "version": 5,
       "upgrade_capability": "0x43a8a34d356baf96ad64be205a96bb072e8e4304271a95657e474f62358a6163",
       "mvr": {
         "name": "@waterx-protocol/withdrawal-queue",
@@ -297,12 +297,6 @@
           "version": 2
         }
       }
-    },
-    "usd": {
-      "published_at": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4",
-      "original_id": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4",
-      "version": 1,
-      "upgrade_capability": "0xfc3f69f378e5e7196531ee0b2062292cccc22590448dc8191bb1e5c3c57f6130"
     },
     "waterx_prediction": {
       "published_at": "0x972184710f3ea2d54973d325ca4035c8d44d1a9571da7ee42a34cf8da72facbd",
@@ -325,6 +319,30 @@
       "original_id": "0x6f279e417396f0c1a2e003f2508f2da38bed7e1bfd275f2a897ca0edd671929e",
       "version": 3,
       "upgrade_capability": "0xdb55427e26d4642a462d69aebce48b6973b7c090ba8793b89667dc931c97c06a"
+    },
+    "usd_credit": {
+      "published_at": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4",
+      "original_id": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4",
+      "version": 1,
+      "upgrade_capability": "0xfc3f69f378e5e7196531ee0b2062292cccc22590448dc8191bb1e5c3c57f6130"
+    },
+    "sui_credit": {
+      "published_at": "0xea6415244a1548816dec9762e2a169b2c7dc298e14a85a95d365057adcfa5b64",
+      "original_id": "0xea6415244a1548816dec9762e2a169b2c7dc298e14a85a95d365057adcfa5b64",
+      "version": 1,
+      "upgrade_capability": "0xafd8e9dadc16be201341fb6fc037edfff2348b4eb4cb87e9271c66b713190bef"
+    },
+    "deep_credit": {
+      "published_at": "0x751a4363099bce4d6034fb182398ae62d5ecde0f90d8be1d21e876548c815cca",
+      "original_id": "0x751a4363099bce4d6034fb182398ae62d5ecde0f90d8be1d21e876548c815cca",
+      "version": 1,
+      "upgrade_capability": "0xa3eec37e33c935f9ec6728e48901357808a56f855b7a9f6a76189fc820cf1546"
+    },
+    "wal_credit": {
+      "published_at": "0x9b4bad4ee9207945724b2531d24a4b7f2d33224430351e8d88ba2d70eafc1bca",
+      "original_id": "0x9b4bad4ee9207945724b2531d24a4b7f2d33224430351e8d88ba2d70eafc1bca",
+      "version": 1,
+      "upgrade_capability": "0xf2ea251c28019416db87a02cdc3f3d8a71d1e144f01c14da34a809ef974d16de"
     }
   },
   "objects": {
@@ -530,7 +548,33 @@
     },
     "credit": {
       "registry": "0x3b32d761b1182531f105d84c5869c66d7c9958c689a1d51a3347db7ac6356c5e",
-      "credit_type": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD"
+      "credit_type": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD",
+      "registries": {
+        "USD": {
+          "registry": "0x3b32d761b1182531f105d84c5869c66d7c9958c689a1d51a3347db7ac6356c5e",
+          "credit_type": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD",
+          "decimals": 6,
+          "metadata_cap": "0xd0913660dbd60661c33c01cde5a6f3187c837842680d39af9bd25e3a5fe0687e"
+        },
+        "SUI": {
+          "registry": "0x87d21d55e93ce7d1ef0baea608702881c712361c4c9bbe69fd3ba899a7ecb1de",
+          "credit_type": "0xea6415244a1548816dec9762e2a169b2c7dc298e14a85a95d365057adcfa5b64::sui::SUI",
+          "decimals": 6,
+          "metadata_cap": "0x18816ee4813be66756e17dfd393752905a8832b318295773f1d8a99f343dd6ae"
+        },
+        "DEEP": {
+          "registry": "0x6497560b412736c6c376e904e113b24584ea2fc1913f1a7e325544c6566c6570",
+          "credit_type": "0x751a4363099bce4d6034fb182398ae62d5ecde0f90d8be1d21e876548c815cca::deep::DEEP",
+          "decimals": 6,
+          "metadata_cap": "0x678e9c55f8af9352e13647bf2e21b5f1533992ac2d4996fcacd85d4ade1326f5"
+        },
+        "WAL": {
+          "registry": "0x52026d063c033c121c1b3d56ecf47728129ba6a52eab0ff32628c84efe251ab3",
+          "credit_type": "0x9b4bad4ee9207945724b2531d24a4b7f2d33224430351e8d88ba2d70eafc1bca::wal::WAL",
+          "decimals": 6,
+          "metadata_cap": "0x2a0d8bf68a401e7effc82ec1c714bed67f09ba3b522e55bd5d1e9747f9a9ea85"
+        }
+      }
     },
     "custody": {
       "vault": "0xf27ebfd21ea4ea759beefb1c4385825e02ab6c50f57305abec601ea4522d04bd",
@@ -551,7 +595,69 @@
           "burn_fee_scaled": "500000",
           "min_burn_amount": "0"
         }
-      ]
+      ],
+      "vaults": {
+        "USD": {
+          "vault": "0xf27ebfd21ea4ea759beefb1c4385825e02ab6c50f57305abec601ea4522d04bd",
+          "assets": [
+            {
+              "name": "USDC",
+              "type": "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC",
+              "decimal": 6,
+              "mint_fee_scaled": "0",
+              "burn_fee_scaled": "500000",
+              "min_burn_amount": "0"
+            },
+            {
+              "name": "USDSUI",
+              "type": "0x44f838219cf67b058f3b37907b655f226153c18e33dfcd0da559a844fea9b1c1::usdsui::USDSUI",
+              "decimal": 6,
+              "mint_fee_scaled": "0",
+              "burn_fee_scaled": "500000",
+              "min_burn_amount": "0"
+            }
+          ]
+        },
+        "SUI": {
+          "vault": "0x10962d9414db8f77d4354d73dbf5c90b9ae6f9f1aae5f1f41682a5cca971cc52",
+          "assets": [
+            {
+              "name": "SUI",
+              "type": "0x2::sui::SUI",
+              "decimal": 9,
+              "mint_fee_scaled": "0",
+              "burn_fee_scaled": "500000",
+              "min_burn_amount": "0"
+            }
+          ]
+        },
+        "DEEP": {
+          "vault": "0xc8286d53d3820f935c78defaa3df558a503170877e3722c6922483c86368ccf2",
+          "assets": [
+            {
+              "name": "DEEP",
+              "type": "0xdeeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP",
+              "decimal": 6,
+              "mint_fee_scaled": "0",
+              "burn_fee_scaled": "500000",
+              "min_burn_amount": "0"
+            }
+          ]
+        },
+        "WAL": {
+          "vault": "0xe3f3392a9fbdd1c901aee860b50b6de2c7ae371ce9c3880f87b73875e349295a",
+          "assets": [
+            {
+              "name": "WAL",
+              "type": "0x356a26eb9e012a68958082340d4c4116e7f55615cf27affcff209cf0ae544f59::wal::WAL",
+              "decimal": 9,
+              "mint_fee_scaled": "0",
+              "burn_fee_scaled": "500000",
+              "min_burn_amount": "0"
+            }
+          ]
+        }
+      }
     },
     "bridge": {
       "state": "0xe7275d334a1a65deae0133a20a7ac83cb49b1b4629718c4b8cd21dcf37277c1b",
@@ -569,16 +675,56 @@
       }
     },
     "withdrawal_queue": {
-      "queue": "0xd5f3ffc217af104037975e66cf0b315a58cd2e880fef24f175d8cc9852a42b67"
+      "queue": "0xd5f3ffc217af104037975e66cf0b315a58cd2e880fef24f175d8cc9852a42b67",
+      "executors": [
+        "0xe2f5eb9a154a74738393ecb1c4213c2076fe0261aff43965f05f855fb7f6f5f0",
+        "0x192272eaba775b99081946fd58333265a39ff37dc58c2c9a50635b48eda493ee"
+      ],
+      "queues": {
+        "USD": {
+          "queue": "0xd5f3ffc217af104037975e66cf0b315a58cd2e880fef24f175d8cc9852a42b67",
+          "executors": [
+            "0xe2f5eb9a154a74738393ecb1c4213c2076fe0261aff43965f05f855fb7f6f5f0",
+            "0x192272eaba775b99081946fd58333265a39ff37dc58c2c9a50635b48eda493ee"
+          ]
+        },
+        "SUI": {
+          "queue": "0x6b506656eb2c803cf26cce11ca4a73d4d0cfdc79fb8d5ae719ff40868e9c3d8f",
+          "executors": [
+            "0xe2f5eb9a154a74738393ecb1c4213c2076fe0261aff43965f05f855fb7f6f5f0",
+            "0x192272eaba775b99081946fd58333265a39ff37dc58c2c9a50635b48eda493ee"
+          ]
+        },
+        "DEEP": {
+          "queue": "0x7fa289c14bde54d6ea79873e23519e0427f6b7ab4b066c830dd249185832f869",
+          "executors": [
+            "0xe2f5eb9a154a74738393ecb1c4213c2076fe0261aff43965f05f855fb7f6f5f0",
+            "0x192272eaba775b99081946fd58333265a39ff37dc58c2c9a50635b48eda493ee"
+          ]
+        },
+        "WAL": {
+          "queue": "0x7d5fc73e278cf2a8f30b1be48bba2b27a233237d0393e789b0c14eee412be9f2",
+          "executors": [
+            "0xe2f5eb9a154a74738393ecb1c4213c2076fe0261aff43965f05f855fb7f6f5f0",
+            "0x192272eaba775b99081946fd58333265a39ff37dc58c2c9a50635b48eda493ee"
+          ]
+        }
+      }
     },
     "prediction": {
       "global_config": "0xbeae59a5f462696fa639b02c62406c1b4f7acb951644eb4ee8f3f666391484ac",
       "admin_cap": "0x8d65ecbe9c0863af842a15d60185a11b4d052bca6d1638ac745f93c56ac5c9dd",
       "market_registries": {
-        "USD": "0x3fafc1ec1148c8784c65a910f79c5e5f512d89ed8a5cc0625b5c5028e739f792"
+        "USD": "0x3fafc1ec1148c8784c65a910f79c5e5f512d89ed8a5cc0625b5c5028e739f792",
+        "SUI": "0xc028a6620d9e422b0ef37d30522dd9080613d7956003124558e3a0d428a5f1b1",
+        "DEEP": "0x7d4c431b3d4d5f96c88e81f767d3bf7d703ab281e99ef42ed25e688a59149709",
+        "WAL": "0xf62db12be120b10d6b20a561b42d90a11c22690f6e6098f1b4a3abc66d9c0b7a"
       },
       "settlement_coin_types": {
-        "USD": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD"
+        "USD": "0xc70a37eafe54712b520cb6566e5a2d2f60bc70f32eb9fb08cac40394b5a96bf4::usd::USD",
+        "SUI": "0xea6415244a1548816dec9762e2a169b2c7dc298e14a85a95d365057adcfa5b64::sui::SUI",
+        "DEEP": "0x751a4363099bce4d6034fb182398ae62d5ecde0f90d8be1d21e876548c815cca::deep::DEEP",
+        "WAL": "0x9b4bad4ee9207945724b2531d24a4b7f2d33224430351e8d88ba2d70eafc1bca::wal::WAL"
       },
       "claimable_link_config": "0x97e49c1f0abe8a09867698d99dd8cde18b75f085bd6615644f74f9165cbc9cd9",
       "gift_admin_cap": "0x5493191ef3a5cfaa859f1a07b9ef277e75aa3d41edfcc9569aba8eae02c6655c"

@@ -336,11 +336,12 @@
               "description": "Per-credit CreditRegistry<CREDIT> map keyed by the credit's short name (USD, SUI, DEEP, WAL). The USD entry mirrors the singular registry / credit_type; the other credits are NativeCustody-only (no Wormhole leg). Every credit coin is 6-decimal — native_custody scales each backing asset to 6 decimals."
             }
           },
-          "additionalProperties": false,
           "required": [
             "credit_type",
+            "registries",
             "registry"
-          ]
+          ],
+          "additionalProperties": false
         },
         "custody": {
           "type": "object",
@@ -439,11 +440,12 @@
               "description": "Per-credit CustodyVault<CREDIT> map keyed by credit name; the USD entry mirrors the singular vault / assets. assets[].decimal is the BACKING asset's decimals — a deposit of any amount mints the 6-decimal floor and the remainder below that grain stays in the vault as surplus (native_custody v4)."
             }
           },
-          "additionalProperties": false,
           "required": [
             "assets",
-            "vault"
-          ]
+            "vault",
+            "vaults"
+          ],
+          "additionalProperties": false
         },
         "bridge": {
           "type": "object",
@@ -546,10 +548,12 @@
               "description": "Per-credit withdrawal Queue<CREDIT> map keyed by credit name, written from live chain state; the USD entry mirrors the singular queue / executors. This map is the authoritative executor allowlist — the singular executors field is a best-effort legacy mirror."
             }
           },
-          "additionalProperties": false,
           "required": [
-            "queue"
-          ]
+            "executors",
+            "queue",
+            "queues"
+          ],
+          "additionalProperties": false
         },
         "prediction": {
           "type": "object",
