@@ -680,6 +680,11 @@
         "ZECUSD": {}
       }
     },
+    "pyth": {
+      "package": "pyth_rule",
+      "pyth_config_object": "0x2f1e5086302c0070e9da3e99c626a29ccca73fe91be65433342f807c111b78ae",
+      "pyth_price_feeds": {}
+    },
     "constant": {
       "package": "constant_rule",
       "rule_config_object": "0xaa498ceed92217ae2b46d3166f1a1645b56a2954fe884a0bf422e0ce55d10dfd",

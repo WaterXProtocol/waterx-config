@@ -719,6 +719,45 @@
             "rule_config_object"
           ]
         },
+        "pyth": {
+          "type": "object",
+          "properties": {
+            "package": {
+              "type": "string"
+            },
+            "pyth_config_object": {
+              "$ref": "#/$defs/suiId"
+            },
+            "pyth_price_feeds": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "feed_id": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "Pyth price-feed identifier (32-byte hex). NOT a Sui object id."
+                  },
+                  "price_info_object": {
+                    "$ref": "#/$defs/suiId",
+                    "description": "The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object; passing the wrapper is the classic mistake."
+                  }
+                },
+                "required": [
+                  "feed_id",
+                  "price_info_object"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes)."
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "package",
+            "pyth_config_object",
+            "pyth_price_feeds"
+          ]
+        },
         "pyth_lazer": {
           "type": "object",
           "properties": {
@@ -808,6 +847,7 @@
       "additionalProperties": false,
       "required": [
         "constant",
+        "pyth",
         "waterx"
       ]
     },

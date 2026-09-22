@@ -379,6 +379,8 @@ pub struct Wlp {
 pub struct OracleRules {
     pub constant: Constant,
 
+    pub pyth: Pyth,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pyth_lazer: Option<PythLazer>,
 
@@ -403,6 +405,27 @@ pub struct Constant {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConstantPrice {
     pub price: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Pyth {
+    pub package: String,
+
+    pub pyth_config_object: String,
+
+    /// Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper
+    /// refreshes).
+    pub pyth_price_feeds: HashMap<String, PythPriceFeed>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PythPriceFeed {
+    /// Pyth price-feed identifier (32-byte hex). NOT a Sui object id.
+    pub feed_id: String,
+
+    /// The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object;
+    /// passing the wrapper is the classic mistake.
+    pub price_info_object: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
