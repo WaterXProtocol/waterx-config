@@ -1,0 +1,400 @@
+{
+  "network": "testnet",
+  "deploy_tx_log": [
+    {
+      "phase": "1.upgrade:waterx_oracle",
+      "action": "sui client upgrade waterx_oracle (v1→v2; ABI-compat remove_price_at_timestamp)",
+      "digest": "7zLWM2aSLXTV1WPpwAtgrseEuprbimJ2Mx24sUp8tu15",
+      "checkpoint": "362972777",
+      "timestamp": "2026-07-22T01:39:08.846Z"
+    },
+    {
+      "phase": "1.publish:waterx_oracle",
+      "action": "sui client publish waterx_oracle",
+      "digest": "BqrAvRqe3T7vqJimjcavgHWHGHx1kaHh4PRubTJcRPRv",
+      "checkpoint": "343899296",
+      "timestamp": "2026-06-02T16:21:54.442Z"
+    },
+    {
+      "phase": "1.publish:waterx_account",
+      "action": "sui client publish waterx_account",
+      "digest": "vemzS45vA2F12Z8UvCqJJ2gDsBzidMXqGrwpY5E2dvv",
+      "checkpoint": "343899307",
+      "timestamp": "2026-06-02T16:21:57.089Z"
+    },
+    {
+      "phase": "1.publish:waterx_perp",
+      "action": "sui client publish waterx_perp",
+      "digest": "BmNsBbvP3LtyxhAbJ4cE2Wrv6X85J78PCj7tt32C8jC8",
+      "checkpoint": "343899321",
+      "timestamp": "2026-06-02T16:22:00.668Z"
+    },
+    {
+      "phase": "1.publish:waterx_perp_view",
+      "action": "sui client publish waterx_perp_view",
+      "digest": "7LC1qRovUdyd4q2AxACKeApgruCPHkuj52YLRRQuEpvJ",
+      "checkpoint": "343899334",
+      "timestamp": "2026-06-02T16:22:03.859Z"
+    },
+    {
+      "phase": "1.publish:wlp",
+      "action": "sui client publish coins/wlp",
+      "digest": "FcBHvPdWwMcN6DtounNNHeM3oKdoe5uFZtp8UhxH5NkF",
+      "checkpoint": "343899346",
+      "timestamp": "2026-06-02T16:22:06.629Z"
+    },
+    {
+      "phase": "1.publish:pyth_rule",
+      "action": "sui client publish waterx_oracle_rule/pyth_rule",
+      "digest": "234jQLrJ5mbFwi1To4k6VErLnoPMdDimWRakRpibU24d",
+      "checkpoint": "343899359",
+      "timestamp": "2026-06-02T16:22:09.901Z"
+    },
+    {
+      "phase": "1.publish:pyth_sponsor_rule",
+      "action": "sui client publish waterx_oracle_rule/pyth_sponsor_rule",
+      "digest": "49j6anf4RL1Fw1nb7kCEAqrNbjCTrWK6s548oWKDXqee",
+      "checkpoint": "343899372",
+      "timestamp": "2026-06-02T16:22:13.171Z"
+    },
+    {
+      "phase": "1.publish:waterx_staking",
+      "action": "sui client publish waterx_staking",
+      "digest": "Bq4c1PWxL21doUUr4o9TQitwGAfohHzt3zfywV4vHDtL",
+      "checkpoint": "343899384",
+      "timestamp": "2026-06-02T16:22:16.046Z"
+    },
+    {
+      "phase": "1.publish:waterx_credit",
+      "action": "sui client publish waterx_credit/sui/credit",
+      "digest": "FPGkE3Te19sYHupEMoRu9oMamcrGWsWezfi9sTbsW7em",
+      "checkpoint": "343899395",
+      "timestamp": "2026-06-02T16:22:18.710Z"
+    },
+    {
+      "phase": "1.publish:native_custody",
+      "action": "sui client publish waterx_credit/sui/native_custody",
+      "digest": "2b6DjmsCHLHCbmuBN8DEtrGSBnrY5Kn31C9iLrcadgyn",
+      "checkpoint": "343899407",
+      "timestamp": "2026-06-02T16:22:21.682Z"
+    },
+    {
+      "phase": "1.publish:wormhole_bridge",
+      "action": "sui client publish waterx_credit/sui/wormhole_bridge",
+      "digest": "29JLcoS1wHF5wkaxLUNPo9J4jXtzTMBaMzorzASmDnrU",
+      "checkpoint": "343899420",
+      "timestamp": "2026-06-02T16:22:24.892Z"
+    },
+    {
+      "phase": "1.publish:withdrawal_queue",
+      "action": "sui client publish waterx_credit/sui/withdrawal_queue",
+      "digest": "6h4KdDvLqGc7UMuBwc5n7y3yzviwEiE9YJBq4afg2VVC",
+      "checkpoint": "343899434",
+      "timestamp": "2026-06-02T16:22:28.441Z"
+    },
+    {
+      "phase": "1.publish:usd",
+      "action": "sui client publish coins/usd",
+      "digest": "98beQbLMCrRYYBPGwofyvRkkgePhjjNcVFnR5FS9eEyw",
+      "checkpoint": "343899445",
+      "timestamp": "2026-06-02T16:22:31.187Z"
+    },
+    {
+      "phase": "1.publish:waterx_prediction",
+      "action": "sui client publish waterx_prediction",
+      "digest": "NhubZx3SJwvTnjxfW9qGdc7KaKV97gA36J6xXUN78Fc",
+      "checkpoint": "343899458",
+      "timestamp": "2026-06-02T16:22:34.482Z"
+    },
+    {
+      "phase": "2",
+      "action": "whitelist_protocol<WaterXPerp>",
+      "digest": "EBYDmP1U9tKmc8LsZnYzgM36bUZ3D4UAfYZ9JhyZrySc",
+      "checkpoint": "343899465",
+      "timestamp": "2026-06-02T16:22:36.109Z"
+    },
+    {
+      "phase": "3",
+      "action": "allow_protocol_asset + register_deposit/withdraw_policy",
+      "digest": "AeBvZyYZwD8yu5kdKgWgEUrdUctcWDMtvmDMf6GdT6ep",
+      "checkpoint": "343899471",
+      "timestamp": "2026-06-02T16:22:37.850Z"
+    },
+    {
+      "phase": "5",
+      "action": "perp ACL (add_keeper / redeem_operator / risk_manager / pauser)",
+      "digest": "C33PdU4n2RVavQFU53ndLsfbPF2mLjmkWArU7pzZSBMn",
+      "checkpoint": "343899478",
+      "timestamp": "2026-06-02T16:22:39.286Z"
+    },
+    {
+      "phase": "6",
+      "action": "add_aggregator + Pyth wiring (per ticker)",
+      "digest": "BCS2vFy7W6abYUhFiy9yWmi1hFhEw83MAUQLfdfd5rTD",
+      "checkpoint": "343899484",
+      "timestamp": "2026-06-02T16:22:41.243Z"
+    },
+    {
+      "phase": "7a",
+      "action": "create_wlp_pool",
+      "digest": "C5MHWqiZTv2AisxqwNq7tRtMG3sgPEF4i2PjyuC1sLR8",
+      "checkpoint": "343899491",
+      "timestamp": "2026-06-02T16:22:42.519Z"
+    },
+    {
+      "phase": "7b",
+      "action": "lp_pool::add_token (per token)",
+      "digest": "HdU14ZmsBtgvmFnbxGwjUTZxD8Pt3rTMmUi7BseXdHBP",
+      "checkpoint": "343899497",
+      "timestamp": "2026-06-02T16:22:44.096Z"
+    },
+    {
+      "phase": "7c",
+      "action": "create_aum<WLP> + share",
+      "digest": "7sSiXoQVZZpCFe7whBLLypjjuqqFb4dvwAp3TkN3dXTe",
+      "checkpoint": "343899503",
+      "timestamp": "2026-06-02T16:22:45.559Z"
+    },
+    {
+      "phase": "8a",
+      "action": "create_market_registry<WLP>",
+      "digest": "HeojJ4resWiBpykQaEdMHBs3MZq7ZaeDnyZRost9E7LC",
+      "checkpoint": "343899510",
+      "timestamp": "2026-06-02T16:22:47.260Z"
+    },
+    {
+      "phase": "8b",
+      "action": "create_market + add_market (per ticker)",
+      "digest": "7X9b54T3jVdM1CFTyccNpW8UsNLYz2zxcdVXoyeNwQC7",
+      "checkpoint": "343899516",
+      "timestamp": "2026-06-02T16:22:49.131Z"
+    },
+    {
+      "phase": "8c",
+      "action": "add_request_rule + update_market_config",
+      "digest": "GY5wuhh73JpsBYQrtnqxJDV5CLzgSUo8hdXt9QBhvX4u",
+      "checkpoint": "343899530",
+      "timestamp": "2026-06-02T16:22:52.431Z"
+    },
+    {
+      "phase": "9",
+      "action": "pyth_sponsor_rule::supply",
+      "digest": "JDrsF83qKTq9gGsvU1KJehkB5mmwBq4Xw2PEJzAk4hDD",
+      "checkpoint": "343899536",
+      "timestamp": "2026-06-02T16:22:53.826Z"
+    },
+    {
+      "phase": "10a",
+      "action": "allow_protocol_asset + waterx_staking::default<STAKE>",
+      "digest": "FcyvinM8MpGtqAWkKBzaUNL729taqBGq2LR48LXLR4nM",
+      "checkpoint": "343899542",
+      "timestamp": "2026-06-02T16:22:55.363Z"
+    },
+    {
+      "phase": "11",
+      "action": "usd::create_credit_registry",
+      "digest": "HyxTfFEyizZQcspb15hAUXLcZ71ydnQzziLGVtZhx3Tq",
+      "checkpoint": "343899548",
+      "timestamp": "2026-06-02T16:22:56.900Z"
+    },
+    {
+      "phase": "12",
+      "action": "credit wxa whitelist + USD/backing policies",
+      "digest": "J7AgpzfXWQBqBMTczW3feqmeBs95JD8n8HyZvjErouj9",
+      "checkpoint": "343899554",
+      "timestamp": "2026-06-02T16:22:58.292Z"
+    },
+    {
+      "phase": "13",
+      "action": "credit_registry::add_version + set_supply_limit (+ burn caps)",
+      "digest": "H9HVWXLxPgw3V9mwk6og33xfEuDH8VMVUiBw9nhbVfcu",
+      "checkpoint": "343899559",
+      "timestamp": "2026-06-02T16:22:59.589Z"
+    },
+    {
+      "phase": "14a",
+      "action": "custody_vault::create_vault<USD>",
+      "digest": "9jGjtWVnPU1HdHBFE2sgnn4vVKXww8MpMEbjQt582uP2",
+      "checkpoint": "343899565",
+      "timestamp": "2026-06-02T16:23:01.096Z"
+    },
+    {
+      "phase": "14b",
+      "action": "custody_vault::add_asset (per backing T)",
+      "digest": "GuroopKsYUDwQHkXB2CgikPVrhZew3DBw5D2fajp8Bct",
+      "checkpoint": "343899570",
+      "timestamp": "2026-06-02T16:23:02.324Z"
+    },
+    {
+      "phase": "15a",
+      "action": "wormhole_bridge::init_bridge",
+      "digest": "5Sxt9SBaJ9hqYT8MwS11A4MHQ9qkormR8aXH8RXa7yww",
+      "checkpoint": "343899576",
+      "timestamp": "2026-06-02T16:23:03.713Z"
+    },
+    {
+      "phase": "15b",
+      "action": "add_trusted_emitter + add_supported_evm_token",
+      "digest": "359s2kGnLMJhP2oDGTpNdvYqNVut8amDTXUpbNnhbAHR",
+      "checkpoint": "343899582",
+      "timestamp": "2026-06-02T16:23:05.299Z"
+    },
+    {
+      "phase": "16a",
+      "action": "withdrawal_queue::create_queue<USD>",
+      "digest": "2ZBJtUwGYfANqxSAkcDP9FQyDKapyX6wSL5DzjUnwwoo",
+      "checkpoint": "343899588",
+      "timestamp": "2026-06-02T16:23:06.728Z"
+    },
+    {
+      "phase": "16b",
+      "action": "withdrawal_queue::add_executor (per keeper)",
+      "digest": "CMZE3Vss2yU68ofV9CProZDmUSQVeQgZqSpqmSQ25bJK",
+      "checkpoint": "343899594",
+      "timestamp": "2026-06-02T16:23:08.162Z"
+    },
+    {
+      "phase": "17",
+      "action": "whitelist_protocol<WaterXPrediction> + allow_protocol_asset",
+      "digest": "3TdkTk6uqGoBdYPvhSaebRgFK7jLXULab7BqhCVJaGNJ",
+      "checkpoint": "343899600",
+      "timestamp": "2026-06-02T16:23:09.699Z"
+    },
+    {
+      "phase": "18a",
+      "action": "create_market_registry<USD>",
+      "digest": "ja9Ke8SNEgqR2QsEGHMdT514irumF4m7NSJ578LsU3B",
+      "checkpoint": "343899607",
+      "timestamp": "2026-06-02T16:23:11.335Z"
+    },
+    {
+      "phase": "18b",
+      "action": "prediction global_config::add_keeper (per keeper)",
+      "digest": "H4FLW1sGf4qZy8FiWgi1Na7CVBmBuuSG8CxKzGAc2Gus",
+      "checkpoint": "343899613",
+      "timestamp": "2026-06-02T16:23:12.744Z"
+    },
+    {
+      "phase": "14b",
+      "action": "custody_vault::add_asset (per backing T)",
+      "digest": "DSCGyHsLvaLzc2nQpdkantaSbwZSUv8dA5t7fUQiTNiX",
+      "checkpoint": "344067887",
+      "timestamp": "2026-06-03T03:52:14.656Z"
+    },
+    {
+      "phase": "1.publish:supra_rule",
+      "action": "sui client publish waterx_oracle_rule/supra_rule",
+      "digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
+      "checkpoint": "349406324",
+      "timestamp": "2026-06-17T05:55:26.306Z"
+    },
+    {
+      "phase": "1.publish:pyth_lazer_rule",
+      "action": "sui client publish waterx_oracle_rule/pyth_lazer_rule",
+      "digest": "EqSfzpFQC7AGJjJzKT4oxnoRSt2KAV2e9b5Rj5xeCDUf",
+      "checkpoint": "359678057",
+      "timestamp": "2026-07-13T07:36:48.941Z"
+    },
+    {
+      "phase": "6.lazer",
+      "action": "set_rule_weight<PythLazerRule> + set_feed_id + set_tolerance_ms (27 tickers)",
+      "digest": "2MnNzy2QK9JgkCAsX12fpTGv73kzWkCexSBiA2bBoTax",
+      "checkpoint": "359678270",
+      "timestamp": "2026-07-13T07:40:12.000Z"
+    }
+  ],
+  "package_publish": {
+    "enclave": {
+      "publish_digest": "HEXXutgaq3QToLQxa1W7cLV7xJjVPbKwzoYQErsWq2tC",
+      "publish_checkpoint": "362988068"
+    },
+    "bucket_framework": {
+      "publish_digest": "56SzW7r39Kkz6HBxGP1Lsq5yeiFV6txj7vANWteCm73j",
+      "publish_checkpoint": "363001665"
+    },
+    "waterx_referral": {
+      "publish_digest": "4nV3yHgdW72uLXpNHGWvGo4wpBnjTDth3hTn5VcCMJJv",
+      "publish_checkpoint": "326287569"
+    },
+    "mock_sui": {
+      "publish_digest": "8n79DxJvHZ7rXPQHKgcfWtLUhwxdo8uxirqipGcd2Pzy",
+      "publish_checkpoint": "324022335"
+    },
+    "mock_usdc": {
+      "publish_digest": "7m5wQxcwCtESGiLw6SEcwzqXMEpx6Uea4KUbp6a688HL",
+      "publish_checkpoint": "316606738"
+    },
+    "mock_usdsui": {
+      "publish_digest": "7Sd6D7jdSn6LVep4Fv6LwCUKQH2bVwVeGXHbsda7Pfzf",
+      "publish_checkpoint": "322190204"
+    },
+    "pyth_rule": {
+      "publish_digest": "234jQLrJ5mbFwi1To4k6VErLnoPMdDimWRakRpibU24d",
+      "publish_checkpoint": "343899359"
+    },
+    "waterx_account": {
+      "publish_digest": "vemzS45vA2F12Z8UvCqJJ2gDsBzidMXqGrwpY5E2dvv",
+      "publish_checkpoint": "343899307"
+    },
+    "waterx_oracle": {
+      "publish_digest": "7zLWM2aSLXTV1WPpwAtgrseEuprbimJ2Mx24sUp8tu15",
+      "publish_checkpoint": "362972777"
+    },
+    "waterx_perp": {
+      "publish_digest": "32f8bUfR3ZgdiFqjWnRAQKH7JguHctfVRP9SAFkKmrpc",
+      "publish_checkpoint": "367394500"
+    },
+    "waterx_prediction": {
+      "publish_digest": "NhubZx3SJwvTnjxfW9qGdc7KaKV97gA36J6xXUN78Fc",
+      "publish_checkpoint": "343899458"
+    },
+    "waterx_prediction_gift": {
+      "publish_digest": "Gykk1MRAj2XeddNJyB2A7ZuLUeEMtvwKGYhCs1oHKrdw",
+      "publish_checkpoint": "347776355"
+    },
+    "waterx_perp_view": {
+      "publish_digest": "47CvwEaJGDaj34kBZ6ik7GNyX3s712bbsWph8Hf9b2mN",
+      "publish_checkpoint": "367394623"
+    },
+    "waterx_rule": {
+      "publish_digest": "JBZhVbPL9tEJSGHsneUUjvzUSR7KAuT2WLHUZr8DZ5Mj",
+      "publish_checkpoint": "363429536"
+    },
+    "waterx_staking": {
+      "publish_digest": "Bq4c1PWxL21doUUr4o9TQitwGAfohHzt3zfywV4vHDtL",
+      "publish_checkpoint": "343899384"
+    },
+    "wlp": {
+      "publish_digest": "FcBHvPdWwMcN6DtounNNHeM3oKdoe5uFZtp8UhxH5NkF",
+      "publish_checkpoint": "343899346"
+    },
+    "waterx_credit": {
+      "publish_digest": "FPGkE3Te19sYHupEMoRu9oMamcrGWsWezfi9sTbsW7em",
+      "publish_checkpoint": "343899395"
+    },
+    "native_custody": {
+      "publish_digest": "2b6DjmsCHLHCbmuBN8DEtrGSBnrY5Kn31C9iLrcadgyn",
+      "publish_checkpoint": "343899407"
+    },
+    "wormhole_bridge": {
+      "publish_digest": "29JLcoS1wHF5wkaxLUNPo9J4jXtzTMBaMzorzASmDnrU",
+      "publish_checkpoint": "343899420"
+    },
+    "withdrawal_queue": {
+      "publish_digest": "8472ghUvypX6UtLndMsmX6dvpp9gxggyj98wv8W5zBUL",
+      "publish_checkpoint": "358192682"
+    },
+    "testnet_faucet": {
+      "publish_digest": "5ioVM4hEZzxVqV43tKg9VPxAqwYEgs7cfiCs5wUHnVSd",
+      "publish_checkpoint": "338586209"
+    },
+    "usd": {
+      "publish_digest": "98beQbLMCrRYYBPGwofyvRkkgePhjjNcVFnR5FS9eEyw",
+      "publish_checkpoint": "343899445"
+    },
+    "supra_rule": {
+      "publish_digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
+      "publish_checkpoint": "349406324"
+    }
+  }
+}
