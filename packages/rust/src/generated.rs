@@ -309,8 +309,6 @@ pub struct Wlp {
 pub struct OracleRules {
     pub constant: Constant,
 
-    pub pyth: Pyth,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pyth_lazer: Option<PythLazer>,
 
@@ -335,27 +333,6 @@ pub struct Constant {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConstantPrice {
     pub price: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Pyth {
-    pub package: String,
-
-    pub pyth_config_object: String,
-
-    /// Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper
-    /// refreshes).
-    pub pyth_price_feeds: HashMap<String, PythPriceFeed>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PythPriceFeed {
-    /// Pyth price-feed identifier (32-byte hex). NOT a Sui object id.
-    pub feed_id: String,
-
-    /// The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object;
-    /// passing the wrapper is the classic mistake.
-    pub price_info_object: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -386,6 +363,13 @@ pub struct Waterx {
     /// The ONE home for enclave identity (object, cap, config, pubkey).
     pub enclave: Enclave,
 
+    /// Per-symbol quote-center feed list — the waterx_rule build knob. A symbol builds a
+    /// `waterx_rule` leg (and a quote-center fetch) iff it is listed here, exactly as
+    /// `oracle_rules.pyth_lazer.lazer_feed_ids` gates the Lazer leg. Absent or empty: the rule
+    /// stays published but is fed nowhere. Keys ⊆ `symbols`; entries carry no fields yet.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub feeds: Option<HashMap<String, Feed>>,
+
     pub package: String,
 
     pub rule_config_object: String,
@@ -403,6 +387,10 @@ pub struct Enclave {
     /// Registered enclave ed25519 pubkey (hex, no 0x). The SOLE config home; k8s-infra pins an
     /// independent env copy by design (boot-without-enclave).
     pub pubkey: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Feed {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

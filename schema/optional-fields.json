@@ -5,6 +5,7 @@
     "objects/mock_usdsui",
     "objects/withdrawal_queue/executors",
     "oracle_rules/pyth_lazer",
-    "oracle_rules/supra"
+    "oracle_rules/supra",
+    "oracle_rules/waterx/feeds"
   ]
 }

@@ -585,52 +585,23 @@
               ],
               "additionalProperties": false,
               "description": "The ONE home for enclave identity (object, cap, config, pubkey)."
-            }
-          },
-          "required": [
-            "enclave",
-            "package",
-            "rule_config_object"
-          ],
-          "additionalProperties": false
-        },
-        "pyth": {
-          "type": "object",
-          "properties": {
-            "package": {
-              "type": "string"
             },
-            "pyth_config_object": {
-              "$ref": "#/$defs/suiId"
-            },
-            "pyth_price_feeds": {
+            "feeds": {
               "type": "object",
               "additionalProperties": {
                 "type": "object",
-                "properties": {
-                  "feed_id": {
-                    "$ref": "#/$defs/suiId",
-                    "description": "Pyth price-feed identifier (32-byte hex). NOT a Sui object id."
-                  },
-                  "price_info_object": {
-                    "$ref": "#/$defs/suiId",
-                    "description": "The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object; passing the wrapper is the classic mistake."
-                  }
-                },
-                "required": [
-                  "feed_id",
-                  "price_info_object"
-                ],
+                "properties": {},
+                "required": [],
                 "additionalProperties": false
               },
-              "description": "Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes)."
+              "description": "Per-symbol quote-center feed list — the waterx_rule build knob. A symbol builds a `waterx_rule` leg (and a quote-center fetch) iff it is listed here, exactly as `oracle_rules.pyth_lazer.lazer_feed_ids` gates the Lazer leg. Absent or empty: the rule stays published but is fed nowhere. Keys ⊆ `symbols`; entries carry no fields yet."
             }
           },
           "additionalProperties": false,
           "required": [
+            "enclave",
             "package",
-            "pyth_config_object",
-            "pyth_price_feeds"
+            "rule_config_object"
           ]
         },
         "pyth_lazer": {
@@ -722,7 +693,6 @@
       "additionalProperties": false,
       "required": [
         "constant",
-        "pyth",
         "waterx"
       ]
     },

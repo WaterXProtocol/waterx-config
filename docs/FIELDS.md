@@ -156,21 +156,12 @@ Every package carries the same identity block (the map is uniform — new packag
 | `package` | string | ✓ |  |
 | `rule_config_object` | suiId | ✓ |  |
 | `enclave` | object | ✓ | The ONE home for enclave identity (object, cap, config, pubkey). |
+| `feeds` | map<string, object> |  | Per-symbol quote-center feed list — the waterx_rule build knob. A symbol builds a `waterx_rule` leg (and a quote-center fetch) iff it is listed here, exactly as `oracle_rules.pyth_lazer.lazer_feed_ids` gates the Lazer leg. Absent or empty: the rule stays published but is fed nowhere. Keys ⊆ `symbols`; entries carry no fields yet. |
 
-### `oracle_rules.pyth`
-
-| field | type | required | notes |
-|---|---|---|---|
-| `package` | string | ✓ |  |
-| `pyth_config_object` | suiId | ✓ |  |
-| `pyth_price_feeds` | map<string, object> | ✓ | Per-symbol Pyth price feed: feed_id (Pyth) + price_info_object (Sui object the keeper refreshes). |
-
-#### `oracle_rules.pyth.pyth_price_feeds` — each entry
+#### `oracle_rules.waterx.feeds` — each entry
 
 | field | type | required | notes |
 |---|---|---|---|
-| `feed_id` | suiId | ✓ | Pyth price-feed identifier (32-byte hex). NOT a Sui object id. |
-| `price_info_object` | suiId | ✓ | The shared PriceInfoObject itself — NOT the Field<PriceIdentifier, ID> wrapper object; passing the wrapper is the classic mistake. |
 
 ### `oracle_rules.pyth_lazer`
 

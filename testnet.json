@@ -521,12 +521,21 @@
         "cap": "0x46b8905816a91bc443ecbe07777ae60805df044cbc850b5364ec372cd0a0c82f",
         "config": "0xa4ea6c16cd136056e6a77d71185126da6187e7435b91ddf255d8462c95cd501d",
         "pubkey": "03baaa84a2a1d05b3a3563223b114ea62cfd6141b86ab71f1d54de3f88cf90a6"
+      },
+      "feeds": {
+        "BTCUSD": {},
+        "ETHUSD": {},
+        "SOLUSD": {},
+        "SUIUSD": {},
+        "BNBUSD": {},
+        "DOGEUSD": {},
+        "XRPUSD": {},
+        "HYPEUSD": {},
+        "DEEPUSD": {},
+        "LITUSD": {},
+        "WALUSD": {},
+        "ZECUSD": {}
       }
-    },
-    "pyth": {
-      "package": "pyth_rule",
-      "pyth_config_object": "0x2f1e5086302c0070e9da3e99c626a29ccca73fe91be65433342f807c111b78ae",
-      "pyth_price_feeds": {}
     },
     "constant": {
       "package": "constant_rule",
