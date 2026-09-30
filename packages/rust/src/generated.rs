@@ -435,10 +435,10 @@ pub struct Waterx {
 
     /// Per-symbol quote-center feed list — the waterx_rule build knob. A symbol builds a
     /// `waterx_rule` leg (and a quote-center fetch) iff it is listed here, exactly as
-    /// `oracle_rules.pyth_lazer.lazer_feed_ids` gates the Lazer leg. Absent or empty: the rule
-    /// stays published but is fed nowhere. Keys ⊆ `symbols`; entries carry no fields yet.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub feeds: Option<HashMap<String, Feed>>,
+    /// `oracle_rules.pyth_lazer.lazer_feed_ids` gates the Lazer leg. Required on every network:
+    /// an empty map (`{}`) keeps the rule published but fed nowhere; omitting the key fails
+    /// validation. Keys ⊆ `symbols`; entries carry no fields yet.
+    pub feeds: HashMap<String, Feed>,
 
     pub package: String,
 

@@ -68,8 +68,10 @@ drift); edit the schema, never the generated files.
   that get a `pyth_lazer_rule` leg; `oracle_rules.waterx.feeds` lists the
   ones that get a `waterx_rule` leg (and a quote-center fetch). A symbol in
   neither list is priced by no off-chain source and every SDK tx build skips
-  it; a rule with no list (or an empty one) stays published but is fed
-  nowhere — mainnet ships no `waterx.feeds` today. Keep each list a superset
+  it. `waterx.feeds` is required on every network — an empty map (`{}`)
+  keeps the rule published but fed nowhere; the optional `pyth_lazer` block
+  may instead be absent. Both networks list the 12 Spot-BBO symbols the quote-center
+  signs (`/v1/sign/bbo/consensus`). Keep each list a superset
   of what the chain weights for that rule, or trades on the shortfall abort
   `EMissingPriceSource`.
 - Pyth Core is **removed** (2026-09-30): no `oracle_rules.pyth` block and no
