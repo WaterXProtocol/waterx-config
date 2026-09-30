@@ -2,9 +2,15 @@ name: Guard main merges
 
 # Only staging may be merged into main. PRs from any other source branch fail.
 # Mark this check as required in the main ruleset so a failure blocks the merge.
+# (The format flip needs no allowance here: it lands on staging via the v2
+# branch and reaches main through the normal staging→main promotion.)
 on:
   pull_request:
     branches: [main]
+
+concurrency:
+  group: guard-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   guard-source-branch:

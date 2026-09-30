@@ -1,0 +1,40 @@
+{
+  "name": "@waterx/config",
+  "version": "0.1.0",
+  "description": "Typed loader for waterx-config network files (the consolidated shape), generated from the canonical JSON Schema.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p .",
+    "test": "node --test --experimental-strip-types test/*.test.ts",
+    "prepack": "npm run build",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "ajv-cli": "5.0.0",
+    "typescript": "^5.7.0"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WaterXProtocol/waterx-config.git",
+    "directory": "packages/ts"
+  }
+}

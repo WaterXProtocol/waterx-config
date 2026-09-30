@@ -1,0 +1,289 @@
+{
+  "network": "mainnet",
+  "deploy_tx_log": [
+    {
+      "phase": "1.publish:waterx_oracle",
+      "action": "sui client publish waterx_oracle",
+      "digest": "27BUEDeitk52L3czDkRmYnfe7QnmN36tLYWHoC5Tfp8J",
+      "checkpoint": "282565926",
+      "timestamp": "2026-06-03T07:22:08.527Z"
+    },
+    {
+      "phase": "2",
+      "action": "whitelist_protocol<WaterXPerp>",
+      "digest": "4wipM2HahXCz1zE2Pob89qD4n5YhNaC5qMzq1dcdryWS",
+      "checkpoint": "282577150",
+      "timestamp": "2026-06-03T08:03:14.638Z"
+    },
+    {
+      "phase": "3",
+      "action": "allow_protocol_asset + register_deposit/withdraw_policy",
+      "digest": "6NNLhPfGRKn9aq1ZWckNgFyKHViUcW5y51ysWEekGwc6",
+      "checkpoint": "282577158",
+      "timestamp": "2026-06-03T08:03:16.134Z"
+    },
+    {
+      "phase": "6",
+      "action": "add_aggregator + Pyth wiring (per ticker)",
+      "digest": "j3uhXGNrBJWWqq2cmfhXmNZ1v4Y2eryRKawHJpnnYtp",
+      "checkpoint": "282577165",
+      "timestamp": "2026-06-03T08:03:17.775Z"
+    },
+    {
+      "phase": "7a",
+      "action": "create_wlp_pool",
+      "digest": "6FT5c82uZgj66uBqjKwH5RrG5QLsGpcVqYcSNQWHe2j3",
+      "checkpoint": "282577172",
+      "timestamp": "2026-06-03T08:03:20.235Z"
+    },
+    {
+      "phase": "7b",
+      "action": "lp_pool::add_token (per token)",
+      "digest": "AKGUzMne3z5NqFPc8oz6We23LW5UWZ6Z2TBargpu3MGg",
+      "checkpoint": "282577183",
+      "timestamp": "2026-06-03T08:03:21.901Z"
+    },
+    {
+      "phase": "7c",
+      "action": "create_aum<WLP> + share",
+      "digest": "DNDKwxuoFrX3u4yoE7odUT7ins2EVKfT4HU7eB2VrYMD",
+      "checkpoint": "282577190",
+      "timestamp": "2026-06-03T08:03:23.475Z"
+    },
+    {
+      "phase": "8a",
+      "action": "create_market_registry<WLP>",
+      "digest": "E6xCS8dGawDK2xtiNdUx6J9wdoAMA4cfRgj9mCoBe5JU",
+      "checkpoint": "282577197",
+      "timestamp": "2026-06-03T08:03:25.112Z"
+    },
+    {
+      "phase": "8b",
+      "action": "create_market + add_market (per ticker)",
+      "digest": "5iqZwmA5tuCAwcuf4WBGoFFUqgCyjUBfBfwzNMWJUQBm",
+      "checkpoint": "282577585",
+      "timestamp": "2026-06-03T08:04:54.307Z"
+    },
+    {
+      "phase": "8c",
+      "action": "add_request_rule + update_market_config",
+      "digest": "FbbPsYzi4Xd3ELeFneNG7wGaYbdEJSTwAkMLffLtrDHQ",
+      "checkpoint": "282577607",
+      "timestamp": "2026-06-03T08:04:58.712Z"
+    },
+    {
+      "phase": "9",
+      "action": "pyth_sponsor_rule::supply",
+      "digest": "AaTcQLuMjrbeXHS5wiPWWxjhBxhj1jh3LSmD8Sc2tdjT",
+      "checkpoint": "282577615",
+      "timestamp": "2026-06-03T08:05:00.682Z"
+    },
+    {
+      "phase": "10a",
+      "action": "allow_protocol_asset + waterx_staking::default<STAKE>",
+      "digest": "EiE4v4eyggZPhvGYNkGhJyaKZPogLyDuzqp3fSmD11Ya",
+      "checkpoint": "282577624",
+      "timestamp": "2026-06-03T08:05:02.572Z"
+    },
+    {
+      "phase": "10b",
+      "action": "add_rewarder (+ optional deposit_to_source)",
+      "digest": "2bZybckL7yBWXtRSMEGvsS2G7Zpp9w9P8UDK1N29oa4M",
+      "checkpoint": "282577632",
+      "timestamp": "2026-06-03T08:05:04.326Z"
+    },
+    {
+      "phase": "11",
+      "action": "usd::create_credit_registry",
+      "digest": "DWYyT6cq976QVgLUMUSiDwW3vtzdmPk9hmUZCL8XAfPL",
+      "checkpoint": "282577640",
+      "timestamp": "2026-06-03T08:05:06.113Z"
+    },
+    {
+      "phase": "12",
+      "action": "credit wxa whitelist + USD/backing policies",
+      "digest": "541kH3Ht1C9Mi2q67oquP8KcDJ3Ty7kUWN4B6WWiWnz1",
+      "checkpoint": "282577647",
+      "timestamp": "2026-06-03T08:05:07.586Z"
+    },
+    {
+      "phase": "13",
+      "action": "credit_registry::add_version + set_supply_limit (+ burn caps)",
+      "digest": "GMu5Rgw31T5hoV4KDBe7H1sDN53oxtYqhXJJtVGzpZKL",
+      "checkpoint": "282578512",
+      "timestamp": "2026-06-03T08:08:20.007Z"
+    },
+    {
+      "phase": "14a",
+      "action": "custody_vault::create_vault<USD>",
+      "digest": "2P8UXy8mGhEZfX6CaNz4dPoPxk8cCgaXT6sqADfSPFdm",
+      "checkpoint": "282578522",
+      "timestamp": "2026-06-03T08:08:22.064Z"
+    },
+    {
+      "phase": "14b",
+      "action": "custody_vault::add_asset (per backing T)",
+      "digest": "EdLQNcnHg78NW4DassFZEMdjnoMYMWgj3M7fJxbcApL2",
+      "checkpoint": "282578529",
+      "timestamp": "2026-06-03T08:08:23.693Z"
+    },
+    {
+      "phase": "15a",
+      "action": "wormhole_bridge::init_bridge",
+      "digest": "FhMtVAVa5niib91JWd9iGnSQ1TCTYjKx6ske2QAGbEso",
+      "checkpoint": "282578539",
+      "timestamp": "2026-06-03T08:08:27.030Z"
+    },
+    {
+      "phase": "16a",
+      "action": "withdrawal_queue::create_queue<USD>",
+      "digest": "2cSHqo9Q79yZQfMFpYjCn2xFRd8h4YAp4bNMZHiS5g47",
+      "checkpoint": "282578559",
+      "timestamp": "2026-06-03T08:08:30.302Z"
+    },
+    {
+      "phase": "17",
+      "action": "whitelist_protocol<WaterXPrediction> + allow_protocol_asset",
+      "digest": "3N7vD8h33WcdaGDRhLNx9wj1FuPL2NcpvUpAiVB5aFit",
+      "checkpoint": "282578574",
+      "timestamp": "2026-06-03T08:08:33.394Z"
+    },
+    {
+      "phase": "18a",
+      "action": "create_market_registry<USD>",
+      "digest": "FokCGbcEMqh4z1LpXdoEEx3TPD8JsKrqecUdKSqTD1uT",
+      "checkpoint": "282578584",
+      "timestamp": "2026-06-03T08:08:35.672Z"
+    },
+    {
+      "phase": "mvr.register",
+      "action": "MVR registration of @waterx-protocol/* (12 apps) — single M1 PTB",
+      "digest": "RCD2qayFvDYgC3iG1D36xxtt7BemSfqQuUycuuaMrzc",
+      "checkpoint": "285451733",
+      "timestamp": "2026-06-10T17:10:16.986Z"
+    },
+    {
+      "phase": "credit.publish",
+      "action": "Publish coins/sui_credit + coins/deep_credit + coins/wal_credit",
+      "digest": "Cq7gGgvq2jyP1NXpBhHdknfwopEfc8v3GBWg5k56GWmK",
+      "checkpoint": "325409361",
+      "timestamp": "2026-09-22T00:31:01.126Z"
+    },
+    {
+      "phase": "credit.registries",
+      "action": "create_credit_registry SUI + DEEP + WAL",
+      "digest": "Dq3jJZNQBPT2qJsye8ccdQwCYtpMpMe3sqm2tQjfts9t",
+      "checkpoint": "325409426",
+      "timestamp": "2026-09-22T00:31:15.766Z"
+    },
+    {
+      "phase": "credit.wiring",
+      "action": "wxa policies + add_version/set_supply_limit + create_vault + create_queue (SUI, DEEP, WAL)",
+      "digest": "DUMhx6gz1V7nFCYmL6rMGJ7n3LEC8LUdSirEicYK6oYB",
+      "checkpoint": "325409447",
+      "timestamp": "2026-09-22T00:31:20.694Z"
+    },
+    {
+      "phase": "credit.assets",
+      "action": "add_asset + add_executor (SUI, DEEP, WAL)",
+      "digest": "AWQcrqvbNbE2WcWA1pMDyLgSMbsxawN8wH1GVThU6VrF",
+      "checkpoint": "325409468",
+      "timestamp": "2026-09-22T00:31:25.356Z"
+    },
+    {
+      "phase": "18.prediction",
+      "action": "allow_protocol_asset<WaterXPrediction, T> + create_market_registry<T> (SUI, DEEP, WAL)",
+      "digest": "51ZketU5d23Fk8XtkuszG8pVVFttFHouwj3RjnbbNTgn",
+      "checkpoint": "325409821",
+      "timestamp": "2026-09-22T00:32:44.000Z"
+    },
+    {
+      "phase": "credit.gates",
+      "action": "credit-module-versions add 4 on native_custody (4 registries + 4 vaults) — M1",
+      "digest": "4gSzGbSxAR6gpCw8AXt385rLth7VVh6VLbXPKcRacCNT",
+      "checkpoint": "325409563",
+      "timestamp": "2026-09-22T00:31:46.000Z"
+    },
+    {
+      "phase": "1.upgrade:native_custody",
+      "action": "upgrade native_custody v3→v4 (PACKAGE_VERSION 4: mint floors to the credit grain, remainder stays as vault surplus) → 0xb92ce2e086cd12366255695228fdb148b9f5af5e72ac74126fe23a64dcacf831 — M1",
+      "digest": "DnYQ8K5UHqdbohCExYmXSXJz2q5tU2uGvybCFb5Bnjcd",
+      "checkpoint": "325409629",
+      "timestamp": "2026-09-22T00:32:01.000Z"
+    },
+    {
+      "phase": "1.upgrade:withdrawal_queue",
+      "action": "upgrade withdrawal_queue v4→v5 (dependency relink to native_custody 0xb92ce2e0…, no source change) → 0x5599b5f5de0d762920afb9158b1df8b3df84822394eecba617a6fbdf865b10cb — M1",
+      "digest": "AuYMW4tPxnGHnQvBkYLTgfC9bXtrz7MJFtdHuC7xYPRn",
+      "checkpoint": "325409719",
+      "timestamp": "2026-09-22T00:32:21.000Z"
+    },
+    {
+      "phase": "credit.gates",
+      "action": "credit-module-versions remove 3 on native_custody (kill-switch of the pre-v4 code) — M1",
+      "digest": "8aqrhamooo8uTNfMZpGDS7CRnAUqrjSsU3pyRQirze2q",
+      "checkpoint": "325409799",
+      "timestamp": "2026-09-22T00:32:39.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_rule",
+      "action": "upgrade waterx_rule v2→v3 (Spot-BBO feed registration: set_bbo_feed / bbo_consensus_v1 / route IDs 1001,1002,1012,1021,1031,1041 — waterx-contract#145; no feed registered yet) → 0x2e1fcba0d24ffdb8a4663d36e16d781f58dc81fec6bfeba2e0570c4db63d4ead — M1",
+      "digest": "BRbWTA5EqCYwc9x41ZoPnHFabGJCtN7PHBw4J9ZKY3hT",
+      "checkpoint": "325459539",
+      "timestamp": "2026-09-22T03:40:32.000Z"
+    },
+    {
+      "phase": "prediction.gates",
+      "action": "global_config::allow_version(6) on waterx_prediction GlobalConfig — gate {4,5} → {4,5,6} (4 stays: waterx_prediction_gift links the PACKAGE_VERSION-4 build 0xf2aeaf8e…; 5 retired once consumers move) — M1",
+      "digest": "7BuxHrpbjPEaLNh46oqUdvb3SyioLRAQWZaacNL1Vx1G",
+      "checkpoint": "325471689",
+      "timestamp": "2026-09-22T04:25:50.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v6→v7 (PACKAGE_VERSION 6: additive events::MarketSettlementSnapshot on every resolution — waterx-contract#122) → 0x082328867e8b188412f5214342de5fa1524a398d01acefbdeb00ac08003b1745 — M1",
+      "digest": "6DvW7nrGWS82KWxAT8JAqKaHfZvQVX2rp2KXUey1pRvp",
+      "checkpoint": "325471961",
+      "timestamp": "2026-09-22T04:26:49.000Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_rule",
+      "action": "upgrade waterx_rule v3→v4 (full BBO source allowlist: is_bbo_source adds 1003,1011,1032,1033 for the 12-asset quote-center config; 1023 rejected — waterx-contract#151; no feed registered yet) → 0xce1792d86236f523b1d49b1b331a35e3e58b4f7db67d0089200714a5c7aa7db0 — M1",
+      "digest": "4RApcPuVQQwwb8twVqD2SzCrP1RtkBgbgZAAuAtLPryV",
+      "checkpoint": "325519738",
+      "timestamp": "2026-09-22T07:25:07.000Z"
+    }
+  ],
+  "package_publish": {
+    "enclave": {
+      "publish_digest": "A2kDr7vmUq1fQo7KmTCvXZFA8X2UqgYevbgi8tDHvRnR",
+      "publish_checkpoint": "304657684"
+    },
+    "waterx_rule": {
+      "publish_digest": "CBBJNUmB8QdEtp1RhjAALYvmSNq1zPNsRVX4eUosMWkL",
+      "publish_checkpoint": "304657879",
+      "register_digest": "2ezRmoSLRTvpAzkZ2ipoWxo71MTbghLqV3vdg1cGCVnb",
+      "register_checkpoint": "304660405"
+    },
+    "waterx_oracle": {
+      "publish_digest": "27BUEDeitk52L3czDkRmYnfe7QnmN36tLYWHoC5Tfp8J",
+      "publish_checkpoint": "282565926"
+    },
+    "waterx_prediction_gift": {
+      "publish_digest": "DHPAvyfvN9PiXiYvAFQ2rFksdMyR59VVqCrLd2W5NiFq",
+      "publish_checkpoint": "286567975"
+    },
+    "sui_credit": {
+      "publish_digest": "Cq7gGgvq2jyP1NXpBhHdknfwopEfc8v3GBWg5k56GWmK",
+      "publish_checkpoint": "325409361"
+    },
+    "deep_credit": {
+      "publish_digest": "Cq7gGgvq2jyP1NXpBhHdknfwopEfc8v3GBWg5k56GWmK",
+      "publish_checkpoint": "325409361"
+    },
+    "wal_credit": {
+      "publish_digest": "Cq7gGgvq2jyP1NXpBhHdknfwopEfc8v3GBWg5k56GWmK",
+      "publish_checkpoint": "325409361"
+    }
+  }
+}
