@@ -133,12 +133,6 @@
       "version": 1,
       "upgrade_capability": "0x445e8bd44129686b74e45f82616da79c093827dada5bd91b0014281d1f4bdc73"
     },
-    "pyth_rule": {
-      "published_at": "0x907e3691cedbb44e2e5f823003446f4c8e3601bc47987f9e012e625353709e00",
-      "original_id": "0x907e3691cedbb44e2e5f823003446f4c8e3601bc47987f9e012e625353709e00",
-      "version": 1,
-      "upgrade_capability": "0x9001e963bd14e220f5a9eab3ce3427070c422bf20dc0b4650f03bab16cc0e7d5"
-    },
     "waterx_account": {
       "published_at": "0xf5489f5b31ce144749d27ef3293d32b21b24b5cc9be27abad3d2bb93256092a1",
       "original_id": "0xff4afb7305886992843b700a363ebe4ae0dc6a727c4941043b565d0a3a7eb61d",
@@ -679,11 +673,6 @@
         "WALUSD": {},
         "ZECUSD": {}
       }
-    },
-    "pyth": {
-      "package": "pyth_rule",
-      "pyth_config_object": "0x2f1e5086302c0070e9da3e99c626a29ccca73fe91be65433342f807c111b78ae",
-      "pyth_price_feeds": {}
     },
     "constant": {
       "package": "constant_rule",

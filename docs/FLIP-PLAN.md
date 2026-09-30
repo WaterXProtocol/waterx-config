@@ -50,7 +50,7 @@ The old→new path map:
 | `packages.waterx_rule.feeds` | **removed 2026-09-09** — venue composition moved to quote-service's BBO config (quote-center #191); feed `kind` lives in `symbols` |
 | `coin_registry` | **removed 2026-09-09** — it held the Sui SYSTEM address `0xc` (`sui::coin_registry`), a network-invariant constant like `0x6` Clock; use the constant |
 | `packages.waterx_rule.enclave*` | `oracle_rules.waterx.enclave.{object,cap,config,pubkey}` |
-| `packages.pyth_rule.{config,feeds}` | `oracle_rules.pyth.{pyth_config_object,pyth_price_feeds}` |
+| `packages.pyth_rule` (all of it) | **removed 2026-09-30** — Pyth Core retired; no v2 home (it briefly lived at `oracle_rules.pyth`, restored by 7984870 for pinned parsers, then dropped once they advanced) |
 | `packages.pyth_lazer_rule.feeds` | `oracle_rules.pyth_lazer.lazer_feed_ids` |
 | `packages.pyth_lazer_rule.{config,state}` | `oracle_rules.pyth_lazer.{lazer_config_object,lazer_state_object}` |
 | `packages.{waterx,constant,supra}_rule.config` | `oracle_rules.{waterx,constant,supra}.rule_config_object` |
