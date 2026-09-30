@@ -539,7 +539,7 @@ export default z
         feeds: z
           .record(z.object({}))
           .describe(
-            "Per-symbol quote-center feed list — the waterx_rule build knob. A symbol builds a `waterx_rule` leg (and a quote-center fetch) iff it is listed here, exactly as `oracle_rules.pyth_lazer.lazer_feed_ids` gates the Lazer leg. Absent or empty: the rule stays published but is fed nowhere. Keys ⊆ `symbols`; entries carry no fields yet.",
+            "Per-symbol quote-center feed list — the waterx_rule build knob. A symbol builds a `waterx_rule` leg (and a quote-center fetch) iff it is listed here, exactly as `oracle_rules.pyth_lazer.lazer_feed_ids` gates the Lazer leg. Required on every network: an empty map (`{}`) keeps the rule published but fed nowhere; omitting the key fails validation. Keys ⊆ `symbols`; entries carry no fields yet.",
           ),
       }),
       pyth_lazer: z
