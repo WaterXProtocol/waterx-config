@@ -441,6 +441,13 @@
       "digest": "6kSaz5WvNgKdMMyby5q5Zgfp97M62gxLDmbN7AaTwVzz",
       "checkpoint": "389355337",
       "timestamp": "2026-09-30T05:49:44.212Z"
+    },
+    {
+      "phase": "prediction.settlement_assets",
+      "action": "account::allow_protocol_asset<WaterXPrediction, T> for SUI / DEEP / WAL — re-opens the 2026-09-23 freeze now that each registry sits on its own id block (set-prediction-settlement-assets.ts allow)",
+      "digest": "7WVMP9QonxFZxMVNa9bK8aghsCEVVAgrivjsa9oKrZwC",
+      "checkpoint": "389356061",
+      "timestamp": "2026-09-30T05:52:40.915Z"
     }
   ],
   "package_publish": {
