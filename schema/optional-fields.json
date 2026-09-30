@@ -4,7 +4,6 @@
     "objects/faucet",
     "objects/mock_usdsui",
     "oracle_rules/pyth_lazer",
-    "oracle_rules/supra",
-    "oracle_rules/waterx/feeds"
+    "oracle_rules/supra"
   ]
 }

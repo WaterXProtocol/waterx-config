@@ -437,8 +437,7 @@ pub struct Waterx {
     /// `waterx_rule` leg (and a quote-center fetch) iff it is listed here, exactly as
     /// `oracle_rules.pyth_lazer.lazer_feed_ids` gates the Lazer leg. Absent or empty: the rule
     /// stays published but is fed nowhere. Keys ⊆ `symbols`; entries carry no fields yet.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub feeds: Option<HashMap<String, Feed>>,
+    pub feeds: HashMap<String, Feed>,
 
     pub package: String,
 

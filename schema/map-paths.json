@@ -6,7 +6,8 @@
       "path": "oracle_rules/waterx/feeds",
       "base": "symbols",
       "networks": [
-        "testnet"
+        "testnet",
+        "mainnet"
       ]
     },
     {
