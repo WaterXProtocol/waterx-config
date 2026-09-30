@@ -39,6 +39,11 @@ const LEGACY_DATA_PATHS = [
   // config (quote-center #191); coin_registry was the Sui system constant 0xc
   "oracle_rules/waterx/venue_feeds",
   "coin_registry",
+  // removed 2026-09-30: Pyth Core retired fleet-wide (no SDK rule module
+  // feeds it since 5.0.0); the package identity goes with it. Only the v1
+  // `main` branch keeps it, until the production v2 rollout.
+  "oracle_rules/pyth",
+  "packages/pyth_rule",
 ];
 const dig = (doc, path) => path.split("/").reduce((o, k) => o?.[k], doc);
 for (const net of ["mainnet", "testnet"]) {
