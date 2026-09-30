@@ -427,6 +427,20 @@
       "digest": "HiR7Nz5vaoRgsqQWf2JHnUMERJyJZKRWChBW2vE3Y81L",
       "checkpoint": "389352997",
       "timestamp": "2026-09-30T05:40:13.298Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction_gift",
+      "action": "upgrade waterx_prediction_gift v2→v3 (dependency-only relink onto waterx_prediction v6 0xe47d2416…; PACKAGE_VERSION stays 3, gate {3} unchanged) → 0x53f8ed8b1e3013714dddf4e62f7c459b1e7b0fbc6b5e26270853338a56f1bd68",
+      "digest": "HmXLUVj827v8mEYMmZhZpYBqVooeUcjtpFGWvFCXQrme",
+      "checkpoint": "389355076",
+      "timestamp": "2026-09-30T05:48:40.158Z"
+    },
+    {
+      "phase": "prediction.rebase",
+      "action": "waterx_prediction::rebase_registry_ids on the pristine SUI / DEEP / WAL MarketRegistry — id blocks 1 / 2 / 3 (bases 1<<40, 2<<40, 3<<40); USD keeps block 0; assets stay frozen until set-prediction-settlement-assets allow",
+      "digest": "6kSaz5WvNgKdMMyby5q5Zgfp97M62gxLDmbN7AaTwVzz",
+      "checkpoint": "389355337",
+      "timestamp": "2026-09-30T05:49:44.212Z"
     }
   ],
   "package_publish": {
