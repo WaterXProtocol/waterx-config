@@ -1,0 +1,25 @@
+# Codex twin of `permissions.ask` in .claude/settings.json: publishing needs a
+# human. A push to main deploys config.waterx.app, staging serves the staging
+# CDN alias, main-v2 / staging-v2 are the v2 lineage, publish.yml publishes
+# @waterx/config, and `gh pr merge` does any of those. Loaded only in trusted
+# projects. The set of plain forms here is the same as permissions.ask (the
+# shared lint compares them). A rule sees only leading words, so a bare `git
+# push` on a served branch, `HEAD:main`, `git -c k=v push …` or `gh -R … pr
+# merge` is not a match: .codex/hooks.json runs
+# scripts/agent-hooks/ask-before-publish.sh --codex, which parses the line with
+# the shared segmenter, blocks those and asks for the form that names the branch.
+# Check: codex execpolicy check --pretty --rules .codex/rules/publish.rules -- git push origin main
+
+prefix_rule(pattern = ["gh", "pr", "merge"],     decision = "prompt", justification = "merging into staging or main publishes config")
+prefix_rule(pattern = ["gh", "workflow", "run"], decision = "prompt", justification = "publish.yml publishes @waterx/config to npm")
+prefix_rule(pattern = ["git", "push", "origin", "main"],       decision = "prompt", justification = "deploys config.waterx.app")
+prefix_rule(pattern = ["git", "push", "origin", "staging"],    decision = "prompt", justification = "serves the staging CDN alias")
+prefix_rule(pattern = ["git", "push", "origin", "main-v2"],    decision = "prompt", justification = "v2 release lineage")
+prefix_rule(pattern = ["git", "push", "origin", "staging-v2"], decision = "prompt", justification = "v2 lineage")
+prefix_rule(pattern = ["git", "push", "-u", "origin", "main"],       decision = "prompt", justification = "deploys config.waterx.app")
+prefix_rule(pattern = ["git", "push", "-u", "origin", "staging"],    decision = "prompt", justification = "serves the staging CDN alias")
+prefix_rule(pattern = ["git", "push", "-u", "origin", "main-v2"],    decision = "prompt", justification = "v2 release lineage")
+prefix_rule(pattern = ["git", "push", "-u", "origin", "staging-v2"], decision = "prompt", justification = "v2 lineage")
+prefix_rule(pattern = ["git", "push", "--force"],            decision = "prompt", justification = "rewrites a remote branch")
+prefix_rule(pattern = ["git", "push", "--force-with-lease"], decision = "prompt", justification = "rewrites a remote branch")
+prefix_rule(pattern = ["git", "push", "-f"],                 decision = "prompt", justification = "rewrites a remote branch")

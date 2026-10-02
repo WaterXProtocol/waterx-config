@@ -1,0 +1,22 @@
+[package]
+name = "waterx-config"
+version = "0.1.0"
+edition = "2021"
+description = "Typed reader for waterx-config network files, generated from the canonical JSON Schema"
+license = "MIT"
+repository = "https://github.com/WaterXProtocol/waterx-config"
+rust-version = "1.75"
+publish = false  # consumed via git tag; crates.io publishing is a deliberate future decision
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"], optional = true }
+tokio = { version = "1", default-features = false, features = ["time"], optional = true }
+
+[features]
+default = []
+fetch = ["dep:reqwest", "dep:tokio"]
+
+[dev-dependencies]
+tokio = { version = "1", default-features = false, features = ["time", "rt", "macros"] }

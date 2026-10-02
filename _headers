@@ -18,3 +18,11 @@
 /testnet.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=60, stale-while-revalidate=600
+
+/schema/*
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=60, stale-while-revalidate=600
+
+/deploys/*
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=300, stale-while-revalidate=3600
