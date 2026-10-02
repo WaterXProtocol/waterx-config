@@ -18,13 +18,15 @@
 #     out of the argument list (kubectl -n ns --context c delete pod x -> kubectl delete pod x).
 #
 # Output, one line per simple command (fields separated by a TAB; a newline, TAB or CR inside a
-# value is printed as \n, \t, \r):
+# value is printed as \n, \t, \r; an empty argument is an empty field, which `read` with IFS=TAB
+# collapses, so split with awk -F'\t' when an argument's position matters):
 #   default   <tool> <arg>...                          normalised: global options removed
 #   --long    <origin> <tool> <globals> <words> <arg>...
 #             origin  "plain" when Codex prefix rules can see the command as typed: top level, no
 #                     wrapper, assignment, path on the tool, redirection, substitution, subshell or
 #                     here-document anywhere in the line; "wrapped" otherwise
-#             globals the removed global options, space-joined ("" when none)
+#             globals the removed global options, space-joined ("-" when none, so the field never
+#                     collapses under IFS=TAB)
 #             words   the command's words as typed (after quote removal), space-joined
 #   UNPARSEABLE <reason> <raw text>                    (both modes) a part it could not parse with
 #             confidence: unterminated quote or substitution, a command word computed at run time
@@ -362,7 +364,7 @@ function emit(origin, tool, from, to,    j, line, why) {
   NA = 0; for (j = from; j <= to; j++) A[++NA] = SV[j]
   why = norm(tool)
   if (why != "") { unparseable(why, joinr(1, NS)); return }
-  if (LONG) line = origin "\t" esc(tool) "\t" esc(GL) "\t" esc(joinv(WSTART, NS)); else line = esc(tool)
+  if (LONG) line = origin "\t" esc(tool) "\t" (GL == "" ? "-" : esc(GL)) "\t" esc(joinv(WSTART, NS)); else line = esc(tool)
   for (j = 1; j <= NO; j++) line = line "\t" esc(O[j])
   print line
 }
@@ -682,10 +684,10 @@ _shseg_self_test() {
   _t "quoted tool name" "kubectl|delete|ns|prod" "\"kubectl\" delete ns prod"
   _t "backslashed tool name" "kubectl|delete|ns|prod" "\\kubectl delete ns prod"
   # --- origin (Codex prefix-rule visibility) ----------------------------------------------------
-  _t "plain" "plain|kubectl||kubectl delete pod x|delete|pod|x" "kubectl delete pod x" --long
-  _t "absolute path is wrapped" "wrapped|kubectl||/bin/kubectl delete pod x|delete|pod|x" "/bin/kubectl delete pod x" --long
-  _t "redirection anywhere is wrapped" "wrapped|kubectl||kubectl delete pod x|delete|pod|x" "kubectl delete pod x 2>/dev/null" --long
-  _t "from bash -c is wrapped" "wrapped|kubectl||kubectl delete pod x|delete|pod|x" "bash -c 'kubectl delete pod x'" --long
+  _t "plain" "plain|kubectl|-|kubectl delete pod x|delete|pod|x" "kubectl delete pod x" --long
+  _t "absolute path is wrapped" "wrapped|kubectl|-|/bin/kubectl delete pod x|delete|pod|x" "/bin/kubectl delete pod x" --long
+  _t "redirection anywhere is wrapped" "wrapped|kubectl|-|kubectl delete pod x|delete|pod|x" "kubectl delete pod x 2>/dev/null" --long
+  _t "from bash -c is wrapped" "wrapped|kubectl|-|kubectl delete pod x|delete|pod|x" "bash -c 'kubectl delete pod x'" --long
   # --- fail closed ------------------------------------------------------------------------------
   _t "unterminated quote" "UNPARSEABLE|unterminated double quote or substitution inside one|kubectl delete \"pod" "kubectl delete \"pod"
   _t "computed command word" "UNPARSEABLE|command word is computed at run time|\$K delete ns prod" "\$K delete ns prod"
@@ -711,7 +713,7 @@ case "${0##*/}" in
       --version) echo "shell-segments.sh v$SHSEG_VERSION" ;;
       --self-test) _shseg_self_test ;;
       --json-get) shseg_json_get "${2:-}" ;;
-      -h|--help) sed -n '2,49p' "$0" ;;
+      -h|--help) sed -n '2,51p' "$0" ;;
       *)
         _shseg_long=""
         if [ "${1:-}" = "--long" ]; then _shseg_long=--long; shift; fi
