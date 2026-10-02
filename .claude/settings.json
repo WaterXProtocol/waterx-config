@@ -5,8 +5,12 @@
       "Bash(gh workflow run:*)",
       "Bash(git push origin main:*)",
       "Bash(git push origin staging:*)",
+      "Bash(git push origin main-v2:*)",
+      "Bash(git push origin staging-v2:*)",
       "Bash(git push -u origin main:*)",
       "Bash(git push -u origin staging:*)",
+      "Bash(git push -u origin main-v2:*)",
+      "Bash(git push -u origin staging-v2:*)",
       "Bash(git push --force:*)",
       "Bash(git push --force-with-lease:*)",
       "Bash(git push -f:*)"
@@ -19,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/agent-hooks/ask-before-publish.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR/scripts/agent-hooks/ask-before-publish.sh\"",
             "timeout": 10,
             "statusMessage": "publish check"
           }

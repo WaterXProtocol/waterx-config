@@ -43,9 +43,12 @@ Content rules (`README.md` and `docs/FIELDS.md` are the reference):
 The request sets the scope: change the ids the task names, report anything else you notice as a
 suggestion, and don't merge into a served branch or dispatch `publish.yml` yourself.
 `.claude/settings.json` and `.codex/rules/publish.rules` make `gh pr merge`, `gh workflow run` and
-a push to `main` / `staging` / `main-v2` / `staging-v2` prompt; Codex's rules see only leading
-words, so its hook (`.codex/hooks.json`) blocks a publish that does not name its branch (`git
-push` on `main-v2`, `HEAD:main-v2`) and asks for the plain form.
+a push to `main` / `staging` / `main-v2` / `staging-v2` prompt (the same plain forms in both). The
+hook splits the line with the shared quote-aware segmenter (`scripts/agent-hooks/lib/`), so global
+options (`git -c …`, `gh -R …`), wrappers and newlines are seen, quoted prose and comments are not
+commands, and a line it cannot parse that names a publish verb asks. Codex's rules see only leading
+words, so its hook (`.codex/hooks.json`) blocks a publish that does not name its branch (`git push`
+on `main-v2`, `HEAD:main-v2`) and asks for the plain form.
 `.github/workflows/agent-harness.yml` runs `scripts/agent-hooks/test-agent-hooks.sh` and the
 shared harness lint `scripts/agent-hooks/check-harness.sh` (vendored from `waterx-commons`; keep
 its version line). Report only what a tool result from this session backs — the diff, the validate

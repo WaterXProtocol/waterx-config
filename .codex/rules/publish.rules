@@ -2,10 +2,12 @@
 # human. A push to main deploys config.waterx.app, staging serves the staging
 # CDN alias, main-v2 / staging-v2 are the v2 lineage, publish.yml publishes
 # @waterx/config, and `gh pr merge` does any of those. Loaded only in trusted
-# projects. A rule sees only leading words, so a bare `git push` on a served
-# branch, `HEAD:main` or `gh -R … pr merge` is not a match: .codex/hooks.json
-# runs scripts/agent-hooks/ask-before-publish.sh --codex, which blocks those and
-# asks for the form that names the branch.
+# projects. The set of plain forms here is the same as permissions.ask (the
+# shared lint compares them). A rule sees only leading words, so a bare `git
+# push` on a served branch, `HEAD:main`, `git -c k=v push …` or `gh -R … pr
+# merge` is not a match: .codex/hooks.json runs
+# scripts/agent-hooks/ask-before-publish.sh --codex, which parses the line with
+# the shared segmenter, blocks those and asks for the form that names the branch.
 # Check: codex execpolicy check --pretty --rules .codex/rules/publish.rules -- git push origin main
 
 prefix_rule(pattern = ["gh", "pr", "merge"],     decision = "prompt", justification = "merging into staging or main publishes config")
