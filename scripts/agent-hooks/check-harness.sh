@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# waterx-commons/harness/lint/check-harness.sh v1.2.0
+# waterx-commons/harness/lint/check-harness.sh v1.2.1
 #
 # Checks a repository against the WaterX agent-harness standard
 # (Bucket-Protocol/waterx-commons, harness/STANDARD.md). Repos vendor this file as
@@ -22,7 +22,12 @@
 # JSON and .codex/rules are read with awk, so the result is the same with or without jq.
 set -u
 
-VERSION="1.2.0"
+VERSION="1.2.1"
+# Released versions of harness/hooks/lib/shell-segments.sh and their sha256, for check 10.
+# Every release of the segmenter adds a line here (CI fails when the current one is missing).
+KNOWN_SEGMENTERS="
+1.1.0 7123ebaf34af6b32e84576fc293e04a563efc00138854aedcad9f50e0531dc52
+"
 ROOT=""
 HUB=""
 REPORT_ONLY=0
@@ -605,6 +610,33 @@ EOF
 }
 check_hook_roots .claude/settings.json claude
 check_hook_roots .codex/hooks.json codex
+end_check
+
+# ---------------------------------------------------------------------------------------------
+begin_check 10 "a vendored scripts/agent-hooks/lib/shell-segments.sh is a released version, unedited (advisory)" \
+  "Hooks in every repo classify commands through the same segmenter (STANDARD.md rule 12); a copy that says one version and holds other code makes two repos with the same version line behave differently."
+seg=scripts/agent-hooks/lib/shell-segments.sh
+sha256_of() {
+  if command -v shasum >/dev/null 2>&1; then shasum -a 256 "$1" | awk '{ print $1 }'
+  elif command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | awk '{ print $1 }'
+  elif command -v openssl >/dev/null 2>&1; then openssl dgst -sha256 "$1" | awk '{ print $NF }'
+  fi
+}
+if [ -f "$seg" ]; then
+  seg_v=$(sed -n '2p' "$seg" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//')
+  seg_sha=$(sha256_of "$seg")
+  released=$(printf '%s\n' "$KNOWN_SEGMENTERS" | awk 'NF == 2 { printf "%sv%s", (n++ ? ", " : ""), $1 }')
+  want=$(printf '%s\n' "$KNOWN_SEGMENTERS" | awk -v v="$seg_v" 'NF == 2 && $1 == v { print $2 }')
+  if [ -z "$seg_v" ]; then
+    warn "$seg: no version line on line 2; re-vendor a released copy ($released)"
+  elif [ -z "$want" ]; then
+    warn "$seg: v$seg_v is not a released version (this lint knows $released); re-vendor it from waterx-commons"
+  elif [ -z "$seg_sha" ]; then
+    printf '    note: no sha256 tool found; %s content not compared\n' "$seg"
+  elif [ "$seg_sha" != "$want" ]; then
+    warn "$seg: says v$seg_v but its content differs from the released v$seg_v (sha256 $seg_sha); re-vendor it unchanged"
+  fi
+fi
 end_check
 
 echo
