@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# Tests for ask-before-publish.sh (Claude and --codex modes) with sample hook JSON on stdin and throwaway
-# git checkouts for the bare-push case. Needs jq and git; never pushes.
+# Tests for ask-before-publish.sh (Claude and --codex modes) with sample hook JSON on stdin, throwaway
+# git checkouts for the bare-push case, and the exact commands .claude/settings.json and .codex/hooks.json
+# configure, run from a nested directory. Needs jq and git; never pushes.
 set -eu
 
 here=$(cd "$(dirname "$0")" && pwd)
+root=$(cd "$here/../.." && pwd)
 ask="$here/ask-before-publish.sh"
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 pass=0
 ok() { pass=$((pass + 1)); echo "ok   - $*"; }
 fail() { echo "FAIL - $*" >&2; exit 1; }
+
+# The vendored segmenter's own suite first: every hook result below rests on it.
+sh "$here/lib/shell-segments.sh" --self-test >/dev/null || fail "lib/shell-segments.sh --self-test failed"
+ok "vendored shell-segments.sh passes its self-test"
 
 hook_json() { jq -nc --arg c "$1" --arg d "${2:-/x}" '{hook_event_name:"PreToolUse",tool_name:"Bash",cwd:$d,tool_input:{command:$c}}'; }
 
@@ -54,6 +60,21 @@ expect_ask 'git push origin refs/heads/staging'
 expect_ask 'git push --all origin'
 expect_ask 'bash -c "git push origin main"'
 
+# --- global options, wrappers and separators the shared segmenter handles -------
+expect_ask 'git -c core.hooksPath=/dev/null push origin main'
+expect_ask 'git --no-pager push origin staging'
+expect_ask '/usr/bin/git push origin main'
+expect_ask 'env GIT_TRACE=1 git push origin main'
+expect_ask 'command git push origin staging'
+expect_ask 'time git push origin main-v2'
+expect_ask "sh -c 'git push origin HEAD:main'"
+expect_ask 'gh --repo WaterXProtocol/waterx-config pr merge 96'
+expect_ask "git status
+git push origin main"
+# --- fail closed: a segment naming a publish verb that cannot be parsed asks ----
+expect_ask 'git push origin "main'
+expect_ask 'eval "git push origin main"'
+
 expect_silent 'git push -u origin chore/testnet-waterx-feeds'
 expect_silent 'git push origin HEAD:refs/heads/chore/x'
 expect_silent 'git fetch origin && git status'
@@ -68,6 +89,12 @@ expect_silent 'grep -n "git push origin main" README.md'
 expect_silent 'git commit -m "docs: never git push origin main by hand"'
 expect_silent 'gh pr create --base staging --title x --body "merge with gh pr merge after review"'
 
+expect_silent 'git push origin chore/x # then git push origin main'
+expect_silent 'gh pr create --base staging --title x --body "Summary.
+After review: gh pr merge, then git push origin main.
+git push --force"'
+expect_silent 'git -c color.ui=never log --oneline -3'
+
 expect_codex_pass 'git push -u origin chore/x'
 expect_codex_pass 'git push origin main'
 expect_codex_pass 'jq . mainnet.json && git push -u origin staging-v2'
@@ -75,6 +102,25 @@ expect_codex_pass 'gh pr merge 96 --squash'
 expect_codex_block 'git push origin HEAD:main'
 expect_codex_block 'gh -R WaterXProtocol/waterx-config pr merge 96'
 expect_codex_block 'git push origin main 2>&1 | tail -1'
+
+expect_codex_block 'git -c core.hooksPath=/dev/null push origin main'
+expect_codex_block 'env GIT_TRACE=1 git push origin main'
+expect_codex_block 'git push origin "main'
+
+# --- the configured commands resolve from the repo root, not the session cwd ----
+# Codex runs hooks with the session cwd and Claude Code exports $CLAUDE_PROJECT_DIR;
+# a cwd-relative path exits 127 below the root and the hook silently does not run.
+codex_cmd=$(jq -r '.hooks.PreToolUse[0].hooks[0].command' "$root/.codex/hooks.json")
+claude_cmd=$(jq -r '.hooks.PreToolUse[0].hooks[0].command' "$root/.claude/settings.json")
+set +e
+err=$(cd "$root/docs" && hook_json 'git push origin HEAD:main' | bash -c "$codex_cmd" 2>&1 >/dev/null); rc=$?
+set -e
+[ "$rc" -eq 2 ] || fail "configured Codex hook from docs/: expected exit 2, got $rc ($err)"
+ok "configured Codex hook runs from a nested directory"
+out=$(cd "$root/docs" && hook_json 'git push origin main' | CLAUDE_PROJECT_DIR="$root" bash -c "$claude_cmd") \
+  || fail "configured Claude hook from docs/ exited non-zero"
+printf '%s' "$out" | jq -e '.hookSpecificOutput.permissionDecision == "ask"' >/dev/null || fail "configured Claude hook from docs/ did not ask: $out"
+ok "configured Claude hook runs from a nested directory"
 
 # Bare `git push`: decided by the branch the checkout in cwd is on.
 repo="$tmp/repo"

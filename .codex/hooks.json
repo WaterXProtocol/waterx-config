@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "scripts/agent-hooks/ask-before-publish.sh --codex",
+            "command": "\"$(git rev-parse --show-toplevel)/scripts/agent-hooks/ask-before-publish.sh\" --codex",
             "timeout": 10,
             "statusMessage": "publish check"
           }
