@@ -1,5 +1,5 @@
 #!/bin/sh
-# waterx-commons/harness/hooks/lib/shell-segments.sh v1.0.0
+# waterx-commons/harness/hooks/lib/shell-segments.sh v1.1.0
 #
 # A quote-aware shell command segmenter for agent hooks (STANDARD.md rule R2). Repos vendor this
 # file unchanged as scripts/agent-hooks/lib/shell-segments.sh; keep the version line above intact.
@@ -50,7 +50,7 @@
 # A JSON value is decoded fully (\n, \", \uXXXX), so a multi-line command splits on its newlines;
 # scraping it with sed leaves "\n" in the text and hides every command after the first line.
 
-SHSEG_VERSION=1.0.0
+SHSEG_VERSION=1.1.0
 
 SHSEG_AWK='
 function esc(x) { gsub(/\n/, "\\n", x); gsub(/\t/, "\\t", x); gsub(/\r/, "\\r", x); return x }
