@@ -107,6 +107,40 @@ expect_codex_block 'git -c core.hooksPath=/dev/null push origin main'
 expect_codex_block 'env GIT_TRACE=1 git push origin main'
 expect_codex_block 'git push origin "main'
 
+# --- shared segmenter v1.2.0 (k8s-infra #230 round 4): exec-style wrappers run the tool ----
+# `find -exec` / `-execdir` (both terminators), `xargs`, `timeout`, `nice` and `eval` run the
+# command they name, so the segmenter emits it as its own command. Codex prefix rules only see
+# `find`/`xargs`/…, so Codex blocks every one. Quoted prose naming the same text stays silent.
+for c in \
+  'find . -maxdepth 0 -exec git push origin main \;' \
+  'find . -maxdepth 0 -execdir git push --force origin staging \;' \
+  'find . -maxdepth 0 -exec gh pr merge 96 --squash {} +' \
+  'find . -name "*.json" -execdir gh workflow run publish.yml {} +' \
+  'echo main | xargs git push origin' \
+  'echo 96 | xargs gh pr merge' \
+  'timeout 30 git push origin main-v2' \
+  'nice git push origin staging-v2' \
+  'nice -n 5 gh pr merge 96' \
+  'eval "git push origin main"' \
+  "eval 'gh workflow run publish.yml'"; do
+  expect_ask "$c"
+  expect_codex_block "$c"
+done
+# --guard backstop (segmenter v1.2.0): an unknown wrapper with a guarded tool as its own word asks
+for c in 'ssh build-host git push origin main' 'ssh -t build-host gh pr merge 96' 'npx -y some-wrapper git push --force origin staging' 'unknown-wrapper --flag gh workflow run publish.yml'; do
+  expect_ask "$c"
+  expect_codex_block "$c"
+done
+expect_silent 'ssh build-host "git push origin main"' # quoted prose is one word: no guarded tool as a separate argument
+expect_silent 'ssh build-host git status'
+for c in \
+  'echo "find . -exec git push origin main \; # or xargs gh pr merge"' \
+  "gh pr create --base staging --title x --body 'find . -exec git push origin main \;
+timeout 30 git push origin staging; eval \"gh pr merge 96\"'"; do
+  expect_silent "$c"
+  expect_codex_pass "$c"
+done
+
 # --- the configured commands resolve from the repo root, not the session cwd ----
 # Codex runs hooks with the session cwd and Claude Code exports $CLAUDE_PROJECT_DIR;
 # a cwd-relative path exits 127 below the root and the hook silently does not run.
