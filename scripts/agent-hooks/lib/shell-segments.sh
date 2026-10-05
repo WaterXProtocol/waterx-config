@@ -1,7 +1,7 @@
 #!/bin/sh
-# waterx-commons/harness/hooks/lib/shell-segments.sh v1.2.1
+# waterx-commons/harness/hooks/lib/shell-segments.sh v1.2.3
 #
-# A quote-aware shell command segmenter for agent hooks (STANDARD.md rule R2). Repos vendor this
+# A quote-aware shell command segmenter for agent hooks (STANDARD.md rule 12). Repos vendor this
 # file unchanged as scripts/agent-hooks/lib/shell-segments.sh; keep the version line above intact.
 #
 # It turns the command string of a Bash tool call into the simple commands it would run, one per
@@ -17,8 +17,10 @@
 #     unbuffer, nsenter, unshare, pkexec, systemd-run, firejail, strace, direnv exec, leading
 #     NAME=value assignments, reserved words (if/then/do/!/{ ...), and a path on the tool
 #     (/usr/local/bin/kubectl -> kubectl). A wrapper reads only ITS OWN options, up to its own
-#     boundary (its positionals, "--" or the first non-option); the command after it keeps its
-#     options (flock /tmp/l git -c k=v commit -> git commit; waterx-fe#1149 round 4);
+#     boundary (its positionals, "--" or the first non-option), the way getopt reads them: a value
+#     attached or in the next word, clusters, --long=value and --long value (runuser -ubob --,
+#     script -c'cmd', timeout -s9 5; v1.2.3); the command after it keeps its options (flock /tmp/l
+#     git -c k=v commit -> git commit; waterx-fe#1149 rounds 4-5);
 #   - emits the command operand of find -exec/-execdir/-ok/-okdir (`\;` and `{} +`) as its own
 #     command, and find itself with that operand removed;
 #   - moves the global options of git, gh, kubectl, helm, argocd, gcloud, terraform, tofu and make
@@ -53,7 +55,7 @@
 #             shell, interpreter or ssh that may read its commands from stdin (echo '...' | sh,
 #             python3 <<EOF). Without --guard (block hooks) nothing of this is printed.
 #
-# How hooks use it (STANDARD.md rule R2):
+# How hooks use it (STANDARD.md rule 12):
 #   ask hooks   FAIL CLOSED: pass --guard with the guarded tools; ask when a parsed line matches,
 #               AND when an UNPARSEABLE line's raw text names the tool; match --dry-run style
 #               exemptions against that line's own arguments.
@@ -64,6 +66,7 @@
 #   cmd=$(printf '%s' "$input" | shseg_json_get tool_input.command)   # 0 found, 1 absent, 2 bad JSON
 #   shseg_segments "$cmd" | while IFS="$(printf '\t')" read -r tool a1 a2 rest; do ...; done
 #   shseg_segments --long --guard "kubectl argocd" "$cmd"            # ask hooks: with the backstop
+#   shseg_prompt_prefixes .codex/rules/*.rules    # Codex prompt-rule prefixes, one per line (v1.2.2)
 # or as a command:
 #   shell-segments.sh [--long] [--guard "TOOL..."] [--] [COMMAND]
 #                                                segment COMMAND, or stdin when absent
@@ -73,7 +76,7 @@
 # A JSON value is decoded fully (\n, \", \uXXXX), so a multi-line command splits on its newlines;
 # scraping it with sed leaves "\n" in the text and hides every command after the first line.
 
-SHSEG_VERSION=1.2.1
+SHSEG_VERSION=1.2.3
 
 SHSEG_AWK='
 function esc(x) { gsub(/\n/, "\\n", x); gsub(/\t/, "\\t", x); gsub(/\r/, "\\r", x); return x }
@@ -423,32 +426,50 @@ function guard_check(    n, g, j, txt) {
     return
   }
 }
-# skipopts(k, vals): the index after the options starting at k; vals lists the options that take a
-# separate value (" -n --interval "). Stops after "--".
-function skipopts(k, vals,    v) {
-  while (k <= E && SV[k] ~ /^-./) { v = SV[k]; k++; if (v == "--") break; if (has(vals, v)) k++ }
-  return k
-}
-# optval(k, to, short, long): the value of a -c / --command style option among SV[k..to] (attached,
-# separate, or last in a cluster such as -lc), or "\001" when absent. Stops at "--". Callers pass
-# the end of the WRAPPER options, never the end of the line: the command after them has
-# options of its own (git -c k=v, kubectl -n ns) that do not belong to the wrapper (waterx-fe#1149 r4).
-function optval(k, to, short, long,    v) {
-  for (; k <= to; k++) {
+# wopts(k, sv, lv, ov, mode): parse the OWN options of a wrapper from SV[k] the way getopt does (v1.2.3,
+# waterx-fe#1149 round 5). sv: the short letters that take a value, attached (-ubob, -cCMD) or as
+# the next word (-u bob), also as the last letter of a cluster (-lc cmd); ov: short letters whose
+# optional value can only be attached (-m/proc/1/ns/mnt); lv: " long names " that take a value
+# (--user=bob or --user bob; an unambiguous prefix of one counts as it); any other --name takes
+# one only as --name=value. mode "+" stops at the first non-option, like an optstring starting with
+# "+"; mode "p" steps over non-options (su: the shell receives "-c CMD" after USER). "--" ends the
+# options and is consumed (WDD = 1). Sets OPT[letter or long name] = value ("" for a flag) and
+# returns the index of the first word after the options. stop: " names " after which parsing ends
+# (env -S STRING: the words after STRING follow the split command, they are not env options).
+function wopts(k, sv, lv, ov, mode, stop,    v, p, L, rest, name, eq) {
+  split("", OPT); WDD = 0
+  while (k <= E) {
     v = SV[k]
-    if (v == "--") break
-    if (v == short || v == long) return (k < E ? SV[k + 1] : "")
-    if (index(v, long "=") == 1) return substr(v, length(long) + 2)
-    if (v ~ /^-[A-Za-z]+$/ && length(v) > 2 && substr(v, length(v)) == substr(short, 2, 1)) return (k < E ? SV[k + 1] : "")
+    if (v == "--") { WDD = 1; k++; break }
+    if (v !~ /^-./) { if (mode == "p") { k++; continue } break }
+    k++
+    if (substr(v, 1, 2) == "--") {
+      name = substr(v, 3); eq = index(name, "=")
+      if (eq) { v = lname(substr(name, 1, eq - 1), lv); OPT[v] = substr(name, eq + 1); if (has(stop, v)) break; continue }
+      name = lname(name, lv)
+      if (has(lv, name)) { if (k <= E) { OPT[name] = SV[k]; k++ } else OPT[name] = "" } else OPT[name] = ""
+      if (has(stop, name)) break
+      continue
+    }
+    for (p = 2; p <= length(v); p++) {
+      L = substr(v, p, 1); rest = substr(v, p + 1)
+      if (index(sv, L)) { if (rest != "") OPT[L] = rest; else if (k <= E) { OPT[L] = SV[k]; k++ } else OPT[L] = ""; break }
+      if (index(ov, L)) { OPT[L] = rest; break }
+      OPT[L] = ""
+    }
+    if (has(stop, L)) break
   }
-  return "\001"
-}
-# ownopts(k, vals): like skipopts, but does not consume "--": the index of the first word that is
-# not one of the wrapper options, or of "--".
-function ownopts(k, vals,    v) {
-  while (k <= E && SV[k] ~ /^-./ && SV[k] != "--") { v = SV[k]; k++; if (has(vals, v)) k++ }
   return k
 }
+# lname(name, lv): name, or the one long option in lv that name is an unambiguous prefix of.
+function lname(name, lv,    n, w, j, hit) {
+  if (name == "" || has(lv, name)) return name
+  n = split(lv, w, " "); hit = ""
+  for (j = 1; j <= n; j++) if (index(w[j], name) == 1) { if (hit != "") return name; hit = w[j] }
+  return (hit == "" ? name : hit)
+}
+# optget(a, b): the value wopts recorded for option a or its other spelling b, or "\001" when absent.
+function optget(a, b) { if (a in OPT) return OPT[a]; if (b != "" && b in OPT) return OPT[b]; return "\001" }
 function flush(    k, v, wr) {
   if (NS == 0) return
   wr = (CUR_DEPTH > 0 || COMPLEX || SEG_REDIR)
@@ -478,65 +499,55 @@ function unwrap(k, e, wr,    v, t, hasc, kb, j, s0, a, b, keep, cmd, pk, pe) {
     if (t == "") return
     if (t == "gtimeout") t = "timeout"
     if (t == "env") {
+      # env [opts] [NAME=value]... [COMMAND]: options and assignments, then the command.
       wr = 1; k++
-      while (k <= E) {
-        v = SV[k]
-        if (v == "--") { k++; break }
-        if (v == "-u" || v == "-C" || v == "--unset" || v == "--chdir") { k += 2; continue }
-        if (v == "-S" || v == "--split-string") { enqueue(joinv(k + 1, E), CUR_DEPTH + 1); return }
-        if (v ~ /^-S./) { enqueue(substr(v, 3) (k < E ? " " joinv(k + 1, E) : ""), CUR_DEPTH + 1); return }
-        if (v ~ /^--split-string=/) { enqueue(substr(v, 16) (k < E ? " " joinv(k + 1, E) : ""), CUR_DEPTH + 1); return }
-        if (v ~ /^-/ || is_assign(v)) { k++; continue }
-        break
+      while (1) {
+        k = wopts(k, "uCPS", " unset chdir split-string ", "", "+", " S split-string ")
+        cmd = optget("S", "split-string")
+        if (cmd != "\001") { enqueue("env " cmd (k <= E ? " " joinv(k, E) : ""), CUR_DEPTH + 1); return }
+        if (WDD || k > E || !is_assign(SV[k])) break
+        while (k <= E && is_assign(SV[k])) k++
       }
       if (k > E) { emit_self("env", WSTART, wr); return }
       continue
     }
     if (t == "command" || t == "builtin" || t == "nohup" || t == "exec") {
       if (t == "command" && (SV[k + 1] == "-v" || SV[k + 1] == "-V")) break
-      wr = 1; k++
-      while (k <= E && SV[k] ~ /^-/) { if (t == "exec" && SV[k] == "-a") k++; k++ }
+      wr = 1; k = wopts(k + 1, (t == "exec" ? "a" : ""), "", "", "+")
       if (k > E) { emit_self(t, WSTART, wr); return }
       continue
     }
     if (t == "time") {
-      wr = 1; k++
-      while (k <= E && SV[k] ~ /^-/) { if (SV[k] == "-o" || SV[k] == "-f") k++; k++ }
+      wr = 1; k = wopts(k + 1, "of", " output format ", "", "+")
       continue
     }
     if (t == "sudo" || t == "doas") {
-      wr = 1; k++
-      while (k <= E && SV[k] ~ /^-/) {
-        v = SV[k]; k++
-        if (v == "--") break
-        if (v ~ /^-[ughpCDrtUTR]$/ || v ~ /^--(user|group|host|prompt|close-from|chdir|role|type|other-user|command-timeout|chroot)$/) k++
-      }
+      wr = 1; k = wopts(k + 1, "ughpCDrtUTRac", " user group host prompt close-from chdir role type other-user command-timeout chroot login-class auth-type ", "", "+")
       if (k > E) { emit_self(t, WSTART, wr); return }
       continue
     }
-    if (t == "timeout") { wr = 1; k = skipopts(k + 1, " -s -k --signal --kill-after "); k++; continue }
-    # Prefix wrappers: options (those in WVAL take a value), WPOS[t] positionals, then the command.
+    if (t == "timeout") { wr = 1; k = wopts(k + 1, "sk", " signal kill-after ", "", "+"); k++; continue }
+    # Prefix wrappers: options (the tables WS/WL/WO, see BEGIN), WPOS[t] positionals, then the command.
     if (t in WPOS) {
-      wr = 1; s0 = k; k = skipopts(k + 1, WVAL[t])
-      if (t == "ionice" || t == "taskset" || t == "chrt") {
-        for (j = s0 + 1; j < k; j++) if (SV[j] ~ /^-[A-Za-z]*p[A-Za-z]*$/ || SV[j] == "--pid" || SV[j] == "--pgid" || SV[j] == "--uid") { emit_self(t, WSTART, wr); return }
-      }
+      wr = 1; s0 = k; k = wopts(k + 1, WS[t], WL[t], WO[t], "+")
+      # ionice/taskset/chrt -p PID (and ionice -P/-u) act on a running process: there is no command.
+      if ((t == "ionice" || t == "taskset" || t == "chrt") && (optget("p", "pid") != "\001" || (t == "ionice" && (optget("P", "pgid") != "\001" || optget("u", "uid") != "\001")))) { emit_self(t, WSTART, wr); return }
       k += WPOS[t]
       if (k > E) { emit_self(t, s0, wr); return }
       continue
     }
     if (t == "xargs") {
-      wr = 1; k = skipopts(k + 1, XARGS_VAL)
+      wr = 1; k = wopts(k + 1, "aEILnsPdJRS", " arg-file delimiter max-args max-procs max-chars process-slot-var ", "eil", "+")
       if (k > E) { emit_self("xargs", WSTART, wr); return }
       continue
     }
     if (t == "watch") {
-      wr = 1; k = skipopts(k + 1, " -n --interval -d --differences -q --equexit ")
+      wr = 1; k = wopts(k + 1, "nq", " interval equexit ", "d", "+")
       if (k <= E) enqueue(joinv(k, E), CUR_DEPTH + 1)
       return
     }
     if (t == "parallel") {
-      wr = 1; s0 = k; k = skipopts(k + 1, PAR_VAL)
+      wr = 1; s0 = k; k = wopts(k + 1, "jSadICNnLEl", PAR_VAL, "", "+")
       for (j = k; j <= E && SV[j] !~ /^::::?\+?$/; j++) ;
       if (k > E || j == k) { emit_self("parallel", s0, wr); return }
       # One word holding spaces is a command line parallel hands to a shell.
@@ -546,18 +557,16 @@ function unwrap(k, e, wr,    v, t, hasc, kb, j, s0, a, b, keep, cmd, pk, pe) {
     }
     if (t == "su" || t == "runuser") {
       wr = 1; s0 = k
-      RU = " -u --user -g --group -G --supp-group -w --whitelist-environment -s --shell "
-      k = ownopts(k + 1, RU)
+      k = wopts(k + 1, RU_S, RU_L, "", "+")
       # runuser [opts] -u USER [--] COMMAND...: the command starts after the options.
-      if (t == "runuser" && optval(s0 + 1, k - 1, "-u", "--user") != "\001") {
-        if (k <= E && SV[k] == "--") k++
+      if (t == "runuser" && optget("u", "user") != "\001") {
         if (k > E) { emit_self(t, s0, wr); return }
         continue
       }
-      # su/runuser [opts] [-] [USER [ARGS]]: util-linux getopt permutes, so -c/--command counts
-      # anywhere before "--".
-      for (j = s0 + 1; j <= E && SV[j] != "--"; j++) ;
-      cmd = optval(s0 + 1, j - 1, "-c", "--command")
+      # su/runuser [opts] [-] [USER [ARGS]]: ARGS go to the login shell of USER, so a -c COMMAND after USER
+      # runs too; look for it (attached or not) in every option before "--".
+      wopts(s0 + 1, RU_S, RU_L, "", "p")
+      cmd = optget("c", "command"); if (cmd == "\001") cmd = optget("session-command", "")
       if (cmd != "\001") { enqueue(cmd, CUR_DEPTH + 1); return }
       emit_self(t, s0, wr); return
     }
@@ -573,10 +582,10 @@ function unwrap(k, e, wr,    v, t, hasc, kb, j, s0, a, b, keep, cmd, pk, pe) {
       # flock [opts] FILE (-c STRING | COMMAND...)   script [opts] [FILE] (-c STRING | COMMAND... (BSD))
       # The wrapper options end at FILE; -c is looked for there and right after FILE only.
       wr = 1; s0 = k
-      k = ownopts(k + 1, (t == "flock" ? " -w --timeout -E --conflict-exit-code " : " -c --command -F -t -T -I -O -B -E --log-in --log-out --log-io --log-timing --echo --output-limit "))
-      cmd = optval(s0 + 1, k - 1, "-c", "--command")
+      if (t == "flock") k = wopts(k + 1, "wEc", " timeout conflict-exit-code command ", "", "+")
+      else k = wopts(k + 1, "cBEIOTmto", " command log-io echo log-in log-out log-timing logging-format output-limit ", "", "+")
+      cmd = optget("c", "command")
       if (cmd != "\001") { enqueue(cmd, CUR_DEPTH + 1); return }
-      if (k <= E && SV[k] == "--") k++
       k++
       if (k > E) { emit_self(t, s0, wr); return }
       if (SV[k] == "-c" || SV[k] == "--command") { if (k < E) enqueue(SV[k + 1], CUR_DEPTH + 1); return }
@@ -636,24 +645,26 @@ BEGIN {
   INERT = " echo printf cat head tail wc grep egrep fgrep ag ack ls stat file which whereis type hash help test [ true false jq yq uniq cut tr diff cmp basename dirname realpath readlink touch mkdir rm cp mv ln chmod chown tee base64 md5sum shasum sha256sum cd pwd "
   # Shells and interpreters that run commands from stdin when given no script operand (ssh always may).
   STDIN_EXEC = " bash sh zsh dash ksh fish csh tcsh python python2 python3 perl ruby node deno bun php lua tclsh osascript parallel source . "
-  # Prefix wrappers: WPOS = positionals before the command, WVAL = options that take a separate value.
-  WPOS["nice"] = 0; WVAL["nice"] = " -n --adjustment "
-  WPOS["stdbuf"] = 0; WVAL["stdbuf"] = " -i -o -e "
-  WPOS["ionice"] = 0; WVAL["ionice"] = " -c -n --class --classdata "
-  WPOS["setsid"] = 0; WVAL["setsid"] = " "
-  WPOS["chroot"] = 1; WVAL["chroot"] = " --userspec --groups "
-  WPOS["taskset"] = 1; WVAL["taskset"] = " "
-  WPOS["chrt"] = 1; WVAL["chrt"] = " -T -P -D --sched-runtime --sched-period --sched-deadline "
-  WPOS["caffeinate"] = 0; WVAL["caffeinate"] = " -t -w "
-  WPOS["unbuffer"] = 0; WVAL["unbuffer"] = " "
-  WPOS["nsenter"] = 0; WVAL["nsenter"] = " -t --target -S --setuid -G --setgid "
-  WPOS["unshare"] = 0; WVAL["unshare"] = " -S --setuid -G --setgid -R --root -w --wd --propagation --setgroups "
-  WPOS["pkexec"] = 0; WVAL["pkexec"] = " --user "
-  WPOS["systemd-run"] = 0; WVAL["systemd-run"] = " -p --property -u --unit -E --setenv -M --machine -H --host --description --slice --uid --gid --working-directory "
-  WPOS["firejail"] = 0; WVAL["firejail"] = " "
-  WPOS["strace"] = 0; WVAL["strace"] = " -o -e -p -s -u -E -a -O -S -X -P "
-  XARGS_VAL = " -I -E -L -n -P -s -d -a --max-args --max-procs --max-lines --max-chars --arg-file --delimiter --process-slot-var "
-  PAR_VAL = " -j --jobs -S --sshlogin --sshloginfile --slf -a --arg-file -d --delimiter -I -C --colsep --joblog --results --res --timeout --tmpdir --workdir --wd -N --max-args -n --max-replace-args -L -E --env --memfree --load -l --delay --retries --halt --tagstring --basefile --bf --return --transferfile --tf --sshdelay --termseq "
+  # Prefix wrappers: WPOS = positionals before the command; WS/WL/WO = the options that take a
+  # value, in wopts() form: short letters, " long names ", short letters with an attached-only value.
+  WPOS["nice"] = 0; WS["nice"] = "n"; WL["nice"] = " adjustment "
+  WPOS["stdbuf"] = 0; WS["stdbuf"] = "ioe"; WL["stdbuf"] = " input output error "
+  WPOS["ionice"] = 0; WS["ionice"] = "cnpPu"; WL["ionice"] = " class classdata pid pgid uid "
+  WPOS["setsid"] = 0
+  WPOS["chroot"] = 1; WL["chroot"] = " userspec groups "
+  WPOS["taskset"] = 1
+  WPOS["chrt"] = 1; WS["chrt"] = "TPD"; WL["chrt"] = " sched-runtime sched-period sched-deadline "
+  WPOS["caffeinate"] = 0; WS["caffeinate"] = "tw"
+  WPOS["unbuffer"] = 0
+  WPOS["nsenter"] = 0; WS["nsenter"] = "tSGW"; WL["nsenter"] = " target setuid setgid wdns "; WO["nsenter"] = "muinpCUTrw"
+  WPOS["unshare"] = 0; WS["unshare"] = "RwSG"; WL["unshare"] = " root wd setuid setgid propagation setgroups map-user map-group map-users map-groups "
+  WPOS["pkexec"] = 0; WL["pkexec"] = " user "
+  WPOS["systemd-run"] = 0; WS["systemd-run"] = "puEMH"; WL["systemd-run"] = " property unit setenv machine host description slice uid gid nice working-directory service-type timer-property path-property socket-property on-active on-boot on-startup on-unit-active on-unit-inactive on-calendar "
+  WPOS["firejail"] = 0
+  WPOS["strace"] = 0; WS["strace"] = "abeEIoOpPsSuUX"; WL["strace"] = " output trace signal abbrev verbose raw read write fault inject status attach user env string-limit columns summary-sort-by trace-path "
+  # su and runuser: -c/--command/--session-command carry the command; -u/--user (runuser) the user.
+  RU_S = "cgGswu"; RU_L = " command session-command group supp-group shell whitelist-environment user "
+  PAR_VAL = " jobs sshlogin sshloginfile slf arg-file delimiter colsep joblog results res timeout tmpdir workdir wd max-args max-replace-args env memfree load delay retries halt tagstring basefile bf return transferfile tf sshdelay termseq "
   VAL["kubectl"] = " n namespace context cluster user kubeconfig s server token as as-group as-uid request-timeout certificate-authority client-certificate client-key tls-server-name cache-dir profile profile-output log-file log-dir log-file-max-size log-flush-frequency v vmodule password username stderrthreshold "
   BOOL["kubectl"] = " insecure-skip-tls-verify warnings-as-errors disable-compression match-server-version alsologtostderr logtostderr skip-headers skip-log-headers one-output add-dir-header help h "
   RELOC["kubectl"] = " dry-run "
@@ -795,6 +806,58 @@ shseg_names_tool() {
   # The raw text arrives escaped (\n, \t, \r): turn those back into blanks so a tool at the start
   # of a line still counts as a word.
   printf '%s\n' "$2" | sed 's/\\[ntr]/ /g' | grep -Eq "(^|[^[:alnum:]_.-])(/[^[:space:]]*/)?$1([^[:alnum:]_.-]|\$)"
+}
+
+# The Codex prompt-rule reader: every prefix_rule(..., decision = "prompt") pattern in the .rules
+# text on stdin, words space-joined, one per line; a list of alternatives inside a pattern expands
+# to one line per choice (["gh", ["pr", "run"], "merge"]); single- and double-quoted strings,
+# comments and multi-line calls are read. harness/lint/check-harness.sh carries the same program
+# as PROMPT_RULES_AWK (the lint is vendored alone, so it keeps its own copy): the two must stay
+# identical, and harness/lint/check-harness.test.sh fails when their output differs.
+SHSEG_PROMPT_RULES_AWK='
+function addtok(t, v) { NT++; TT[NT] = t; TV[NT] = v }
+function expand(e, prefix,    k, m, parts) {
+  if (e > NE) { print substr(prefix, 2); return }
+  m = split(EL[e], parts, "\034")
+  for (k = 1; k <= m; k++) expand(e + 1, prefix " " parts[k])
+}
+BEGIN {
+  s = ""; while ((getline line) > 0) s = s line "\n"
+  n = length(s); i = 1; NT = 0
+  while (i <= n) {
+    c = substr(s, i, 1)
+    if (index(" \t\r\n", c)) { i++; continue }
+    if (c == "#") { while (i <= n && substr(s, i, 1) != "\n") i++; continue }
+    if (c == "\"" || c == "\047") {
+      q = c; v = ""; i++
+      while (i <= n && substr(s, i, 1) != q) { if (substr(s, i, 1) == "\\") { i++ } v = v substr(s, i, 1); i++ }
+      i++; addtok("S", v); continue
+    }
+    if (c ~ /[A-Za-z_]/) { v = ""; while (i <= n && substr(s, i, 1) ~ /[A-Za-z0-9_]/) { v = v substr(s, i, 1); i++ } addtok("I", v); continue }
+    addtok("P", c); i++
+  }
+  for (t = 1; t <= NT; t++) {
+    if (!(TT[t] == "I" && TV[t] == "prefix_rule" && TV[t + 1] == "(")) continue
+    t += 2; d = 1; key = ""; decision = "allow"; NE = 0; inpat = 0; depth = 0
+    for (; t <= NT && d > 0; t++) {
+      if (TT[t] == "P" && (TV[t] == "(" || TV[t] == "[" || TV[t] == "{")) { d++; if (inpat && TV[t] == "[") { depth++; if (depth == 2) { NE++; EL[NE] = ""; alt = 1 } } continue }
+      if (TT[t] == "P" && (TV[t] == ")" || TV[t] == "]" || TV[t] == "}")) { d--; if (inpat && TV[t] == "]") { depth--; if (depth == 0) inpat = 0 } continue }
+      if (d == 1 && TT[t] == "I" && TV[t + 1] == "=") { key = TV[t]; t++; if (key == "pattern") inpat = 1; continue }
+      if (d == 1 && TT[t] == "S" && key == "decision") { decision = TV[t]; continue }
+      if (inpat && TT[t] == "S") {
+        if (depth == 1) { NE++; EL[NE] = TV[t] }
+        else if (depth == 2) { EL[NE] = EL[NE] (EL[NE] == "" ? "" : "\034") TV[t] }
+      }
+    }
+    t--
+    if (decision == "prompt" && NE > 0) expand(1, "")
+  }
+}'
+
+# shseg_prompt_prefixes [FILE...] — the Codex prompt-rule prefixes in the .rules FILEs (stdin when
+# none), one per line, sorted and unique: what a Codex hook compares a plain command's words with.
+shseg_prompt_prefixes() {
+  cat "$@" 2>/dev/null | LC_ALL=C "${SHSEG_AWK_BIN:-awk}" "$SHSEG_PROMPT_RULES_AWK" | sed 's/[[:space:]][[:space:]]*/ /g' | sort -u
 }
 
 _shseg_self_test() {
@@ -988,7 +1051,129 @@ find . -exec| \;|find|.|-exec|;
 parallel| ::: a|
 watch -n 5||
 sudo env A=1 nice||
+env -uB A=1||
+env -iuB||
+env -iu B --||
+env --unset=B -C /tmp||
+env --unset B -C/tmp||
+command -p||
+exec -a name||
+exec -aname||
+/usr/bin/time -oout -f %e||
+command time --output=out --format %e||
+sudo -uroot -E||
+sudo -Euroot --||
+sudo --user=root -g wheel||
+sudo --user root -gwheel||
+doas -uroot||
+timeout -s9 5||
+timeout -sKILL -k5 5||
+timeout --signal=KILL --kill-after 5 5||
+gtimeout -s9 -- 5||
+nice -n5||
+nice --adjustment=5||
+nice --adjustment 5||
+nice --adj 5||
+ionice -c3 -n7||
+ionice --class=3 --classdata 7||
+stdbuf -o L -eL||
+stdbuf --output=L --error L||
+setsid -w||
+chroot --userspec u:g --groups=g /srv||
+taskset -ac 0-3||
+chrt -T5 -f 10||
+chrt --sched-runtime 5 -f 10||
+caffeinate -t60 -i||
+caffeinate -it 60||
+nsenter -t1 -m||
+nsenter -m/proc/1/ns/mnt -t 1||
+nsenter --target=1 --mount||
+nsenter --target 1 -S0 -G 0||
+unshare -R/srv -r||
+unshare -w /tmp -r||
+unshare --setuid=0 --wd /tmp||
+pkexec --user=root||
+systemd-run -ux -pK=V||
+systemd-run -u x -p K=V --||
+systemd-run --unit=x --property K=V||
+firejail --profile=x||
+strace -oout -f||
+strace -e trace=file -o out||
+strace -feopen --output out||
+xargs -I{}||
+xargs -n1 -P4||
+xargs -L 1 -0||
+xargs -i||
+xargs --max-args=1 --delimiter x||
+watch -n5 -d||
+watch --interval=5 --differences||
+flock -w5 /tmp/l||
+flock -xw 5 /tmp/l||
+flock --timeout=5 -E1 /tmp/l||
+flock --timeout 5 -- /tmp/l||
+script -qt0 /dev/null||
+script -t 0 -q /dev/null||
+runuser -ubob --||
+runuser -ubob||
+runuser --user=bob --||
+runuser --user bob||
+runuser -lubob --||
+parallel -j4| ::: a|
+parallel --jobs 4 --halt now,fail=1| ::: a|
 WRAPPERS
+  # The same, for wrappers that take the command as ONE string (%s is the command): attached
+  # (-c'cmd'), separate, --long=, --long, after USER/FILE, and the reviewer forms of round 5.
+  while IFS= read -r _tpl; do
+    [ -n "$_tpl" ] || continue
+    for _cmd in "git -c k=v commit -m x" "kubectl --context c delete pod x"; do
+      case "$_cmd" in git*) _want="git|commit|-m|x" ;; *) _want="kubectl|delete|pod|x" ;; esac
+      _in="${_tpl%%%s*}$_cmd${_tpl#*%s}"
+      _t "command-string option: $_tpl" "$_want" "$_in"
+      _g "command-string option (--guard): $_tpl" "$_want" "git kubectl" "$_in"
+    done
+  done <<'STRINGS'
+su -c'%s'
+su -c '%s'
+su -lc'%s'
+su --command='%s'
+su --command '%s'
+su --comm '%s'
+su --session-command='%s' bob
+su - bob -c '%s'
+su -s /bin/sh bob -c'%s'
+su -sbash bob -c '%s'
+runuser -c'%s' bob
+runuser -l bob -c '%s'
+runuser -gwheel -c '%s' bob
+script -q -c'%s' /dev/null
+script -qc '%s' /dev/null
+script --command='%s' /dev/null
+script --command '%s' /dev/null
+script -q /dev/null -c '%s'
+script -t0 -q /dev/null --command='%s'
+flock /tmp/l -c '%s'
+flock -w5 /tmp/l -c '%s'
+flock -c'%s' /tmp/l
+env -S'%s'
+env -iS '%s'
+env --split-string='%s'
+env -uVAR -S '%s'
+sg docker -c '%s'
+watch -n5 '%s'
+eval '%s'
+bash -c '%s'
+sh -lc '%s'
+sudo -uroot sh -c '%s'
+timeout -s9 5 bash -c '%s'
+xargs -I{} sh -c '%s'
+nice -n5 bash -c '%s'
+STRINGS
+  # waterx-fe #1149 round 5: getopt-attached values (reproduced by the reviewer).
+  _t "fe#1149r5 runuser -ubob -- git commit" "git|commit|-m|x" "runuser -ubob -- git commit -m x"
+  _t "fe#1149r5 script -q -c'git commit' /dev/null" "git|commit|-m|x" "script -q -c'git commit -m x' /dev/null"
+  _t "fe#1149r5 su -cfoo runs foo" "foo" "su -cfoo"
+  _t "env -S stops env option parsing" "git|commit|-m|x" "env -iS'git commit' -m x"
+  _t "pid modes with attached values are not wrappers" "taskset|-pc|0|1${NL}ionice|-c3|-p1${NL}chrt|-p|5|1" "taskset -pc 0 1; ionice -c3 -p1; chrt -p 5 1"
   # --- origin (Codex prefix-rule visibility) ----------------------------------------------------
   _t "plain" "plain|kubectl|-|kubectl delete pod x|delete|pod|x" "kubectl delete pod x" --long
   _t "absolute path is wrapped" "wrapped|kubectl|-|/bin/kubectl delete pod x|delete|pod|x" "/bin/kubectl delete pod x" --long
@@ -1007,6 +1192,13 @@ WRAPPERS
   _j "json absent" 1 "" tool_input.command '{"tool_input":{}}'
   _j "json malformed" 2 "" tool_input.command '{"tool_input":{"command":"x"'
   _j "json top-level cwd" 0 "/repo" cwd '{"cwd":"/repo","tool_input":{"command":"x","cwd":"/other"}}'
+  # --- prompt rules (v1.2.2: one reader for the hook and the lint) ---------------------------------
+  _got=$(printf '%s\n' "# a comment naming prefix_rule(pattern = [\"no\"], decision = \"prompt\")" \
+    "prefix_rule(pattern = ['gh', ['pr', \"run\"], 'merge'], decision = 'prompt')" \
+    'prefix_rule(' '    pattern = ["kubectl", ["cordon", "drain"]],  # nested list' '    decision = "prompt",' \
+    '    justification = "pattern = [\"not\", \"this\"]",' ')' \
+    'prefix_rule(pattern = ["git", "status"])' 'prefix_rule(pattern = ["rm", "-rf"], decision = "forbidden")' | shseg_prompt_prefixes | tr '\n' '|')
+  if [ "$_got" = "gh pr merge|gh run merge|kubectl cordon|kubectl drain|" ]; then _p=$((_p + 1)); else _f=$((_f + 1)); printf 'FAIL shseg_prompt_prefixes\n  got: %s\n' "$_got"; fi
   # --- names_tool ---------------------------------------------------------------------------------
   if shseg_names_tool kubectl "UNPARSEABLE	x	\$K; /usr/bin/kubectl delete" && ! shseg_names_tool kubectl "UNPARSEABLE	x	kubectl-foo"; then _p=$((_p + 1)); else _f=$((_f + 1)); echo "FAIL shseg_names_tool"; fi
   printf 'shell-segments self-test: %s passed, %s failed\n' "$_p" "$_f"
@@ -1019,7 +1211,7 @@ case "${0##*/}" in
       --version) echo "shell-segments.sh v$SHSEG_VERSION" ;;
       --self-test) _shseg_self_test ;;
       --json-get) shseg_json_get "${2:-}" ;;
-      -h|--help) sed -n '2,64p' "$0" ;;
+      -h|--help) sed -n '2,77p' "$0" ;;
       *)
         _shseg_long=""; _shseg_g=${SHSEG_GUARD:-}
         while :; do
