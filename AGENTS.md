@@ -37,8 +37,8 @@ suggestion, and don't merge into `staging` or `main` yourself. `.claude/settings
 `.codex/rules/publish.rules` make `gh pr merge`, `gh workflow run` and a push to a served branch
 prompt (the same plain forms in both). The hook splits the line with the shared quote-aware
 segmenter (`scripts/agent-hooks/lib/`), so global options (`git -c …`, `gh -R …`), wrappers and
-newlines are seen, quoted prose and comments are not commands, and a line it cannot parse that
-names a publish verb asks. Codex's rules see only leading words, so its hook (`.codex/hooks.json`)
+newlines are seen, comments are not commands, and a line it cannot parse or whose text names
+git or gh inside another command (`ssh host 'git push …'`) asks. Codex's rules see only leading words, so its hook (`.codex/hooks.json`)
 blocks a publish that does not name its branch (`git push` on `main`, `HEAD:main`) and asks for
 the plain form.
 `.github/workflows/agent-harness.yml` runs `scripts/agent-hooks/test-agent-hooks.sh` and the

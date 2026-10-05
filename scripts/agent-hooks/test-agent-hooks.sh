@@ -131,14 +131,43 @@ for c in 'ssh build-host git push origin main' 'ssh -t build-host gh pr merge 96
   expect_ask "$c"
   expect_codex_block "$c"
 done
-expect_silent 'ssh build-host "git push origin main"' # quoted prose is one word: no guarded tool as a separate argument
-expect_silent 'ssh build-host git status'
+# Quoted text in git/gh themselves (classified by verb) and in inert commands stays silent.
 for c in \
   'echo "find . -exec git push origin main \; # or xargs gh pr merge"' \
+  'grep -rn "ssh build-host '"'"'git push origin main'"'"'" docs/' \
   "gh pr create --base staging --title x --body 'find . -exec git push origin main \;
 timeout 30 git push origin staging; eval \"gh pr merge 96\"'"; do
   expect_silent "$c"
   expect_codex_pass "$c"
+done
+
+# --- shared segmenter v1.2.1 (k8s-infra #230 round 5): ssh's remote command is ONE quoted word ---
+# The v1.2.0 backstop matched git/gh only as a whole argument word, so these passed both modes.
+# Now a command whose raw text names git or gh anywhere (quotes, $( ), backticks, here-documents,
+# here-strings) asks unless it parsed as git/gh, an inert command or an unwrapped wrapper, and the
+# hook asks on any such part whatever verb it shows (the verb can be hidden: p''ush). The first and
+# `ssh build-host git status` were NEGATIVE cases before (they encoded the bypass).
+nl='
+'
+for c in \
+  'ssh build-host "git push origin main"' \
+  "ssh build-host 'git push --force origin staging'" \
+  "ssh build-host 'gh pr merge 96 --squash'" \
+  "ssh build-host sh -c 'git push origin main-v2'" \
+  'ssh -t build-host "sudo git push origin staging-v2"' \
+  'ssh build-host -- git push origin main' \
+  "ssh build-host 'git p''ush origin main'" \
+  'ssh build-host git status' \
+  "bash -lc \"bash -lc \\\"ssh build-host 'git push origin main'\\\"\"" \
+  '$(echo git) push origin main' \
+  '`echo gh` pr merge 96' \
+  'G=git; $G push origin main' \
+  "ssh build-host <<< 'git push origin main'" \
+  "ssh build-host <<'EOF'${nl}gh workflow run publish.yml${nl}EOF" \
+  "cat <<'EOF' | ssh build-host${nl}git push origin staging${nl}EOF" \
+  "echo 'git push origin main' | sh"; do
+  expect_ask "$c"
+  expect_codex_block "$c"
 done
 
 # --- the configured commands resolve from the repo root, not the session cwd ----
