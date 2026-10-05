@@ -1,5 +1,5 @@
 #!/bin/sh
-# waterx-commons/harness/hooks/lib/shell-segments.sh v1.1.0
+# waterx-commons/harness/hooks/lib/shell-segments.sh v1.2.0
 #
 # A quote-aware shell command segmenter for agent hooks (STANDARD.md rule R2). Repos vendor this
 # file unchanged as scripts/agent-hooks/lib/shell-segments.sh; keep the version line above intact.
@@ -11,9 +11,14 @@
 #   - parses $( ), backticks, <( ) and >( ) (also inside double quotes and unquoted here-documents)
 #     as separate commands, and leaves a placeholder ("$(...)", "<(...)") in the outer word, so text
 #     inside a substitution never counts as an argument of the outer command;
-#   - unwraps bash/sh/zsh/dash/ksh -c, eval, env (incl. -S), command, builtin, exec, nohup, time,
-#     sudo, doas, nice, timeout, stdbuf, xargs, watch, direnv exec, leading NAME=value assignments,
-#     reserved words (if/then/do/!/{ ...), and a path on the tool (/usr/local/bin/kubectl -> kubectl);
+#   - unwraps bash/sh/zsh/dash/ksh/fish -c, eval, env (incl. -S), command, builtin, exec, nohup,
+#     time, sudo, doas, su/runuser/sg -c, nice, ionice, timeout/gtimeout, stdbuf, xargs, parallel,
+#     watch, flock, chroot, setsid, script (-c, and BSD's FILE COMMAND), taskset, chrt, caffeinate,
+#     unbuffer, nsenter, unshare, pkexec, systemd-run, firejail, strace, direnv exec, leading
+#     NAME=value assignments, reserved words (if/then/do/!/{ ...), and a path on the tool
+#     (/usr/local/bin/kubectl -> kubectl);
+#   - emits the command operand of find -exec/-execdir/-ok/-okdir (`\;` and `{} +`) as its own
+#     command, and find itself with that operand removed;
 #   - moves the global options of git, gh, kubectl, helm, argocd, gcloud, terraform, tofu and make
 #     out of the argument list (kubectl -n ns --context c delete pod x -> kubectl delete pod x).
 #
@@ -32,25 +37,33 @@
 #             confidence: unterminated quote or substitution, a command word computed at run time
 #             ($TOOL, "$(which kubectl)"), an unknown option before a known tool's subcommand, or
 #             nesting deeper than 6 levels. The raw text lets a hook check whether it names the tool.
+#             With --guard "TOOL...", also every command that is not a guarded tool and not known
+#             to be inert (echo, grep, cat, ...) but has a guarded tool as a separate argument word
+#             (ssh host kubectl ..., an unknown wrapper): the backstop that makes the next wrapper
+#             this file does not know ask instead of pass. Quoted prose is one word, so it never
+#             trips it.
 #
 # How hooks use it (STANDARD.md rule R2):
-#   ask hooks   FAIL CLOSED: ask when a parsed line matches, AND when an UNPARSEABLE line's raw text
-#               names the tool; match --dry-run style exemptions against that line's own arguments.
+#   ask hooks   FAIL CLOSED: pass --guard with the guarded tools; ask when a parsed line matches,
+#               AND when an UNPARSEABLE line's raw text names the tool; match --dry-run style
+#               exemptions against that line's own arguments.
 #   block hooks FAIL OPEN: act only on a parsed line in command position; ignore UNPARSEABLE.
 #
 # Use as a library (POSIX sh, bash 3.2, dash; needs only awk — SHSEG_AWK_BIN picks another one):
 #   . "$(dirname "$0")/lib/shell-segments.sh"
 #   cmd=$(printf '%s' "$input" | shseg_json_get tool_input.command)   # 0 found, 1 absent, 2 bad JSON
 #   shseg_segments "$cmd" | while IFS="$(printf '\t')" read -r tool a1 a2 rest; do ...; done
+#   shseg_segments --long --guard "kubectl argocd" "$cmd"            # ask hooks: with the backstop
 # or as a command:
-#   shell-segments.sh [--long] [--] [COMMAND]    segment COMMAND, or stdin when absent
+#   shell-segments.sh [--long] [--guard "TOOL..."] [--] [COMMAND]
+#                                                segment COMMAND, or stdin when absent
 #   shell-segments.sh --json-get PATH            print the JSON value at PATH (stdin); arrays of
 #                                                strings come back shell-quoted and space-joined
 #   shell-segments.sh --self-test | --version
 # A JSON value is decoded fully (\n, \", \uXXXX), so a multi-line command splits on its newlines;
 # scraping it with sed leaves "\n" in the text and hides every command after the first line.
 
-SHSEG_VERSION=1.1.0
+SHSEG_VERSION=1.2.0
 
 SHSEG_AWK='
 function esc(x) { gsub(/\n/, "\\n", x); gsub(/\t/, "\\t", x); gsub(/\r/, "\\r", x); return x }
@@ -360,15 +373,40 @@ function norm(tool,    j, a, name, eq, nr, k, L, rest, keep, p) {
   for (k = 1; k <= nr; k++) O[++NO] = RL[k]
   sub(/^ /, "", GL); return ""
 }
-function emit(origin, tool, from, to,    j, line, why) {
+function emit(origin, tool, from, to,    j, line, why, w) {
   NA = 0; for (j = from; j <= to; j++) A[++NA] = SV[j]
   why = norm(tool)
   if (why != "") { unparseable(why, joinr(1, NS)); return }
-  if (LONG) line = origin "\t" esc(tool) "\t" (GL == "" ? "-" : esc(GL)) "\t" esc(joinv(WSTART, NS)); else line = esc(tool)
+  if (LONG) line = origin "\t" esc(tool) "\t" (GL == "" ? "-" : esc(GL)) "\t" esc(joinv(WSTART, E)); else line = esc(tool)
   for (j = 1; j <= NO; j++) line = line "\t" esc(O[j])
   print line
+  # Fail-closed backstop (--guard): a guarded tool named as a separate word in the arguments of a
+  # command this file does not know to be inert may be run by it (an unknown wrapper, ssh, npx...).
+  if (GUARD != "" && !has(GUARD, tool) && !has(INERT, tool) && !(tool == "command" && (A[1] == "-v" || A[1] == "-V"))) {
+    for (j = 1; j <= NA; j++) {
+      w = base(A[j])
+      if (w != "" && has(GUARD, w)) { unparseable("guarded tool " w " is an argument of " tool, joinr(WSTART, E)); break }
+    }
+  }
 }
-function flush(    k, v, wr, t, hasc, kb) {
+# skipopts(k, vals): the index after the options starting at k; vals lists the options that take a
+# separate value (" -n --interval "). Stops after "--".
+function skipopts(k, vals,    v) {
+  while (k <= E && SV[k] ~ /^-./) { v = SV[k]; k++; if (v == "--") break; if (has(vals, v)) k++ }
+  return k
+}
+# optval(k, short, long): the value of -c / --command style option among SV[k..E] (attached or
+# separate), or "\001" when absent.
+function optval(k, short, long,    v) {
+  for (; k <= E; k++) {
+    v = SV[k]
+    if (v == short || v == long) return (k < E ? SV[k + 1] : "")
+    if (index(v, long "=") == 1) return substr(v, length(long) + 2)
+    if (substr(short, 2, 1) != "" && v ~ /^-[A-Za-z]+$/ && v !~ /^--/ && substr(v, length(v)) == substr(short, 2, 1) && length(v) > 2) return (k < E ? SV[k + 1] : "")
+  }
+  return "\001"
+}
+function flush(    k, v, wr) {
   if (NS == 0) return
   wr = (CUR_DEPTH > 0 || COMPLEX || SEG_REDIR)
   k = 1
@@ -383,98 +421,170 @@ function flush(    k, v, wr, t, hasc, kb) {
     break
   }
   while (k <= NS && is_assign(SR[k])) { k++; wr = 1 }
-  WSTART = k
-  while (k <= NS) {
+  unwrap(k, NS, wr)
+}
+# unwrap(k, e, wr): peel wrappers off the simple command in SV[k..e] and emit what runs. Sets the
+# globals E (end of the range) and WSTART (its first word) that emit() reads.
+function unwrap(k, e, wr,    v, t, hasc, kb, j, s0, a, b, keep, cmd, pk, pe) {
+  E = e; WSTART = k
+  while (k <= E) {
     if (SDY[k]) { unparseable("command word is computed at run time", joinr(1, NS)); return }
     t = base(SV[k]); if (t != SV[k]) wr = 1
     if (t == "") return
+    if (t == "gtimeout") t = "timeout"
     if (t == "env") {
       wr = 1; k++
-      while (k <= NS) {
+      while (k <= E) {
         v = SV[k]
         if (v == "--") { k++; break }
         if (v == "-u" || v == "-C" || v == "--unset" || v == "--chdir") { k += 2; continue }
-        if (v == "-S" || v == "--split-string") { enqueue(joinv(k + 1, NS), CUR_DEPTH + 1); return }
-        if (v ~ /^-S./) { enqueue(substr(v, 3) (k < NS ? " " joinv(k + 1, NS) : ""), CUR_DEPTH + 1); return }
-        if (v ~ /^--split-string=/) { enqueue(substr(v, 16) (k < NS ? " " joinv(k + 1, NS) : ""), CUR_DEPTH + 1); return }
+        if (v == "-S" || v == "--split-string") { enqueue(joinv(k + 1, E), CUR_DEPTH + 1); return }
+        if (v ~ /^-S./) { enqueue(substr(v, 3) (k < E ? " " joinv(k + 1, E) : ""), CUR_DEPTH + 1); return }
+        if (v ~ /^--split-string=/) { enqueue(substr(v, 16) (k < E ? " " joinv(k + 1, E) : ""), CUR_DEPTH + 1); return }
         if (v ~ /^-/ || is_assign(v)) { k++; continue }
         break
       }
-      if (k > NS) { emit_self("env", WSTART, wr); return }
+      if (k > E) { emit_self("env", WSTART, wr); return }
       continue
     }
     if (t == "command" || t == "builtin" || t == "nohup" || t == "exec") {
       if (t == "command" && (SV[k + 1] == "-v" || SV[k + 1] == "-V")) break
       wr = 1; k++
-      while (k <= NS && SV[k] ~ /^-/) { if (t == "exec" && SV[k] == "-a") k++; k++ }
-      if (k > NS) { emit_self(t, WSTART, wr); return }
+      while (k <= E && SV[k] ~ /^-/) { if (t == "exec" && SV[k] == "-a") k++; k++ }
+      if (k > E) { emit_self(t, WSTART, wr); return }
       continue
     }
     if (t == "time") {
       wr = 1; k++
-      while (k <= NS && SV[k] ~ /^-/) { if (SV[k] == "-o" || SV[k] == "-f") k++; k++ }
+      while (k <= E && SV[k] ~ /^-/) { if (SV[k] == "-o" || SV[k] == "-f") k++; k++ }
       continue
     }
     if (t == "sudo" || t == "doas") {
       wr = 1; k++
-      while (k <= NS && SV[k] ~ /^-/) {
+      while (k <= E && SV[k] ~ /^-/) {
         v = SV[k]; k++
         if (v == "--") break
         if (v ~ /^-[ughpCDrtUTR]$/ || v ~ /^--(user|group|host|prompt|close-from|chdir|role|type|other-user|command-timeout|chroot)$/) k++
       }
-      if (k > NS) { emit_self(t, WSTART, wr); return }
+      if (k > E) { emit_self(t, WSTART, wr); return }
       continue
     }
-    if (t == "nice") {
-      wr = 1; k++
-      while (k <= NS && SV[k] ~ /^-/) { if (SV[k] == "-n" || SV[k] == "--adjustment") k++; k++ }
-      continue
-    }
-    if (t == "timeout") {
-      wr = 1; k++
-      while (k <= NS && SV[k] ~ /^-/) { if (SV[k] ~ /^(-s|-k|--signal|--kill-after)$/) k++; k++ }
-      k++
-      continue
-    }
-    if (t == "stdbuf") {
-      wr = 1; k++
-      while (k <= NS && SV[k] ~ /^-/) { if (SV[k] ~ /^-[ioe]$/) k++; k++ }
+    if (t == "timeout") { wr = 1; k = skipopts(k + 1, " -s -k --signal --kill-after "); k++; continue }
+    # Prefix wrappers: options (those in WVAL take a value), WPOS[t] positionals, then the command.
+    if (t in WPOS) {
+      wr = 1; s0 = k; k = skipopts(k + 1, WVAL[t])
+      if (t == "ionice" || t == "taskset" || t == "chrt") {
+        for (j = s0 + 1; j < k; j++) if (SV[j] ~ /^-[A-Za-z]*p[A-Za-z]*$/ || SV[j] == "--pid" || SV[j] == "--pgid" || SV[j] == "--uid") { emit_self(t, WSTART, wr); return }
+      }
+      k += WPOS[t]
+      if (k > E) { emit_self(t, s0, wr); return }
       continue
     }
     if (t == "xargs") {
-      wr = 1; k++
-      while (k <= NS && SV[k] ~ /^-/) { if (SV[k] ~ /^-[IELnPsda]$/) k++; k++ }
-      if (k > NS) { emit_self("xargs", WSTART, wr); return }
+      wr = 1; k = skipopts(k + 1, XARGS_VAL)
+      if (k > E) { emit_self("xargs", WSTART, wr); return }
       continue
     }
     if (t == "watch") {
-      wr = 1; k++
-      while (k <= NS && SV[k] ~ /^-/) { if (SV[k] == "-n" || SV[k] == "--interval") k++; k++ }
-      if (k <= NS) enqueue(joinv(k, NS), CUR_DEPTH + 1)
+      wr = 1; k = skipopts(k + 1, " -n --interval -d --differences -q --equexit ")
+      if (k <= E) enqueue(joinv(k, E), CUR_DEPTH + 1)
+      return
+    }
+    if (t == "parallel") {
+      wr = 1; s0 = k; k = skipopts(k + 1, PAR_VAL)
+      for (j = k; j <= E && SV[j] !~ /^::::?\+?$/; j++) ;
+      if (k > E || j == k) { emit_self("parallel", s0, wr); return }
+      # One word holding spaces is a command line parallel hands to a shell.
+      if (j == k + 1 && SV[k] ~ /[ \t;|&]/) { enqueue(SV[k], CUR_DEPTH + 1); return }
+      pe = E; unwrap(k, j - 1, 1); E = pe
+      return
+    }
+    if (t == "su" || t == "runuser" || t == "sg" || t == "script" || t == "flock") {
+      wr = 1; cmd = optval(k + 1, "-c", "--command")
+      if (cmd != "\001") { enqueue(cmd, CUR_DEPTH + 1); return }
+      if (t == "sg") { if (k + 2 <= E) enqueue(joinv(k + 2, E), CUR_DEPTH + 1); else emit_self(t, WSTART, wr); return }
+      if (t == "runuser") {
+        s0 = k; k = skipopts(k + 1, " -u --user -g --group -G --supp-group -w --whitelist-environment ")
+        if (k <= E && SV[k - 1] != "--" && SV[s0 + 1] != "-u" && SV[s0 + 1] != "--user") k++  # runuser [opts] USER
+        if (k > E) { emit_self(t, s0, wr); return }
+        continue
+      }
+      if (t == "flock" || t == "script") {
+        # flock [opts] FILE COMMAND...   script [opts] FILE COMMAND... (BSD); both skip one positional
+        s0 = k; k = skipopts(k + 1, (t == "flock" ? " -w --timeout -E --conflict-exit-code " : " -F -t -T -I -O -B -E --log-in --log-out --log-io --log-timing --echo --output-limit "))
+        k++
+        if (k > E) { emit_self(t, s0, wr); return }
+        continue
+      }
+      emit_self(t, WSTART, wr); return
+    }
+    if (t == "find") {
+      # find ... -exec CMD... ; | -exec CMD... {} +   (also -execdir, -ok, -okdir): each CMD runs.
+      keep = ""; pe = E; pk = WSTART
+      for (j = k + 1; j <= pe; j++) {
+        keep = keep "\001" SV[j]
+        if (SV[j] == "-exec" || SV[j] == "-execdir" || SV[j] == "-ok" || SV[j] == "-okdir") {
+          a = j + 1
+          for (b = a; b <= pe; b++) if (SV[b] == ";" || (SV[b] == "+" && b > a && SV[b - 1] == "{}")) break
+          if (b > a) unwrap(a, b - 1, 1)
+          E = pe; WSTART = pk
+          j = b; if (b <= pe) keep = keep "\001" SV[b]
+        }
+      }
+      NA = (keep == "" ? 0 : split(substr(keep, 2), A, "\001"))
+      emit_args("wrapped", "find")
       return
     }
     if (t == "direnv" && SV[k + 1] == "exec") { wr = 1; k += 3; continue }
-    if (t == "eval") { if (k < NS) enqueue(joinv(k + 1, NS), CUR_DEPTH + 1); return }
-    if (has(" bash sh zsh dash ksh ", t)) {
+    if (t == "eval") { if (k < E) enqueue(joinv(k + 1, E), CUR_DEPTH + 1); return }
+    if (has(" bash sh zsh dash ksh fish ", t)) {
       hasc = 0; kb = k; k++
-      while (k <= NS && (SV[k] ~ /^[-+]/)) {
+      while (k <= E && (SV[k] ~ /^[-+]/)) {
         v = SV[k]; k++
         if (v == "--" || v == "-") break
         if (v ~ /^[-+][oO]$/ || v == "--rcfile" || v == "--init-file") { k++; continue }
         if (v ~ /^-[A-Za-z]*c[A-Za-z]*$/) hasc = 1
       }
-      if (hasc) { if (k <= NS) enqueue(SV[k], CUR_DEPTH + 1); return }
-      if (SEG_HASH && (k > NS)) { enqueue(SEG_HB, CUR_DEPTH + 1); return }
+      if (hasc) { if (k <= E) enqueue(SV[k], CUR_DEPTH + 1); return }
+      if (SEG_HASH && (k > E)) { enqueue(SEG_HB, CUR_DEPTH + 1); return }
       k = kb; break
     }
     break
   }
-  if (k > NS) return
-  emit(wr ? "wrapped" : "plain", base(SV[k]), k + 1, NS)
+  if (k > E) return
+  emit(wr ? "wrapped" : "plain", base(SV[k]), k + 1, E)
 }
-function emit_self(t, from, wr) { emit(wr ? "wrapped" : "plain", t, from + 1, NS) }
+# emit_args(origin, tool): emit tool with the arguments already in A[1..NA] (find, whose -exec
+# operands were emitted on their own lines).
+function emit_args(origin, tool,    j, line) {
+  if (LONG) line = origin "\t" esc(tool) "\t-\t" esc(joinv(WSTART, E)); else line = esc(tool)
+  for (j = 1; j <= NA; j++) line = line "\t" esc(A[j])
+  print line
+}
+function emit_self(t, from, wr) { emit(wr ? "wrapped" : "plain", t, from + 1, E) }
 BEGIN {
   SQ = sprintf("%c", 39); MAXDEPTH = 6; LONG = (mode == "long")
+  GUARD = ""; if (guard != "") { GUARD = guard; gsub(/[,\t]/, " ", GUARD); GUARD = " " GUARD " " }
+  # Commands that never run another program named in their arguments (the --guard backstop skips them).
+  INERT = " echo printf cat head tail less more wc grep egrep fgrep rg ag ack ls stat file which whereis type hash man help test [ true false jq yq sort uniq cut tr diff cmp basename dirname realpath readlink touch mkdir rm cp mv ln chmod chown tee base64 md5sum shasum sha256sum "
+  # Prefix wrappers: WPOS = positionals before the command, WVAL = options that take a separate value.
+  WPOS["nice"] = 0; WVAL["nice"] = " -n --adjustment "
+  WPOS["stdbuf"] = 0; WVAL["stdbuf"] = " -i -o -e "
+  WPOS["ionice"] = 0; WVAL["ionice"] = " -c -n --class --classdata "
+  WPOS["setsid"] = 0; WVAL["setsid"] = " "
+  WPOS["chroot"] = 1; WVAL["chroot"] = " --userspec --groups "
+  WPOS["taskset"] = 1; WVAL["taskset"] = " "
+  WPOS["chrt"] = 1; WVAL["chrt"] = " -T -P -D --sched-runtime --sched-period --sched-deadline "
+  WPOS["caffeinate"] = 0; WVAL["caffeinate"] = " -t -w "
+  WPOS["unbuffer"] = 0; WVAL["unbuffer"] = " "
+  WPOS["nsenter"] = 0; WVAL["nsenter"] = " -t --target -S --setuid -G --setgid "
+  WPOS["unshare"] = 0; WVAL["unshare"] = " -S --setuid -G --setgid -R --root -w --wd --propagation --setgroups "
+  WPOS["pkexec"] = 0; WVAL["pkexec"] = " --user "
+  WPOS["systemd-run"] = 0; WVAL["systemd-run"] = " -p --property -u --unit -E --setenv -M --machine -H --host --description --slice --uid --gid --working-directory "
+  WPOS["firejail"] = 0; WVAL["firejail"] = " "
+  WPOS["strace"] = 0; WVAL["strace"] = " -o -e -p -s -u -E -a -O -S -X -P "
+  XARGS_VAL = " -I -E -L -n -P -s -d -a --max-args --max-procs --max-lines --max-chars --arg-file --delimiter --process-slot-var "
+  PAR_VAL = " -j --jobs -S --sshlogin --sshloginfile --slf -a --arg-file -d --delimiter -I -C --colsep --joblog --results --res --timeout --tmpdir --workdir --wd -N --max-args -n --max-replace-args -L -E --env --memfree --load -l --delay --retries --halt --tagstring --basefile --bf --return --transferfile --tf --sshdelay --termseq "
   VAL["kubectl"] = " n namespace context cluster user kubeconfig s server token as as-group as-uid request-timeout certificate-authority client-certificate client-key tls-server-name cache-dir profile profile-output log-file log-dir log-file-max-size log-flush-frequency v vmodule password username stderrthreshold "
   BOOL["kubectl"] = " insecure-skip-tls-verify warnings-as-errors disable-compression match-server-version alsologtostderr logtostderr skip-headers skip-log-headers one-output add-dir-header help h "
   RELOC["kubectl"] = " dry-run "
@@ -587,12 +697,20 @@ BEGIN {
   exit 0
 }'
 
-# shseg_segments [--long] COMMAND — print the simple commands in COMMAND (see the header).
+# shseg_segments [--long] [--guard "TOOL..."] [--] COMMAND — print the simple commands in COMMAND
+# (see the header). --guard (or $SHSEG_GUARD) turns on the fail-closed backstop for those tools.
 shseg_segments() {
-  _shseg_mode=short
-  if [ "${1:-}" = "--long" ]; then _shseg_mode=long; shift; fi
+  _shseg_mode=short; _shseg_guard=${SHSEG_GUARD:-}
+  while :; do
+    case "${1:-}" in
+      --long) _shseg_mode=long; shift ;;
+      --guard) _shseg_guard=${2:-}; shift 2 ;;
+      --guard=*) _shseg_guard=${1#--guard=}; shift ;;
+      *) break ;;
+    esac
+  done
   [ "${1:-}" = "--" ] && shift
-  printf '%s' "${1:-}" | LC_ALL=C "${SHSEG_AWK_BIN:-awk}" -v mode="$_shseg_mode" "$SHSEG_AWK"
+  printf '%s' "${1:-}" | LC_ALL=C "${SHSEG_AWK_BIN:-awk}" -v mode="$_shseg_mode" -v guard="$_shseg_guard" "$SHSEG_AWK"
 }
 
 # shseg_json_get PATH — the JSON value at the dotted PATH (e.g. tool_input.command), from stdin.
@@ -612,6 +730,10 @@ _shseg_self_test() {
   _t() { # name expected-lines-with-|-for-TAB input [--long]
     if [ "${4:-}" = "--long" ]; then _got=$(shseg_segments --long "$3" | tr '\t' '|'); else _got=$(shseg_segments "$3" | tr '\t' '|'); fi
     if [ "$_got" = "$2" ]; then _p=$((_p + 1)); else _f=$((_f + 1)); printf 'FAIL %s\n  input:    %s\n  expected: %s\n  got:      %s\n' "$1" "$3" "$2" "$_got"; fi
+  }
+  _g() { # name expected-lines guard input
+    _got=$(shseg_segments --guard "$3" "$4" | tr '\t' '|')
+    if [ "$_got" = "$2" ]; then _p=$((_p + 1)); else _f=$((_f + 1)); printf 'FAIL %s\n  input:    %s\n  expected: %s\n  got:      %s\n' "$1" "$4" "$2" "$_got"; fi
   }
   _j() { # name expected-exit expected-output path json
     _got=$(printf '%s' "$5" | shseg_json_get "$4"); _rc=$?
@@ -683,6 +805,41 @@ _shseg_self_test() {
   _t "quoted here-document does not run" "cat" "cat <<'EOF'${NL}\$(kubectl delete ns prod)${NL}EOF"
   _t "quoted tool name" "kubectl|delete|ns|prod" "\"kubectl\" delete ns prod"
   _t "backslashed tool name" "kubectl|delete|ns|prod" "\\kubectl delete ns prod"
+  # --- k8s-infra #230 round 4: exec-style wrappers run their command operand ---------------------
+  _t "k8s#230r4 find -exec kubectl ... \;" "kubectl|delete|pod|api${NL}find|/tmp|-prune|-exec|;" "find /tmp -prune -exec kubectl delete pod api \;"
+  _t "k8s#230r4 find -exec argocd ... \;" "argocd|app|delete|my-app${NL}find|/tmp|-prune|-exec|;" "find /tmp -prune -exec argocd app delete my-app \;"
+  _t "find -exec ... {} +" "kubectl|apply|-f|{}${NL}find|.|-name|*.yaml|-exec|+" "find . -name '*.yaml' -exec kubectl apply -f {} +"
+  _t "find -execdir with a quoted ;" "argocd|app|delete|a${NL}find|.|-execdir|;" "find . -execdir argocd app delete a ';'"
+  _t "find -ok, gcloud globals inside" "gcloud|run|services|delete|s${NL}find|.|-ok|;" "find . -ok gcloud --project p run services delete s \;"
+  _t "find -okdir sh -c terraform" "find|.|-okdir|;${NL}terraform|apply" "find . -okdir sh -c 'terraform apply' \;"
+  _t "find -exec git commit" "git|commit|-m|x${NL}find|.|-maxdepth|0|-exec|;" "find . -maxdepth 0 -exec git commit -m x \;"
+  _t "two -exec operands" "kubectl|get|pods${NL}kubectl|delete|pod|x${NL}find|.|-exec|;|-exec|;" "find . -exec kubectl get pods \; -exec kubectl delete pod x \;"
+  _t "find -exec without a terminator still runs" "kubectl|delete|pod|x${NL}find|.|-exec" "find . -exec kubectl delete pod x"
+  _t "find without -exec" "find|.|-name|git commit" "find . -name 'git commit'"
+  _t "xargs -I {} -P" "ls${NL}kubectl|delete|pod|{}" "ls | xargs -I {} -P 4 kubectl delete pod {}"
+  _t "xargs long options with values" "git|commit|-m|x" "xargs --max-procs 2 --arg-file f git commit -m x"
+  _t "parallel ::: " "kubectl|delete|pod" "parallel -j 4 kubectl delete pod ::: a b"
+  _t "parallel one-word command line" "argocd|app|delete|{}" "parallel 'argocd app delete {}' ::: a b"
+  _t "gtimeout, watch" "terraform|apply${NL}kubectl|delete|pod|x" "gtimeout 5 terraform apply; watch -n 5 kubectl delete pod x"
+  _t "ionice, nice, stdbuf" "kubectl|delete|pod|x${NL}git|commit|-m|x" "ionice -c 3 nice -n 5 kubectl delete pod x; stdbuf -oL git commit -m x"
+  _t "flock FILE COMMAND, flock -c" "kubectl|delete|pod|x${NL}terraform|apply" "flock /tmp/l kubectl delete pod x; flock -w 5 /tmp/l -c 'terraform apply'"
+  _t "chroot, setsid" "argocd|app|delete|a${NL}kubectl|delete|pod|x" "chroot --userspec=u:g /srv argocd app delete a; setsid -f kubectl delete pod x"
+  _t "script -c, BSD script FILE COMMAND" "kubectl|delete|pod|x${NL}gcloud|compute|instances|delete|vm" "script -q -c 'gcloud compute instances delete vm' /dev/null; script -q /dev/null kubectl delete pod x"
+  _t "su -c, su -lc, runuser, sg -c" "kubectl|delete|pod|y${NL}kubectl|delete|ns|x${NL}terraform|apply${NL}git|commit|-m|z" "su -c 'kubectl delete ns x' root; su -lc 'terraform apply' root; runuser -u bob -- kubectl delete pod y; sg docker -c 'git commit -m z'"
+  _t "exec, eval, env -S, fish -c" "kubectl|delete|ns|a${NL}argocd|app|delete|b${NL}terraform|destroy${NL}gcloud|run|services|delete|s" "exec kubectl delete ns a; eval 'argocd app delete b'; env -S 'terraform destroy'; fish -c 'gcloud run services delete s'"
+  _t "taskset, chrt, caffeinate, unbuffer" "kubectl|delete|pod|a${NL}kubectl|delete|pod|b${NL}terraform|apply${NL}git|commit|-m|x" "taskset -c 0 kubectl delete pod a; chrt -f 10 kubectl delete pod b; caffeinate -i terraform apply; unbuffer git commit -m x"
+  _t "nsenter, unshare, pkexec, systemd-run, firejail, strace" "kubectl|delete|pod|a${NL}kubectl|delete|pod|b${NL}argocd|app|delete|c${NL}terraform|apply${NL}git|commit|-m|x${NL}kubectl|delete|pod|d" "nsenter -t 1 -m kubectl delete pod a; unshare -r kubectl delete pod b; pkexec --user root argocd app delete c; systemd-run --unit x terraform apply; firejail --quiet git commit -m x; strace -f -o out kubectl delete pod d"
+  _t "pid modes are not wrappers" "taskset|-p|1${NL}ionice|-p|1" "taskset -p 1; ionice -p 1"
+  _t "nested find -exec find -exec" "git|commit|-m|x${NL}find|.|-exec${NL}find|.|-exec|;|;" "find . -exec find . -exec git commit -m x \; \;"
+  # --- the --guard backstop: an unknown wrapper naming a guarded tool fails closed ---------------
+  _g "ssh host kubectl" "ssh|host|kubectl|delete|pod|x${NL}UNPARSEABLE|guarded tool kubectl is an argument of ssh|ssh host kubectl delete pod x" "kubectl argocd" "ssh host kubectl delete pod x"
+  _g "unknown wrapper with a path on the tool" "npx|-y|/usr/bin/argocd|app|delete|a${NL}UNPARSEABLE|guarded tool argocd is an argument of npx|npx -y /usr/bin/argocd app delete a" "kubectl argocd" "npx -y /usr/bin/argocd app delete a"
+  _g "unknown wrapper, terraform" "somewrap|--run|terraform|apply${NL}UNPARSEABLE|guarded tool terraform is an argument of somewrap|somewrap --run terraform apply" "terraform" "somewrap --run terraform apply"
+  _g "comma-separated guard list" "ssh|h|gcloud|run|deploy${NL}UNPARSEABLE|guarded tool gcloud is an argument of ssh|ssh h gcloud run deploy" "kubectl,gcloud" "ssh h gcloud run deploy"
+  _g "inert commands do not trip it" "echo|kubectl|delete${NL}grep|-r|kubectl|.${NL}command|-v|kubectl${NL}which|argocd" "kubectl argocd" "echo kubectl delete; grep -r kubectl .; command -v kubectl; which argocd"
+  _g "quoted prose is one word" "gh|pr|create|--body|run kubectl delete pod x${NL}git|commit|-m|argocd app delete" "kubectl argocd" "gh pr create --body 'run kubectl delete pod x'; git commit -m 'argocd app delete'"
+  _g "the guarded tool itself and parsed find are not flagged" "kubectl|get|pods${NL}kubectl|get|pods${NL}find|.|-exec|;" "kubectl" "kubectl get pods; find . -exec kubectl get pods \;"
+  _t "no --guard: old output" "ssh|host|kubectl|delete|pod|x" "ssh host kubectl delete pod x"
   # --- origin (Codex prefix-rule visibility) ----------------------------------------------------
   _t "plain" "plain|kubectl|-|kubectl delete pod x|delete|pod|x" "kubectl delete pod x" --long
   _t "absolute path is wrapped" "wrapped|kubectl|-|/bin/kubectl delete pod x|delete|pod|x" "/bin/kubectl delete pod x" --long
@@ -713,11 +870,18 @@ case "${0##*/}" in
       --version) echo "shell-segments.sh v$SHSEG_VERSION" ;;
       --self-test) _shseg_self_test ;;
       --json-get) shseg_json_get "${2:-}" ;;
-      -h|--help) sed -n '2,51p' "$0" ;;
+      -h|--help) sed -n '2,64p' "$0" ;;
       *)
-        _shseg_long=""
-        if [ "${1:-}" = "--long" ]; then _shseg_long=--long; shift; fi
+        _shseg_long=""; _shseg_g=${SHSEG_GUARD:-}
+        while :; do
+          case "${1:-}" in
+            --long) _shseg_long=--long; shift ;;
+            --guard) _shseg_g=${2:-}; shift 2 ;;
+            --guard=*) _shseg_g=${1#--guard=}; shift ;;
+            *) break ;;
+          esac
+        done
         [ "${1:-}" = "--" ] && shift
-        if [ $# -gt 0 ]; then shseg_segments $_shseg_long "$1"; else shseg_segments $_shseg_long "$(cat)"; fi ;;
+        if [ $# -gt 0 ]; then shseg_segments $_shseg_long --guard "$_shseg_g" -- "$1"; else shseg_segments $_shseg_long --guard "$_shseg_g" -- "$(cat)"; fi ;;
     esac ;;
 esac

@@ -10,18 +10,21 @@
 # into simple commands with the shared quote-aware segmenter
 # (lib/shell-segments.sh, vendored from waterx-commons): separators and newlines
 # outside quotes, comments dropped, `bash -c` / `eval` / `env` / `command` /
-# `time` unwrapped, substitutions parsed as their own commands, and the global
+# `time` / `xargs` / `timeout` / `nice` unwrapped, the command of `find -exec` /
+# `-execdir` emitted as its own, substitutions parsed as their own commands, and the global
 # options of git and gh moved aside (`git -c k=v push`, `gh -R org/repo pr
 # merge`). Each command is matched on its own verb, so quoted prose (a commit
 # message, a PR body that mentions `git push origin main`) is never a command:
 #   - `gh pr merge`, `gh workflow run`, or a `gh api` call that merges a PR;
 #   - `git push` naming a served branch (also `HEAD:main`, `refs/heads/main`),
+#     run through `xargs` / `parallel` without naming a branch itself,
 #     forcing (`--force*`, `-f`, a `+` refspec), deleting (`--delete`, `-d`, a
 #     `:branch` refspec), `--all` / `--mirror`, or naming no branch while the
 #     checkout (`cwd`, or `git -C <dir>`) is on a served branch.
 # Everything else (fetch, pull, status, a push of a feature branch) passes.
 # FAIL CLOSED: a part the segmenter cannot parse that names git or gh together
-# with push / merge / workflow asks.
+# with push / merge / workflow asks; with --guard "git gh" that includes any other
+# command carrying git or gh as a separate argument word (`ssh host git push …`).
 #
 # Claude Code: answers permissionDecision "ask" (exit 0), so the user confirms.
 # Codex: its hooks cannot ask ("ask" fails the hook and the call proceeds), so
@@ -82,6 +85,9 @@ publish_in() {
     esac
   done
   [ -n "$named" ] && return
+  # xargs / parallel append arguments the hook cannot see: one of them may name a served
+  # branch, so a push run through them that names no branch itself asks (fail closed).
+  if [ -n "${appended:-}" ]; then echo "git push with arguments appended by $appended"; return; fi
   # No branch named (bare `git push`, `git push origin`, `git push -u origin HEAD`):
   # the branch the checkout is on decides. `git -C <dir>` sits in the globals.
   case " $globals " in *" -C "*) dir=${globals#*-C }; dir=${dir%% *} ;; esac
@@ -124,6 +130,8 @@ while IFS= read -r line; do
     fi
     continue
   fi
+  appended=""
+  case " ${F[3]} " in *" xargs "*) appended=xargs ;; *" parallel "*) appended=parallel ;; esac
   hit=$(publish_in "${F[1]}" "${F[2]}" ${F[4]+"${F[@]:4}"})
   [ -n "$hit" ] || continue
   [ -n "$matched" ] || matched=$hit
@@ -131,7 +139,7 @@ while IFS= read -r line; do
     [ -n "$uncovered" ] || uncovered=${F[3]}
   fi
 done <<EOF
-$(shseg_segments --long "$cmd")
+$(shseg_segments --long --guard "git gh" "$cmd")
 EOF
 [ -n "$matched" ] || exit 0
 
