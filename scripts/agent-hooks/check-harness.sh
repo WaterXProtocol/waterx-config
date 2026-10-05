@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# waterx-commons/harness/lint/check-harness.sh v1.2.1
+# waterx-commons/harness/lint/check-harness.sh v1.3.1
 #
 # Checks a repository against the WaterX agent-harness standard
 # (Bucket-Protocol/waterx-commons, harness/STANDARD.md). Repos vendor this file as
@@ -22,11 +22,12 @@
 # JSON and .codex/rules are read with awk, so the result is the same with or without jq.
 set -u
 
-VERSION="1.2.1"
+VERSION="1.3.1"
 # Released versions of harness/hooks/lib/shell-segments.sh and their sha256, for check 10.
 # Every release of the segmenter adds a line here (CI fails when the current one is missing).
 KNOWN_SEGMENTERS="
 1.1.0 7123ebaf34af6b32e84576fc293e04a563efc00138854aedcad9f50e0531dc52
+1.2.0 cfddb05f94e0dc0ab68dfff983312dff48f6e7af478ae5f45473b12c02d287d4
 "
 ROOT=""
 HUB=""
@@ -267,10 +268,12 @@ done
 end_check
 
 # ---------------------------------------------------------------------------------------------
-begin_check 4 "every .claude/skills/*/SKILL.md has a frontmatter description ≤ $DESCRIPTION_LIMIT_CHARS chars" \
+begin_check 4 "every .claude/skills/*/SKILL.md and plugins/*/skills/*/SKILL.md has a frontmatter description ≤ $DESCRIPTION_LIMIT_CHARS chars" \
   "Claude Code loads every skill's description into every session and caps it at 1,536 characters; the body loads only on trigger, so the description is what decides whether the skill fires."
-if [ -d .claude/skills ]; then
-  for s in .claude/skills/*/; do
+# plugins/<plugin>/skills/ is a plugin marketplace's skill tree (waterx-commons itself has one;
+# STANDARD.md rule 15).
+if [ -d .claude/skills ] || ls -d plugins/*/skills >/dev/null 2>&1; then
+  for s in .claude/skills/*/ plugins/*/skills/*/; do
     [ -d "$s" ] || continue
     sk="${s}SKILL.md"
     [ -f "$sk" ] || { fail "$sk: missing"; continue; }
@@ -636,6 +639,25 @@ if [ -f "$seg" ]; then
   elif [ "$seg_sha" != "$want" ]; then
     warn "$seg: says v$seg_v but its content differs from the released v$seg_v (sha256 $seg_sha); re-vendor it unchanged"
   fi
+fi
+end_check
+
+# ---------------------------------------------------------------------------------------------
+begin_check 11 "no .claude/settings.local.json is committed" \
+  "settings.local.json holds one person's overrides and the approvals Claude Code saves on \"don't ask again\"; committed, it grants those permissions to everyone who clones the repo (STANDARD.md rule 14)."
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  tracked_local=$(git -c core.quotepath=off ls-files --cached -- 'settings.local.json' '*/settings.local.json' 2>/dev/null)
+  while IFS= read -r f; do
+    [ -n "$f" ] || continue
+    case "$f" in .claude/settings.local.json|*/.claude/settings.local.json) ;; *) continue ;; esac
+    if printf '%s\n' "$tracked_local" | grep -qxF "$f"; then
+      fail "$f: is tracked by git; remove it from the index (git rm --cached $f) and keep it local; Claude Code keeps it out of git only when it creates the file itself"
+    else
+      warn "$f: untracked but not ignored, so 'git add -A' would commit it; report the .gitignore line the team should add"
+    fi
+  done <<EOF
+$(git -c core.quotepath=off ls-files --cached --others --exclude-standard -- 'settings.local.json' '*/settings.local.json' 2>/dev/null)
+EOF
 fi
 end_check
 
