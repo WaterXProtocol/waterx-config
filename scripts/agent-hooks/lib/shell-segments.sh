@@ -1,5 +1,5 @@
 #!/bin/sh
-# waterx-commons/harness/hooks/lib/shell-segments.sh v1.2.0
+# waterx-commons/harness/hooks/lib/shell-segments.sh v1.2.1
 #
 # A quote-aware shell command segmenter for agent hooks (STANDARD.md rule R2). Repos vendor this
 # file unchanged as scripts/agent-hooks/lib/shell-segments.sh; keep the version line above intact.
@@ -16,7 +16,9 @@
 #     watch, flock, chroot, setsid, script (-c, and BSD's FILE COMMAND), taskset, chrt, caffeinate,
 #     unbuffer, nsenter, unshare, pkexec, systemd-run, firejail, strace, direnv exec, leading
 #     NAME=value assignments, reserved words (if/then/do/!/{ ...), and a path on the tool
-#     (/usr/local/bin/kubectl -> kubectl);
+#     (/usr/local/bin/kubectl -> kubectl). A wrapper reads only ITS OWN options, up to its own
+#     boundary (its positionals, "--" or the first non-option); the command after it keeps its
+#     options (flock /tmp/l git -c k=v commit -> git commit; waterx-fe#1149 round 4);
 #   - emits the command operand of find -exec/-execdir/-ok/-okdir (`\;` and `{} +`) as its own
 #     command, and find itself with that operand removed;
 #   - moves the global options of git, gh, kubectl, helm, argocd, gcloud, terraform, tofu and make
@@ -37,11 +39,19 @@
 #             confidence: unterminated quote or substitution, a command word computed at run time
 #             ($TOOL, "$(which kubectl)"), an unknown option before a known tool's subcommand, or
 #             nesting deeper than 6 levels. The raw text lets a hook check whether it names the tool.
-#             With --guard "TOOL...", also every command that is not a guarded tool and not known
-#             to be inert (echo, grep, cat, ...) but has a guarded tool as a separate argument word
-#             (ssh host kubectl ..., an unknown wrapper): the backstop that makes the next wrapper
-#             this file does not know ask instead of pass. Quoted prose is one word, so it never
-#             trips it.
+#             With --guard "TOOL...", the fail-closed backstop for ask hooks (v1.2.1): a simple
+#             command whose RAW TEXT names a guarded tool as a word ANYWHERE (inside single or
+#             double quotes, $( ), backticks, a here-document body, a here-string or a redirection
+#             target too) comes back UNPARSEABLE, with that text, unless it parsed as a guarded tool
+#             itself (the hook classifies it), as a command known not to run its arguments (echo,
+#             grep, cat, ... the INERT list), or as a wrapper whose command this file unwrapped
+#             (bash -c, sudo, find -exec, ...; the unwrapped command is checked on its own line).
+#             So `ssh host 'kubectl delete pod x'`, `gh pr create --body '... kubectl ...'` and
+#             `git commit -m '... kubectl ...'` all come back UNPARSEABLE: a spurious prompt is
+#             acceptable, a silent write is not. Two cases look at the WHOLE input instead of the
+#             command's own text: a command word computed at run time (K=kubectl; $K delete) and a
+#             shell, interpreter or ssh that may read its commands from stdin (echo '...' | sh,
+#             python3 <<EOF). Without --guard (block hooks) nothing of this is printed.
 #
 # How hooks use it (STANDARD.md rule R2):
 #   ask hooks   FAIL CLOSED: pass --guard with the guarded tools; ask when a parsed line matches,
@@ -63,7 +73,7 @@
 # A JSON value is decoded fully (\n, \", \uXXXX), so a multi-line command splits on its newlines;
 # scraping it with sed leaves "\n" in the text and hides every command after the first line.
 
-SHSEG_VERSION=1.2.0
+SHSEG_VERSION=1.2.1
 
 SHSEG_AWK='
 function esc(x) { gsub(/\n/, "\\n", x); gsub(/\t/, "\\t", x); gsub(/\r/, "\\r", x); return x }
@@ -308,18 +318,19 @@ function has(list, w) { return index(list, " " w " ") > 0 }
 function base(p) { sub(/.*\//, "", p); return p }
 function joinv(from, to,    j, out) { out = ""; for (j = from; j <= to; j++) out = out (j > from ? " " : "") SV[j]; return out }
 function joinr(from, to,    j, out) { out = ""; for (j = from; j <= to; j++) out = out (j > from ? " " : "") SR[j]; return out }
-function reset_seg() { NS = 0; SEG_REDIR = 0; SEG_HB = ""; SEG_HASH = 0; PEND_RT = 0 }
+function reset_seg() { NS = 0; SEG_REDIR = 0; SEG_HB = ""; SEG_HASH = 0; PEND_RT = 0; SEG_TXT = "" }
 function parse(    t, ty, lastop) {
   reset_seg(); CASEN = 0; lastop = ""
   for (t = 1; t <= NT; t++) {
     ty = T_type[t]
     if (ty == "W") {
+      SEG_TXT = SEG_TXT " " T_raw[t]
       if (PEND_RT) { PEND_RT = 0; continue }
       NS++; SV[NS] = T_val[t]; SR[NS] = T_raw[t]; SDY[NS] = T_dyn[t]; continue
     }
     if (ty == "R") { SEG_REDIR = 1; PEND_RT = 1; continue }
     if (ty == "RX") { SEG_REDIR = 1; continue }
-    if (ty == "H") { SEG_REDIR = 1; SEG_HASH = 1; SEG_HB = SEG_HB T_val[t]; continue }
+    if (ty == "H") { SEG_REDIR = 1; SEG_HASH = 1; SEG_HB = SEG_HB T_val[t]; SEG_TXT = SEG_TXT " " T_val[t]; continue }
     # A case pattern ("b)" after ";;") is not a command.
     if (!(T_val[t] == ")" && CASEN > 0 && lastop == ";;")) flush()
     reset_seg(); lastop = T_val[t]
@@ -373,20 +384,43 @@ function norm(tool,    j, a, name, eq, nr, k, L, rest, keep, p) {
   for (k = 1; k <= nr; k++) O[++NO] = RL[k]
   sub(/^ /, "", GL); return ""
 }
-function emit(origin, tool, from, to,    j, line, why, w) {
+function emit(origin, tool, from, to,    j, line, why, ops) {
   NA = 0; for (j = from; j <= to; j++) A[++NA] = SV[j]
+  # --guard bookkeeping: a command that is neither a guarded tool nor known to be inert may run
+  # text it was given; a shell, interpreter or ssh without a script operand may run its stdin.
+  if (!has(GUARD, tool) && !has(INERT, tool) && !(tool == "command" && (A[1] == "-v" || A[1] == "-V"))) { SEG_NONEX = 1; if (SEG_TOOL == "") SEG_TOOL = tool }
+  if (tool == "ssh") SEG_STDIN = 1
+  else if (has(STDIN_EXEC, tool)) {
+    ops = 0; for (j = 1; j <= NA; j++) { if (A[j] == "-s" || A[j] == "-") { ops = 0; break } if (A[j] !~ /^-/) ops++ }
+    if (ops == 0) SEG_STDIN = 1
+  }
   why = norm(tool)
   if (why != "") { unparseable(why, joinr(1, NS)); return }
   if (LONG) line = origin "\t" esc(tool) "\t" (GL == "" ? "-" : esc(GL)) "\t" esc(joinv(WSTART, E)); else line = esc(tool)
   for (j = 1; j <= NO; j++) line = line "\t" esc(O[j])
   print line
-  # Fail-closed backstop (--guard): a guarded tool named as a separate word in the arguments of a
-  # command this file does not know to be inert may be run by it (an unknown wrapper, ssh, npx...).
-  if (GUARD != "" && !has(GUARD, tool) && !has(INERT, tool) && !(tool == "command" && (A[1] == "-v" || A[1] == "-V"))) {
-    for (j = 1; j <= NA; j++) {
-      w = base(A[j])
-      if (w != "" && has(GUARD, w)) { unparseable("guarded tool " w " is an argument of " tool, joinr(WSTART, E)); break }
-    }
+}
+# names(text, t): 1 when t occurs in text as a word (not inside a longer [A-Za-z0-9_.-] run).
+function names(text, t,    s, p, b, a) {
+  s = text
+  while ((p = index(s, t)) > 0) {
+    b = (p == 1) ? "" : substr(s, p - 1, 1); a = substr(s, p + length(t), 1)
+    if (b !~ /[A-Za-z0-9_.-]/ && a !~ /[A-Za-z0-9_.-]/) return 1
+    s = substr(s, p + 1)
+  }
+  return 0
+}
+# The --guard backstop for the simple command just flushed (see the header).
+function guard_check(    n, g, j, txt) {
+  if (GUARD == "" || !(SEG_NONEX || SEG_COMPUTED)) return
+  n = split(GUARD, g, " "); txt = SEG_TXT; sub(/^ /, "", txt)
+  if (SEG_NONEX) for (j = 1; j <= n; j++) if (g[j] != "" && names(txt, g[j])) {
+    unparseable("guarded tool " g[j] " is named in the text of " SEG_TOOL ", which may run it", txt); return
+  }
+  if (SEG_COMPUTED || SEG_STDIN) for (j = 1; j <= n; j++) if (g[j] != "" && names(ROOT, g[j])) {
+    if (SEG_COMPUTED) unparseable("guarded tool " g[j] " is named in a line whose command word is computed at run time", ROOT)
+    else unparseable("guarded tool " g[j] " is named in a line where " SEG_TOOL " may read commands from stdin", ROOT)
+    return
   }
 }
 # skipopts(k, vals): the index after the options starting at k; vals lists the options that take a
@@ -395,16 +429,25 @@ function skipopts(k, vals,    v) {
   while (k <= E && SV[k] ~ /^-./) { v = SV[k]; k++; if (v == "--") break; if (has(vals, v)) k++ }
   return k
 }
-# optval(k, short, long): the value of -c / --command style option among SV[k..E] (attached or
-# separate), or "\001" when absent.
-function optval(k, short, long,    v) {
-  for (; k <= E; k++) {
+# optval(k, to, short, long): the value of a -c / --command style option among SV[k..to] (attached,
+# separate, or last in a cluster such as -lc), or "\001" when absent. Stops at "--". Callers pass
+# the end of the WRAPPER options, never the end of the line: the command after them has
+# options of its own (git -c k=v, kubectl -n ns) that do not belong to the wrapper (waterx-fe#1149 r4).
+function optval(k, to, short, long,    v) {
+  for (; k <= to; k++) {
     v = SV[k]
+    if (v == "--") break
     if (v == short || v == long) return (k < E ? SV[k + 1] : "")
     if (index(v, long "=") == 1) return substr(v, length(long) + 2)
-    if (substr(short, 2, 1) != "" && v ~ /^-[A-Za-z]+$/ && v !~ /^--/ && substr(v, length(v)) == substr(short, 2, 1) && length(v) > 2) return (k < E ? SV[k + 1] : "")
+    if (v ~ /^-[A-Za-z]+$/ && length(v) > 2 && substr(v, length(v)) == substr(short, 2, 1)) return (k < E ? SV[k + 1] : "")
   }
   return "\001"
+}
+# ownopts(k, vals): like skipopts, but does not consume "--": the index of the first word that is
+# not one of the wrapper options, or of "--".
+function ownopts(k, vals,    v) {
+  while (k <= E && SV[k] ~ /^-./ && SV[k] != "--") { v = SV[k]; k++; if (has(vals, v)) k++ }
+  return k
 }
 function flush(    k, v, wr) {
   if (NS == 0) return
@@ -421,14 +464,16 @@ function flush(    k, v, wr) {
     break
   }
   while (k <= NS && is_assign(SR[k])) { k++; wr = 1 }
+  SEG_NONEX = 0; SEG_STDIN = 0; SEG_COMPUTED = 0; SEG_TOOL = ""
   unwrap(k, NS, wr)
+  guard_check()
 }
 # unwrap(k, e, wr): peel wrappers off the simple command in SV[k..e] and emit what runs. Sets the
 # globals E (end of the range) and WSTART (its first word) that emit() reads.
 function unwrap(k, e, wr,    v, t, hasc, kb, j, s0, a, b, keep, cmd, pk, pe) {
   E = e; WSTART = k
   while (k <= E) {
-    if (SDY[k]) { unparseable("command word is computed at run time", joinr(1, NS)); return }
+    if (SDY[k]) { SEG_COMPUTED = 1; unparseable("command word is computed at run time", joinr(1, NS)); return }
     t = base(SV[k]); if (t != SV[k]) wr = 1
     if (t == "") return
     if (t == "gtimeout") t = "timeout"
@@ -499,24 +544,44 @@ function unwrap(k, e, wr,    v, t, hasc, kb, j, s0, a, b, keep, cmd, pk, pe) {
       pe = E; unwrap(k, j - 1, 1); E = pe
       return
     }
-    if (t == "su" || t == "runuser" || t == "sg" || t == "script" || t == "flock") {
-      wr = 1; cmd = optval(k + 1, "-c", "--command")
+    if (t == "su" || t == "runuser") {
+      wr = 1; s0 = k
+      RU = " -u --user -g --group -G --supp-group -w --whitelist-environment -s --shell "
+      k = ownopts(k + 1, RU)
+      # runuser [opts] -u USER [--] COMMAND...: the command starts after the options.
+      if (t == "runuser" && optval(s0 + 1, k - 1, "-u", "--user") != "\001") {
+        if (k <= E && SV[k] == "--") k++
+        if (k > E) { emit_self(t, s0, wr); return }
+        continue
+      }
+      # su/runuser [opts] [-] [USER [ARGS]]: util-linux getopt permutes, so -c/--command counts
+      # anywhere before "--".
+      for (j = s0 + 1; j <= E && SV[j] != "--"; j++) ;
+      cmd = optval(s0 + 1, j - 1, "-c", "--command")
       if (cmd != "\001") { enqueue(cmd, CUR_DEPTH + 1); return }
-      if (t == "sg") { if (k + 2 <= E) enqueue(joinv(k + 2, E), CUR_DEPTH + 1); else emit_self(t, WSTART, wr); return }
-      if (t == "runuser") {
-        s0 = k; k = skipopts(k + 1, " -u --user -g --group -G --supp-group -w --whitelist-environment ")
-        if (k <= E && SV[k - 1] != "--" && SV[s0 + 1] != "-u" && SV[s0 + 1] != "--user") k++  # runuser [opts] USER
-        if (k > E) { emit_self(t, s0, wr); return }
-        continue
-      }
-      if (t == "flock" || t == "script") {
-        # flock [opts] FILE COMMAND...   script [opts] FILE COMMAND... (BSD); both skip one positional
-        s0 = k; k = skipopts(k + 1, (t == "flock" ? " -w --timeout -E --conflict-exit-code " : " -F -t -T -I -O -B -E --log-in --log-out --log-io --log-timing --echo --output-limit "))
-        k++
-        if (k > E) { emit_self(t, s0, wr); return }
-        continue
-      }
-      emit_self(t, WSTART, wr); return
+      emit_self(t, s0, wr); return
+    }
+    if (t == "sg") {
+      # sg [-] GROUP [-c] COMMAND: only the word right after GROUP can be the -c of sg.
+      wr = 1; k++; if (k <= E && SV[k] == "-") k++
+      k++
+      if (k > E) { emit_self(t, WSTART, wr); return }
+      if (SV[k] == "-c") { if (k < E) enqueue(SV[k + 1], CUR_DEPTH + 1); return }
+      enqueue(joinv(k, E), CUR_DEPTH + 1); return
+    }
+    if (t == "flock" || t == "script") {
+      # flock [opts] FILE (-c STRING | COMMAND...)   script [opts] [FILE] (-c STRING | COMMAND... (BSD))
+      # The wrapper options end at FILE; -c is looked for there and right after FILE only.
+      wr = 1; s0 = k
+      k = ownopts(k + 1, (t == "flock" ? " -w --timeout -E --conflict-exit-code " : " -c --command -F -t -T -I -O -B -E --log-in --log-out --log-io --log-timing --echo --output-limit "))
+      cmd = optval(s0 + 1, k - 1, "-c", "--command")
+      if (cmd != "\001") { enqueue(cmd, CUR_DEPTH + 1); return }
+      if (k <= E && SV[k] == "--") k++
+      k++
+      if (k > E) { emit_self(t, s0, wr); return }
+      if (SV[k] == "-c" || SV[k] == "--command") { if (k < E) enqueue(SV[k + 1], CUR_DEPTH + 1); return }
+      if (index(SV[k], "--command=") == 1) { enqueue(substr(SV[k], 11), CUR_DEPTH + 1); return }
+      continue
     }
     if (t == "find") {
       # find ... -exec CMD... ; | -exec CMD... {} +   (also -execdir, -ok, -okdir): each CMD runs.
@@ -565,8 +630,12 @@ function emit_self(t, from, wr) { emit(wr ? "wrapped" : "plain", t, from + 1, E)
 BEGIN {
   SQ = sprintf("%c", 39); MAXDEPTH = 6; LONG = (mode == "long")
   GUARD = ""; if (guard != "") { GUARD = guard; gsub(/[,\t]/, " ", GUARD); GUARD = " " GUARD " " }
-  # Commands that never run another program named in their arguments (the --guard backstop skips them).
-  INERT = " echo printf cat head tail less more wc grep egrep fgrep rg ag ack ls stat file which whereis type hash man help test [ true false jq yq sort uniq cut tr diff cmp basename dirname realpath readlink touch mkdir rm cp mv ln chmod chown tee base64 md5sum shasum sha256sum "
+  # Commands that never run another program or text given in their arguments (the --guard backstop
+  # skips them). Not here on purpose: man (-P runs a pager string), less/more (+!cmd), rg (--pre),
+  # sort (--compress-program), awk/sed/find/git/gh and every interpreter.
+  INERT = " echo printf cat head tail wc grep egrep fgrep ag ack ls stat file which whereis type hash help test [ true false jq yq uniq cut tr diff cmp basename dirname realpath readlink touch mkdir rm cp mv ln chmod chown tee base64 md5sum shasum sha256sum cd pwd "
+  # Shells and interpreters that run commands from stdin when given no script operand (ssh always may).
+  STDIN_EXEC = " bash sh zsh dash ksh fish csh tcsh python python2 python3 perl ruby node deno bun php lua tclsh osascript parallel source . "
   # Prefix wrappers: WPOS = positionals before the command, WVAL = options that take a separate value.
   WPOS["nice"] = 0; WVAL["nice"] = " -n --adjustment "
   WPOS["stdbuf"] = 0; WVAL["stdbuf"] = " -i -o -e "
@@ -603,9 +672,10 @@ BEGIN {
   MK_OPT = " jobs load-average max-load output-sync debug shuffle jobserver-style "
   input = ""; cnt = 0
   while ((getline line) > 0) input = (cnt++ ? input "\n" : "") line
+  ROOT = input
   NQ = 1; Q[1] = input; QD[1] = 0
   for (qi = 1; qi <= NQ; qi++) {
-    if (qi > 64) { unparseable("more than 64 nested scripts", ""); break }
+    if (qi > 64) { unparseable("more than 64 nested scripts", ROOT); break }
     CUR_DEPTH = QD[qi]
     err = lex(Q[qi])
     if (err != "") { unparseable(err, Q[qi]); continue }
@@ -722,7 +792,9 @@ shseg_json_get() {
 # shseg_names_tool TOOL LINE — 0 when an UNPARSEABLE LINE's raw text names TOOL as a word
 # (also as /path/TOOL), so an ask hook can fail closed on it.
 shseg_names_tool() {
-  printf '%s\n' "$2" | grep -Eq "(^|[^[:alnum:]_.-])(/[^[:space:]]*/)?$1([^[:alnum:]_.-]|\$)"
+  # The raw text arrives escaped (\n, \t, \r): turn those back into blanks so a tool at the start
+  # of a line still counts as a word.
+  printf '%s\n' "$2" | sed 's/\\[ntr]/ /g' | grep -Eq "(^|[^[:alnum:]_.-])(/[^[:space:]]*/)?$1([^[:alnum:]_.-]|\$)"
 }
 
 _shseg_self_test() {
@@ -832,14 +904,91 @@ _shseg_self_test() {
   _t "pid modes are not wrappers" "taskset|-p|1${NL}ionice|-p|1" "taskset -p 1; ionice -p 1"
   _t "nested find -exec find -exec" "git|commit|-m|x${NL}find|.|-exec${NL}find|.|-exec|;|;" "find . -exec find . -exec git commit -m x \; \;"
   # --- the --guard backstop: an unknown wrapper naming a guarded tool fails closed ---------------
-  _g "ssh host kubectl" "ssh|host|kubectl|delete|pod|x${NL}UNPARSEABLE|guarded tool kubectl is an argument of ssh|ssh host kubectl delete pod x" "kubectl argocd" "ssh host kubectl delete pod x"
-  _g "unknown wrapper with a path on the tool" "npx|-y|/usr/bin/argocd|app|delete|a${NL}UNPARSEABLE|guarded tool argocd is an argument of npx|npx -y /usr/bin/argocd app delete a" "kubectl argocd" "npx -y /usr/bin/argocd app delete a"
-  _g "unknown wrapper, terraform" "somewrap|--run|terraform|apply${NL}UNPARSEABLE|guarded tool terraform is an argument of somewrap|somewrap --run terraform apply" "terraform" "somewrap --run terraform apply"
-  _g "comma-separated guard list" "ssh|h|gcloud|run|deploy${NL}UNPARSEABLE|guarded tool gcloud is an argument of ssh|ssh h gcloud run deploy" "kubectl,gcloud" "ssh h gcloud run deploy"
-  _g "inert commands do not trip it" "echo|kubectl|delete${NL}grep|-r|kubectl|.${NL}command|-v|kubectl${NL}which|argocd" "kubectl argocd" "echo kubectl delete; grep -r kubectl .; command -v kubectl; which argocd"
-  _g "quoted prose is one word" "gh|pr|create|--body|run kubectl delete pod x${NL}git|commit|-m|argocd app delete" "kubectl argocd" "gh pr create --body 'run kubectl delete pod x'; git commit -m 'argocd app delete'"
+  _g "ssh host kubectl" "ssh|host|kubectl|delete|pod|x${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh host kubectl delete pod x" "kubectl argocd" "ssh host kubectl delete pod x"
+  _g "unknown wrapper with a path on the tool" "npx|-y|/usr/bin/argocd|app|delete|a${NL}UNPARSEABLE|guarded tool argocd is named in the text of npx, which may run it|npx -y /usr/bin/argocd app delete a" "kubectl argocd" "npx -y /usr/bin/argocd app delete a"
+  _g "unknown wrapper, terraform" "somewrap|--run|terraform|apply${NL}UNPARSEABLE|guarded tool terraform is named in the text of somewrap, which may run it|somewrap --run terraform apply" "terraform" "somewrap --run terraform apply"
+  _g "comma-separated guard list" "ssh|h|gcloud|run|deploy${NL}UNPARSEABLE|guarded tool gcloud is named in the text of ssh, which may run it|ssh h gcloud run deploy" "kubectl,gcloud" "ssh h gcloud run deploy"
+  _g "inert commands do not trip it" "echo|kubectl|delete${NL}grep|-r|kubectl|.${NL}command|-v|kubectl${NL}which|argocd${NL}cd|/r${NL}echo|kubectl delete pod x" "kubectl argocd" "echo kubectl delete; grep -r kubectl .; command -v kubectl; which argocd; cd /r; echo 'kubectl delete pod x' > notes.txt"
+  _g "v1.2.1: quoted text of a command that may run it prompts (gh, git)" "gh|pr|create|--body|run kubectl delete pod x${NL}UNPARSEABLE|guarded tool kubectl is named in the text of gh, which may run it|gh pr create --body 'run kubectl delete pod x'${NL}git|commit|-m|argocd app delete${NL}UNPARSEABLE|guarded tool argocd is named in the text of git, which may run it|git commit -m 'argocd app delete'" "kubectl argocd" "gh pr create --body 'run kubectl delete pod x'; git commit -m 'argocd app delete'"
   _g "the guarded tool itself and parsed find are not flagged" "kubectl|get|pods${NL}kubectl|get|pods${NL}find|.|-exec|;" "kubectl" "kubectl get pods; find . -exec kubectl get pods \;"
+  _g "a word inside a longer name is not the tool" "ssh|h|kubectl-foo|my-kubectl${NL}git|log|--|helm.yaml" "kubectl helm" "ssh h kubectl-foo my-kubectl; git log -- helm.yaml"
+  # --- k8s-infra #230 round 5: the remote command of ssh is one quoted word -----------------------
+  _g "k8s#230r5 ssh host 'kubectl ...'" "ssh|bastion|kubectl delete pod api${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh bastion 'kubectl delete pod api'" "kubectl argocd helm" "ssh bastion 'kubectl delete pod api'"
+  _g "k8s#230r5 ssh host 'argocd ...'" "ssh|bastion|argocd app delete my-app${NL}UNPARSEABLE|guarded tool argocd is named in the text of ssh, which may run it|ssh bastion 'argocd app delete my-app'" "kubectl argocd helm" "ssh bastion 'argocd app delete my-app'"
+  _g "k8s#230r5 ssh host sh -c '...'" "ssh|bastion|sh|-c|kubectl delete pod api${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh bastion sh -c 'kubectl delete pod api'" "kubectl argocd helm" "ssh bastion sh -c 'kubectl delete pod api'"
+  _g "ssh host \"kubectl ...\" (double quotes)" "ssh|bastion|kubectl delete pod api${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh bastion \"kubectl delete pod api\"" "kubectl" "ssh bastion \"kubectl delete pod api\""
+  _g "ssh -t host \"sudo kubectl ...\"" "ssh|-t|host|sudo kubectl delete pod api${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh -t host \"sudo kubectl delete pod api\"" "kubectl" "ssh -t host \"sudo kubectl delete pod api\""
+  _g "ssh host -- kubectl ..." "ssh|host|--|kubectl|delete|pod|api${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh host -- kubectl delete pod api" "kubectl" "ssh host -- kubectl delete pod api"
+  _g "ssh host \"kubectl get ...\" prompts too (remote text is not parsed)" "ssh|bastion|kubectl get pods${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh bastion \"kubectl get pods\"" "kubectl" "ssh bastion \"kubectl get pods\""
+  _g "bash -lc nested twice around ssh" "ssh|h|kubectl delete pod x${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh h 'kubectl delete pod x'" "kubectl" "bash -lc \"bash -lc \\\"ssh h 'kubectl delete pod x'\\\"\""
+  _g "bash -lc nested twice, parsed tool" "kubectl|delete|pod|x" "kubectl" "bash -lc \"bash -lc 'kubectl delete pod x'\""
+  _g "\$(echo kubectl) delete" "UNPARSEABLE|command word is computed at run time|\$(echo kubectl) delete pod x${NL}UNPARSEABLE|guarded tool kubectl is named in a line whose command word is computed at run time|\$(echo kubectl) delete pod x${NL}echo|kubectl" "kubectl" "\$(echo kubectl) delete pod x"
+  _g "backtick command word" "UNPARSEABLE|command word is computed at run time|\`echo argocd\` app delete a${NL}UNPARSEABLE|guarded tool argocd is named in a line whose command word is computed at run time|\`echo argocd\` app delete a${NL}echo|argocd" "argocd" "\`echo argocd\` app delete a"
+  _g "variable command word looks at the whole line" "UNPARSEABLE|command word is computed at run time|\$K delete pod x${NL}UNPARSEABLE|guarded tool kubectl is named in a line whose command word is computed at run time|K=kubectl; \$K delete pod x" "kubectl" "K=kubectl; \$K delete pod x"
+  _g "here-string to ssh" "ssh|host${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh host 'kubectl delete pod x'" "kubectl" "ssh host <<< 'kubectl delete pod x'"
+  _g "here-string to bash" "bash${NL}UNPARSEABLE|guarded tool helm is named in the text of bash, which may run it|bash 'helm uninstall grafana'" "helm" "bash <<< 'helm uninstall grafana'"
+  _g "here-document to ssh" "ssh|host${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh host kubectl delete pod x\\n" "kubectl" "ssh host <<'EOF'${NL}kubectl delete pod x${NL}EOF"
+  _g "here-document piped into ssh" "cat${NL}ssh|host${NL}UNPARSEABLE|guarded tool argocd is named in a line where ssh may read commands from stdin|cat <<EOF | ssh host\\nargocd app delete a\\nEOF" "argocd" "cat <<EOF | ssh host${NL}argocd app delete a${NL}EOF"
+  _g "echo piped into sh" "echo|kubectl delete pod x${NL}sh${NL}UNPARSEABLE|guarded tool kubectl is named in a line where sh may read commands from stdin|echo 'kubectl delete pod x' | sh" "kubectl" "echo 'kubectl delete pod x' | sh"
+  _g "interpreter -c string" "python3|-c|import os; os.system(\"kubectl delete pod x\")${NL}UNPARSEABLE|guarded tool kubectl is named in the text of python3, which may run it|python3 -c 'import os; os.system(\"kubectl delete pod x\")'" "kubectl" "python3 -c 'import os; os.system(\"kubectl delete pod x\")'"
+  _g "substitution inside an inert command is checked on its own" "echo|\$(...)${NL}ssh|h|kubectl delete pod x${NL}UNPARSEABLE|guarded tool kubectl is named in the text of ssh, which may run it|ssh h 'kubectl delete pod x'" "kubectl" "echo \"\$(ssh h 'kubectl delete pod x')\""
+  _g "a script operand is not stdin; pipelines of reads stay quiet" "ruby|check.rb|prod${NL}kubectl|get|pods${NL}awk|{print \$1}${NL}cd|/r${NL}kubectl|get|pods" "kubectl" "ruby check.rb prod; kubectl get pods | awk '{print \$1}'; cd /r && kubectl get pods"
   _t "no --guard: old output" "ssh|host|kubectl|delete|pod|x" "ssh host kubectl delete pod x"
+  _t "no --guard (block hooks): quoted text never trips anything" "ssh|bastion|kubectl delete pod api${NL}gh|pr|create|--body|git commit -m x${NL}echo|git commit${NL}sh" "ssh bastion 'kubectl delete pod api'; gh pr create --body 'git commit -m x'; echo 'git commit' | sh"
+  # --- waterx-fe #1149 round 4: a wrapper reads ITS OWN options only -----------------------------
+  _t "fe#1149r4 flock FILE git -c ... commit" "git|commit|-m|x" "flock /tmp/l git -c user.name=x commit -m x"
+  _t "fe#1149r4 BSD script FILE git -c ... commit" "git|commit|-m|x" "script -q /dev/null git -c user.name=x commit -m x"
+  _t "script -c after FILE (util-linux permutes)" "git|commit|-m|x" "script log -c 'git commit -m x'"
+  _t "runuser -u USER COMMAND -c ..." "git|commit|-m|x" "runuser -u bob git -c k=v commit -m x"
+  _t "sg GROUP COMMAND -c ..." "git|commit|-m|x" "sg docker git -c k=v commit -m x"
+  # Every wrapper, with a command whose own options look like wrapper options, in block mode and in
+  # --guard mode (the guarded tools are the payloads, so both modes print the same).
+  while IFS='|' read -r _pre _suf _extra; do
+    [ -n "$_pre" ] || continue
+    for _cmd in "git -c k=v commit -m x" "kubectl --context c delete pod x"; do
+      case "$_cmd" in git*) _want="git|commit|-m|x" ;; *) _want="kubectl|delete|pod|x" ;; esac
+      [ -n "$_extra" ] && _want="$_want${NL}$_extra"
+      _t "wrapper option scope: $_pre ... $_suf" "$_want" "$_pre $_cmd$_suf"
+      _g "wrapper option scope (--guard): $_pre ... $_suf" "$_want" "git kubectl" "$_pre $_cmd$_suf"
+    done
+  done <<'WRAPPERS'
+env A=1 -u B||
+command||
+nohup||
+exec||
+time -p||
+sudo -u root -E||
+doas -u root||
+timeout -s KILL 5||
+gtimeout 5||
+nice -n 5||
+ionice -c 3||
+stdbuf -oL||
+setsid -f||
+chroot --userspec=u:g /srv||
+taskset -c 0||
+chrt -f 10||
+caffeinate -i||
+unbuffer||
+nsenter -t 1 -m||
+unshare -r||
+pkexec --user root||
+systemd-run --unit x||
+firejail --quiet||
+strace -f -o out||
+xargs -n 1||
+flock /tmp/l||
+flock -w 5 /tmp/l||
+script -q /dev/null||
+runuser -u bob --||
+runuser -u bob||
+sg docker||
+direnv exec .||
+find . -exec| \;|find|.|-exec|;
+parallel| ::: a|
+watch -n 5||
+sudo env A=1 nice||
+WRAPPERS
   # --- origin (Codex prefix-rule visibility) ----------------------------------------------------
   _t "plain" "plain|kubectl|-|kubectl delete pod x|delete|pod|x" "kubectl delete pod x" --long
   _t "absolute path is wrapped" "wrapped|kubectl|-|/bin/kubectl delete pod x|delete|pod|x" "/bin/kubectl delete pod x" --long

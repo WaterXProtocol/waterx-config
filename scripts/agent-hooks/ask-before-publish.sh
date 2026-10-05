@@ -13,8 +13,7 @@
 # `time` / `xargs` / `timeout` / `nice` unwrapped, the command of `find -exec` /
 # `-execdir` emitted as its own, substitutions parsed as their own commands, and the global
 # options of git and gh moved aside (`git -c k=v push`, `gh -R org/repo pr
-# merge`). Each command is matched on its own verb, so quoted prose (a commit
-# message, a PR body that mentions `git push origin main`) is never a command:
+# merge`). Each command is matched on its own verb:
 #   - `gh pr merge`, `gh workflow run`, or a `gh api` call that merges a PR;
 #   - `git push` naming a served branch (also `HEAD:main`, `refs/heads/main`),
 #     run through `xargs` / `parallel` without naming a branch itself,
@@ -22,9 +21,12 @@
 #     `:branch` refspec), `--all` / `--mirror`, or naming no branch while the
 #     checkout (`cwd`, or `git -C <dir>`) is on a served branch.
 # Everything else (fetch, pull, status, a push of a feature branch) passes.
-# FAIL CLOSED: a part the segmenter cannot parse that names git or gh together
-# with push / merge / workflow asks; with --guard "git gh" that includes any other
-# command carrying git or gh as a separate argument word (`ssh host git push …`).
+# FAIL CLOSED: a part the segmenter cannot parse that names git or gh asks, whatever
+# verb it shows; with --guard "git gh" (segmenter v1.2.1) that includes any other
+# command whose raw text names git or gh ANYWHERE, quotes and here-documents included
+# (`ssh host 'git push origin main'`, an unknown wrapper). git and gh themselves,
+# inert commands (echo, grep, cat, …) and wrappers the segmenter unwraps are exempt,
+# so a spurious prompt is possible and a silent publish is not.
 #
 # Claude Code: answers permissionDecision "ask" (exit 0), so the user confirms.
 # Codex: its hooks cannot ask ("ask" fails the hook and the call proceeds), so
@@ -123,8 +125,9 @@ while IFS= read -r line; do
   done
   if [ "${F[0]}" = UNPARSEABLE ]; then
     raw=${F[2]:-}
-    if { shseg_names_tool git "$raw" || shseg_names_tool gh "$raw"; } &&
-      printf '%s\n' "$raw" | grep -Eq '(^|[^[:alnum:]_-])(push|merge|workflow)([^[:alnum:]_-]|$)'; then
+    # Any unparsed part naming git or gh asks, whatever verb it shows: the verb itself can be
+    # hidden from the text (`ssh h 'git p''ush origin main'`, `$(echo git) push`).
+    if shseg_names_tool git "$raw" || shseg_names_tool gh "$raw"; then
       [ -n "$matched" ] || matched="a publish the hook cannot parse (${F[1]})"
       [ -n "$uncovered" ] || uncovered=$raw
     fi
