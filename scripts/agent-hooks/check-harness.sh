@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# waterx-commons/harness/lint/check-harness.sh v1.3.1
+# waterx-commons/harness/lint/check-harness.sh v1.3.2
 #
 # Checks a repository against the WaterX agent-harness standard
 # (Bucket-Protocol/waterx-commons, harness/STANDARD.md). Repos vendor this file as
@@ -22,12 +22,13 @@
 # JSON and .codex/rules are read with awk, so the result is the same with or without jq.
 set -u
 
-VERSION="1.3.1"
+VERSION="1.3.2"
 # Released versions of harness/hooks/lib/shell-segments.sh and their sha256, for check 10.
 # Every release of the segmenter adds a line here (CI fails when the current one is missing).
 KNOWN_SEGMENTERS="
 1.1.0 7123ebaf34af6b32e84576fc293e04a563efc00138854aedcad9f50e0531dc52
 1.2.0 cfddb05f94e0dc0ab68dfff983312dff48f6e7af478ae5f45473b12c02d287d4
+1.2.1 a9a54b5202aeaccaef3fb814dbfd984315169b6ef881c1d0d5721627146eb96b
 "
 ROOT=""
 HUB=""
