@@ -170,6 +170,25 @@ for c in \
   expect_codex_block "$c"
 done
 
+# --- shared segmenter v1.2.3 (waterx-fe #1149 round 5): getopt-attached wrapper values --------
+# `runuser -ubob --` and `script -c'CMD'` (value attached to the option letter) came out as
+# runuser / script, so the git/gh they run was only caught by the backstop. Now the wrapper's own
+# options are read the way getopt reads them and git/gh is classified itself: publishes ask
+# (Codex blocks: the wrapper hides them from prefix rules), reads stay silent for Claude.
+for c in \
+  'runuser -ubob -- git push origin main' \
+  "script -q -c'gh pr merge 96 --squash' /dev/null" \
+  'sudo -uroot git -c k=v push origin staging' \
+  'timeout -s9 60 git push --force origin main-v2' \
+  "su -c'git push origin staging-v2'" \
+  'env -uGIT_DIR gh workflow run publish.yml'; do
+  expect_ask "$c"
+  expect_codex_block "$c"
+done
+for c in 'runuser -ubob -- git status' "script -q -c'gh pr view 96' /dev/null"; do
+  expect_silent "$c"
+done
+
 # --- the configured commands resolve from the repo root, not the session cwd ----
 # Codex runs hooks with the session cwd and Claude Code exports $CLAUDE_PROJECT_DIR;
 # a cwd-relative path exits 127 below the root and the hook silently does not run.

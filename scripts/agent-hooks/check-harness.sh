@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# waterx-commons/harness/lint/check-harness.sh v1.3.2
+# waterx-commons/harness/lint/check-harness.sh v1.4.1
 #
 # Checks a repository against the WaterX agent-harness standard
 # (Bucket-Protocol/waterx-commons, harness/STANDARD.md). Repos vendor this file as
@@ -22,13 +22,15 @@
 # JSON and .codex/rules are read with awk, so the result is the same with or without jq.
 set -u
 
-VERSION="1.3.2"
+VERSION="1.4.1"
 # Released versions of harness/hooks/lib/shell-segments.sh and their sha256, for check 10.
 # Every release of the segmenter adds a line here (CI fails when the current one is missing).
 KNOWN_SEGMENTERS="
 1.1.0 7123ebaf34af6b32e84576fc293e04a563efc00138854aedcad9f50e0531dc52
 1.2.0 cfddb05f94e0dc0ab68dfff983312dff48f6e7af478ae5f45473b12c02d287d4
 1.2.1 a9a54b5202aeaccaef3fb814dbfd984315169b6ef881c1d0d5721627146eb96b
+1.2.2 3a932c2fa209a6d6b80dd1b5e2a7ea17f110eff1e6551f22eae6b0978817ab1c
+1.2.3 c749ab122c1de37c92b328b51b4f7fe4fca3fc99c9d027b042aa59dfa653783e
 "
 ROOT=""
 HUB=""
@@ -141,9 +143,10 @@ warn() { # advisory finding
 }
 end_check() { [ $CHECK_FINDINGS -eq 0 ] && printf '    ok\n'; return 0; }
 
-# A directory under .claude/skills or .agents/skills belongs to checks 3/4, not 1, 5 or 7:
-# vendored skill bundles ship their own AGENTS.md / CLAUDE.md, which hide nothing outside the bundle.
-in_skill_tree() { case "$1" in .claude/skills/*|.agents/skills/*|*/.claude/skills/*|*/.agents/skills/*) return 0;; esac; return 1; }
+# A directory under .claude/skills, .agents/skills or a marketplace's plugins/<plugin>/skills (the
+# trees check 4 scans) belongs to checks 3/4, not 1, 5 or 7: vendored skill bundles ship their own
+# AGENTS.md / CLAUDE.md, which hide nothing outside the bundle.
+in_skill_tree() { case "$1" in .claude/skills/*|.agents/skills/*|*/.claude/skills/*|*/.agents/skills/*|plugins/*/skills/*) return 0;; esac; return 1; }
 
 echo "check-harness v$VERSION — root: $ROOT$( [ $REPORT_ONLY -eq 1 ] && printf ' (report-only)')"
 echo
@@ -401,6 +404,9 @@ json_leaves() { # <file>: "<dotted.path>\t<value>" per scalar leaf; exit 2 on in
 
 # Every prefix_rule(..., decision = "prompt") pattern in the .rules files on stdin, one per line,
 # words space-joined; a list of alternatives inside a pattern expands to one line per choice.
+# harness/hooks/lib/shell-segments.sh carries the same program as SHSEG_PROMPT_RULES_AWK, which the
+# ask hook's Codex mode reads its prefixes with; this lint is vendored alone, so it keeps its own
+# copy. The two must stay identical: check-harness.test.sh fails when their output differs.
 PROMPT_RULES_AWK='
 function addtok(t, v) { NT++; TT[NT] = t; TV[NT] = v }
 function expand(e, prefix,    k, m, parts) {
@@ -503,20 +509,17 @@ if [ -n "$asks" ] || [ -n "$prompts" ]; then
           for (i = 1; i <= na; i++) { f = 0; for (j = 1; j <= nc; j++) if (covers(a[i], c[j])) f = 1; if (!f) print "A\t" a[i] }
           for (j = 1; j <= nc; j++) { f = 0; for (i = 1; i <= na; i++) if (covers(a[i], c[j])) f = 1; if (!f) print "C\t" c[j] }
         }')
-  only_claude=$(printf '%s\n' "$diff_sets" | awk -F'\t' '$1 == "A" { print $2 }')
-  only_codex=$(printf '%s\n' "$diff_sets" | awk -F'\t' '$1 == "C" { print $2 }')
-  while IFS= read -r p; do
+  # Every "A" line (an ask without a prompt rule) comes before the "C" lines (the reverse).
+  while IFS="$(printf '\t')" read -r side p; do
     [ -n "$p" ] || continue
-    msg=".codex/rules: no prefix_rule(pattern = [$(printf '%s' "$p" | awk '{ for (i = 1; i <= NF; i++) printf "%s\"%s\"", (i > 1 ? ", " : ""), $i }')], decision = \"prompt\") for permissions.ask \"Bash($p:*)\""
-    if [ $rules_ignored -eq 1 ]; then warn "$msg (.codex/ is git-ignored here)"; else fail "$msg"; fi
+    if [ "$side" = A ]; then
+      msg=".codex/rules: no prefix_rule(pattern = [$(printf '%s' "$p" | awk '{ for (i = 1; i <= NF; i++) printf "%s\"%s\"", (i > 1 ? ", " : ""), $i }')], decision = \"prompt\") for permissions.ask \"Bash($p:*)\""
+      if [ $rules_ignored -eq 1 ]; then warn "$msg (.codex/ is git-ignored here)"; else fail "$msg"; fi
+    else
+      fail ".claude/settings.json: no permissions.ask \"Bash($p:*)\" for the Codex prompt rule [$p]"
+    fi
   done <<EOF
-$only_claude
-EOF
-  while IFS= read -r p; do
-    [ -n "$p" ] || continue
-    fail ".claude/settings.json: no permissions.ask \"Bash($p:*)\" for the Codex prompt rule [$p]"
-  done <<EOF
-$only_codex
+$diff_sets
 EOF
 fi
 end_check
@@ -542,10 +545,8 @@ while IFS= read -r f; do
   while IFS="$(printf '\t')" read -r ln s; do
     [ -n "$s" ] || continue
     case "$s" in *'*'*|*'<'*|*'>'*|*'{'*|*'$'*) continue;; esac
-    # Skip things that are not paths even though they look like one: versions, domains.
-    case "$s" in *.app|*.com|*.io|*.dev|*.org|*.net) continue;; esac
-    printf '%s' "$s" | grep -Eq '^[0-9]+(\.[0-9]+)+' && continue
-    # A bare name (`index.ts`, `knex.raw`) is as often a convention or an identifier as a file.
+    # A bare name (`index.ts`, `knex.raw`) is as often a convention or an identifier as a file;
+    # versions (`1.2.3`) and domains (`api.waterx.app`) have no slash, so this skips them too.
     case "$s" in */*) ;; *) continue ;; esac
     # Paths into build trees (node_modules/..., .next/) and submodules are outside this tree.
     first=${s%%/*}; skip=0; for pd in $PRUNE_DIRS; do [ "$first" = "$pd" ] && skip=1; done; [ $skip -eq 1 ] && continue
@@ -659,6 +660,27 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   done <<EOF
 $(git -c core.quotepath=off ls-files --cached --others --exclude-standard -- 'settings.local.json' '*/settings.local.json' 2>/dev/null)
 EOF
+fi
+end_check
+
+# ---------------------------------------------------------------------------------------------
+begin_check 12 "root AGENTS.md carries the six root parts of STANDARD.md §4 (advisory)" \
+  "Layout, scope, authorisation, multi-repo, memory and grounding each came from an incident or near miss; a root file without one leaves that rule unsaid. Wording may be adapted, so a miss is advisory: mark a reworded or translated part with <!-- harness: <part> --> on any of its lines."
+if [ -f AGENTS.md ] && [ ! -L AGENTS.md ]; then
+  # Joined to one lowercase line, so a phrase wrapped across lines still matches.
+  root_text=$(tr '\n' ' ' < AGENTS.md | tr -s ' ' | tr '[:upper:]' '[:lower:]')
+  for part in \
+    'layout|do not add a claude\.md|ignores every agents\.md' \
+    'scope|sets the scope|report and stop|deliverable is your findings' \
+    'authorisation|covers the one action|is not approval to' \
+    'multi-repo|one part of the waterx system|sibling checkout' \
+    'memory|knowledge-hub|knowledge hub' \
+    'grounding|tool result from this session|what is unverified'; do
+    name=${part%%|*}; pat=${part#*|}
+    if ! printf '%s' "$root_text" | grep -Eq -- "$pat|<!-- *harness: *$name *-->"; then
+      warn "AGENTS.md: no $name part (STANDARD.md §4); add it, or mark a reworded one with <!-- harness: $name -->"
+    fi
+  done
 fi
 end_check
 
