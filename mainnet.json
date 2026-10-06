@@ -844,9 +844,9 @@
       }
     },
     "waterx_prediction": {
-      "published_at": "0x082328867e8b188412f5214342de5fa1524a398d01acefbdeb00ac08003b1745",
+      "published_at": "0x024195702f3f4ea69d93dc3fadd60394b7d9de2247b539e8aee82266ca878ae8",
       "original_id": "0xa5cfafe6660a8bf37eedf1a09dba633048da374c30b835668473689668f9ef57",
-      "version": 7,
+      "version": 8,
       "upgrade_capability": "0x168e6d530c04a595736b4269d5100cb2d2df893b8ec629a6603b369992f5ae4a",
       "admin_cap": "0x8d65ecbe9c0863af842a15d60185a11b4d052bca6d1638ac745f93c56ac5c9dd",
       "global_config": "0xbeae59a5f462696fa639b02c62406c1b4f7acb951644eb4ee8f3f666391484ac",
@@ -874,9 +874,9 @@
       }
     },
     "waterx_prediction_gift": {
-      "published_at": "0xb8095fcd57c81c96b7b7742111d9dde1a637d614d6acdfbc7ddf16a90032c560",
+      "published_at": "0xa20c91df8c6d8455852aa554c23aa5091e61516ed214ca2843f88f71e17b7501",
       "original_id": "0x6f279e417396f0c1a2e003f2508f2da38bed7e1bfd275f2a897ca0edd671929e",
-      "version": 3,
+      "version": 4,
       "claimable_link_config": "0x97e49c1f0abe8a09867698d99dd8cde18b75f085bd6615644f74f9165cbc9cd9",
       "upgrade_capability": "0xdb55427e26d4642a462d69aebce48b6973b7c090ba8793b89667dc931c97c06a",
       "admin_cap": "0x5493191ef3a5cfaa859f1a07b9ef277e75aa3d41edfcc9569aba8eae02c6655c",
@@ -1231,6 +1231,34 @@
       "digest": "4RApcPuVQQwwb8twVqD2SzCrP1RtkBgbgZAAuAtLPryV",
       "checkpoint": "325519738",
       "timestamp": "2026-09-22T07:25:07.000Z"
+    },
+    {
+      "phase": "prediction.gates",
+      "action": "global_config::allow_version(7) on waterx_prediction GlobalConfig — gate {4,5,6} → {4,5,6,7} (older entries stay until waterx_prediction_gift and other consumers move off them) — M1",
+      "digest": "AsVLq9LFbft9QVeCdTMF7gDdmProskd2xNt4QG2r3iKF",
+      "checkpoint": "331041656",
+      "timestamp": "2026-10-06T19:15:09.570Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v7→v8 (PACKAGE_VERSION 7: per-registry id blocks — create_market_registry_in_block / rebase_registry_ids, create_market_registry retired — waterx-contract#154) → 0x024195702f3f4ea69d93dc3fadd60394b7d9de2247b539e8aee82266ca878ae8 — M1",
+      "digest": "FGqZ4Judc4etUtHfLLXY53SX8iACuuBRL2kcYHyBhX2J",
+      "checkpoint": "331044939",
+      "timestamp": "2026-10-06T19:27:16.619Z"
+    },
+    {
+      "phase": "prediction.rebase",
+      "action": "waterx_prediction::rebase_registry_ids on the pristine SUI / DEEP / WAL MarketRegistry — id blocks 1 / 2 / 3 (bases 1<<40, 2<<40, 3<<40); USD keeps block 0; assets stay frozen until set-prediction-settlement-assets allow — M1",
+      "digest": "EJGqygbr5MG7ky73Ejp4sVyf5dSELqoP1MpbeZgFuf9t",
+      "checkpoint": "331045514",
+      "timestamp": "2026-10-06T19:29:24.054Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction_gift",
+      "action": "upgrade waterx_prediction_gift v3→v4 (dependency-only relink onto waterx_prediction v8 0x02419570…; PACKAGE_VERSION stays 3, gate {3} unchanged) → 0xa20c91df8c6d8455852aa554c23aa5091e61516ed214ca2843f88f71e17b7501 — M1",
+      "digest": "88w5BfJwG3SnS7qPbzTiTRRW2X1ynxmGrLh3iwBcci3a",
+      "checkpoint": "331046783",
+      "timestamp": "2026-10-06T19:34:08.790Z"
     }
   ]
 }
