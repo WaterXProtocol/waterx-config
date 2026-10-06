@@ -252,6 +252,34 @@
       "digest": "4RApcPuVQQwwb8twVqD2SzCrP1RtkBgbgZAAuAtLPryV",
       "checkpoint": "325519738",
       "timestamp": "2026-09-22T07:25:07.000Z"
+    },
+    {
+      "phase": "prediction.gates",
+      "action": "global_config::allow_version(7) on waterx_prediction GlobalConfig — gate {4,5,6} → {4,5,6,7} (older entries stay until waterx_prediction_gift and other consumers move off them) — M1",
+      "digest": "AsVLq9LFbft9QVeCdTMF7gDdmProskd2xNt4QG2r3iKF",
+      "checkpoint": "331041656",
+      "timestamp": "2026-10-06T19:15:09.570Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v7→v8 (PACKAGE_VERSION 7: per-registry id blocks — create_market_registry_in_block / rebase_registry_ids, create_market_registry retired — waterx-contract#154) → 0x024195702f3f4ea69d93dc3fadd60394b7d9de2247b539e8aee82266ca878ae8 — M1",
+      "digest": "FGqZ4Judc4etUtHfLLXY53SX8iACuuBRL2kcYHyBhX2J",
+      "checkpoint": "331044939",
+      "timestamp": "2026-10-06T19:27:16.619Z"
+    },
+    {
+      "phase": "prediction.rebase",
+      "action": "waterx_prediction::rebase_registry_ids on the pristine SUI / DEEP / WAL MarketRegistry — id blocks 1 / 2 / 3 (bases 1<<40, 2<<40, 3<<40); USD keeps block 0; assets stay frozen until set-prediction-settlement-assets allow — M1",
+      "digest": "EJGqygbr5MG7ky73Ejp4sVyf5dSELqoP1MpbeZgFuf9t",
+      "checkpoint": "331045514",
+      "timestamp": "2026-10-06T19:29:24.054Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction_gift",
+      "action": "upgrade waterx_prediction_gift v3→v4 (dependency-only relink onto waterx_prediction v8 0x02419570…; PACKAGE_VERSION stays 3, gate {3} unchanged) → 0xa20c91df8c6d8455852aa554c23aa5091e61516ed214ca2843f88f71e17b7501 — M1",
+      "digest": "88w5BfJwG3SnS7qPbzTiTRRW2X1ynxmGrLh3iwBcci3a",
+      "checkpoint": "331046783",
+      "timestamp": "2026-10-06T19:34:08.790Z"
     }
   ],
   "package_publish": {
