@@ -727,20 +727,7 @@
         "config": "0xba1f2058363c68f1ce76a9801e1bd709f5b2400ad91c467e7e269921ff95baec",
         "pubkey": "b8f5f5b2671cafeda2de770818a1cf335315e515a46022466b64ef5c8b38b520"
       },
-      "feeds": {
-        "BTCUSD": {},
-        "ETHUSD": {},
-        "SOLUSD": {},
-        "SUIUSD": {},
-        "BNBUSD": {},
-        "DOGEUSD": {},
-        "XRPUSD": {},
-        "HYPEUSD": {},
-        "DEEPUSD": {},
-        "LITUSD": {},
-        "WALUSD": {},
-        "ZECUSD": {}
-      }
+      "feeds": { "DOGEUSD": {} }
     },
     "pyth_lazer": {
       "package": "pyth_lazer_rule",
