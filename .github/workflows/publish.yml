@@ -1,0 +1,328 @@
+name: Publish package
+
+# Ported from waterx-sdk's publish flow (waterx-sdk #95): `guard` / `build` /
+# `publish` as three jobs, prerelease versions numbered by the run, publisher
+# allowlists in repo variables, and the npm OIDC credential isolated from any
+# job that runs dependency code. The package lives in packages/ts.
+on:
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: Release type
+        required: true
+        default: prerelease
+        type: choice
+        options: [major, minor, patch, prerelease]
+      pre-release-tag:
+        description: "Pre-release tag (only for prerelease)"
+        required: false
+        default: "staging"
+        type: string
+      dryRun:
+        description: "Dry run: verify and pack, but publish nothing and push nothing"
+        required: false
+        default: false
+        type: boolean
+
+# Nothing by default — every job grants only the scopes it needs.
+permissions: {}
+
+# Two runs at once would compute the same version and race the registry.
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  PACKAGE: "@waterx/config"
+
+jobs:
+  # Gates first, on a runner that checks out nothing and runs no dependency code.
+  guard:
+    name: Check publisher
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check the actor may cut this release type
+        env:
+          RELEASE_TYPE: ${{ inputs.releaseType }}
+          ACTOR: ${{ github.actor }}
+          ACTOR_ID: ${{ github.actor_id }}
+          # Space-separated GitHub user ids, managed in repo Settings -> Secrets
+          # and variables -> Actions -> Variables, so widening who may publish
+          # does not need a commit to this file. Note what that trades away: a
+          # repo admin can change these without review, and the change lands in
+          # the audit log rather than in git history.
+          RELEASE_PUBLISHERS: ${{ vars.RELEASE_PUBLISHERS }}
+          PRERELEASE_PUBLISHERS: ${{ vars.PRERELEASE_PUBLISHERS }}
+        run: |
+          set -euo pipefail
+          if [ "$RELEASE_TYPE" = "prerelease" ]; then
+            allowed="$PRERELEASE_PUBLISHERS"
+          else
+            allowed="$RELEASE_PUBLISHERS"
+          fi
+
+          # An unset or deleted variable denies everyone rather than opening the
+          # gate — but say WHY, because "nobody may publish" and "you may not
+          # publish" need different fixes.
+          if [ -z "$allowed" ]; then
+            echo "::error::no publisher allowlist is configured for '$RELEASE_TYPE' — set the repo variable (RELEASE_PUBLISHERS / PRERELEASE_PUBLISHERS)"
+            exit 1
+          fi
+
+          for id in $allowed; do
+            if [ "$id" = "$ACTOR_ID" ]; then
+              echo "$ACTOR (id $ACTOR_ID) may cut a '$RELEASE_TYPE'."
+              exit 0
+            fi
+          done
+
+          # Empty/unknown actor ids match nothing, so this fails closed.
+          echo "::error::$ACTOR (id $ACTOR_ID) may not cut a '$RELEASE_TYPE'. Allowed user ids: $allowed"
+          exit 1
+
+      # Reads only `inputs.*`, so it gates here rather than after the build spends
+      # minutes discovering the tag was a typo.
+      - name: Check the pre-release tag
+        if: ${{ inputs.releaseType == 'prerelease' }}
+        env:
+          PRE_RELEASE_TAG: ${{ inputs.pre-release-tag }}
+        run: |
+          set -euo pipefail
+          if [ "$PRE_RELEASE_TAG" = "latest" ]; then
+            echo "::error::'latest' is the release dist-tag; a prerelease may not claim it"
+            exit 1
+          fi
+          if ! printf '%s' "$PRE_RELEASE_TAG" | grep -Eq '^[a-z][a-z0-9-]*$'; then
+            echo "::error::pre-release tag '$PRE_RELEASE_TAG' must match ^[a-z][a-z0-9-]*\$"
+            exit 1
+          fi
+
+      # A prerelease is meant to be cut off a branch; an official release is not —
+      # it publishes to `latest` and pushes the bump back to whatever ref ran it.
+      # The v2 lineage's release branch is main-v2 (main once v2 is promoted there).
+      - name: Check an official release is cut from a release branch
+        if: ${{ inputs.releaseType != 'prerelease' }}
+        env:
+          RELEASE_TYPE: ${{ inputs.releaseType }}
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          case "$REF" in
+            refs/heads/main | refs/heads/main-v2) ;;
+            *)
+              echo "::error::a '$RELEASE_TYPE' release must be dispatched from main-v2 (or main), not $REF (prereleases may come from any branch)"
+              exit 1
+              ;;
+          esac
+
+  build:
+    name: Verify & build
+    needs: guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: packages/ts
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          # This job installs dependencies and runs their lifecycle scripts.
+          # Keep the git credentials off the runner that does that.
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          # A clean install on purpose: a release never restores a node_modules
+          # cache that another branch's workflow could have written.
+          package-manager-cache: false
+      - run: npm ci
+      # Everything validate.yml gates a PR on that a parser release depends on:
+      # the instances must satisfy the schema this package embeds, and the
+      # repo must hold the consolidated shape. (The Rust parser and the
+      # codegen-freshness check are PR gates, not release inputs.)
+      - name: Instances match the canonical schema
+        run: npx ajv validate --spec=draft2020 -s ../../schema/waterx-config.schema.json -d ../../mainnet.json -d ../../testnet.json
+      - name: Consistency + repo-state coherence
+        working-directory: .
+        run: |
+          node scripts/check-consistency.mjs
+          node scripts/test_check_consistency.mjs
+          node scripts/check-flip-state.mjs
+      - run: npm test
+      - run: npx tsc -p . --noEmit
+      - run: npm run build
+      - name: Upload dist
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: dist
+          path: packages/ts/dist
+          retention-days: 7
+          if-no-files-found: error
+
+  publish:
+    name: Publish to npm
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # push the version bump back to the release branch
+      id-token: write # npm trusted publishing (OIDC) + provenance
+    defaults:
+      run:
+        working-directory: packages/ts
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+      # No `npm ci` in this job: publishing needs no dependencies, and this is
+      # the only job holding `id-token: write`.
+      - name: Download dist
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: dist
+          path: packages/ts/dist
+      - name: Check the artifact carries the package entry points
+        run: |
+          set -euo pipefail
+          # Read the paths off package.json rather than keep a list in step with
+          # it by hand. This proves only that the artifact survived the round-trip.
+          entries="$(npm pkg get main types | jq -r '.[]')"
+          # A failing substitution inside a `for` word list would NOT trip `set -e`,
+          # leaving a loop that silently checks nothing.
+          if [ -z "$entries" ]; then
+            echo "::error::could not read the entry points from package.json"
+            exit 1
+          fi
+          for f in $entries; do
+            if [ ! -s "$f" ]; then
+              echo "::error::built artifact is missing $f"
+              exit 1
+            fi
+          done
+
+      - name: Compute the version
+        id: version
+        env:
+          RELEASE_TYPE: ${{ inputs.releaseType }}
+          PRE_RELEASE_TAG: ${{ inputs.pre-release-tag }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          if [ "$RELEASE_TYPE" = "prerelease" ]; then
+            # The tag itself was validated in `guard`.
+            # A prerelease bump is deliberately never committed back, so every run
+            # reads the last *released* version and `npm version prerelease`
+            # restarts the counter at .0 — two prereleases in a row would compute
+            # the same version and the second would 403. Take the series npm
+            # derived and number it by the run instead: monotonic, never reused.
+            series="$(npm version prerelease --preid "$PRE_RELEASE_TAG" --no-git-tag-version)"
+            series="${series#v}"                # X.Y.Z-<tag>.0
+            version="${series%.*}.$RUN_NUMBER"  # X.Y.Z-<tag>.<run>
+            npm version "$version" --no-git-tag-version >/dev/null
+            dist_tag="$PRE_RELEASE_TAG"
+          else
+            version="$(npm version "$RELEASE_TYPE" --no-git-tag-version)"
+            version="${version#v}"
+            dist_tag="latest"
+          fi
+          echo "version=$version" >>"$GITHUB_OUTPUT"
+          echo "dist-tag=$dist_tag" >>"$GITHUB_OUTPUT"
+          echo "$PACKAGE@$version -> dist-tag '$dist_tag'"
+
+      # Fail in seconds rather than after the publish attempt: a 403 from the
+      # registry still leaves a provenance statement in the public transparency
+      # log for a tarball that never existed.
+      - name: Check the version is free
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          if out="$(npm view "$PACKAGE@$VERSION" version 2>&1)"; then
+            echo "::error::$PACKAGE@$VERSION is already published — dispatch a fresh run (a re-run reuses this run's number) or pick a different release type"
+            exit 1
+          fi
+          # `npm view` exits 1 for an unreachable registry too, so only a clean E404
+          # counts as "free" — anything else must not be read as permission to publish.
+          case "$out" in
+            *E404* | *"No match found for version"*)
+              echo "$PACKAGE@$VERSION is free"
+              ;;
+            *)
+              echo "::error::could not confirm $PACKAGE@$VERSION is unpublished:"
+              echo "$out"
+              exit 1
+              ;;
+          esac
+
+      # Auth is npm trusted publishing over OIDC — there is no npm token. npm
+      # matches the claim against the repository AND this workflow's filename,
+      # so renaming this file breaks publishing until npmjs.com is updated.
+      # `--ignore-scripts` skips `prepack`/`prepare` — dist is the verified
+      # artifact from the build job, not a rebuild on this runner.
+      - name: Publish
+        id: publish
+        env:
+          DIST_TAG: ${{ steps.version.outputs.dist-tag }}
+          DRY_RUN: ${{ inputs.dryRun }}
+        run: |
+          set -euo pipefail
+          # One invocation, so the shared flags can never drift between the real
+          # publish and its rehearsal. `--provenance` is the one difference: a dry
+          # run performs no OIDC exchange, so it has nothing to attest.
+          if [ "$DRY_RUN" = "true" ]; then
+            mode="--dry-run"
+          else
+            mode="--provenance"
+          fi
+          npm publish "$mode" --access public --ignore-scripts --tag "$DIST_TAG"
+
+      # Releases only. A prerelease bump stays off the branch on purpose — see
+      # the version step; the run number, not the repo, carries its counter.
+      - name: Commit the version bump
+        if: ${{ inputs.releaseType != 'prerelease' && !inputs.dryRun }}
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7
+        with:
+          commit_message: "chore: bump @waterx/config version to ${{ steps.version.outputs.version }}"
+          file_pattern: "packages/ts/package.json packages/ts/package-lock.json"
+
+      # Runs even when the publish or the push back failed: that is precisely when
+      # "what version went out, and from which commit?" is hardest to reconstruct.
+      - name: Summarise the release
+        if: ${{ !cancelled() && steps.version.outcome == 'success' }}
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          DIST_TAG: ${{ steps.version.outputs.dist-tag }}
+          COMMIT: ${{ github.sha }}
+          DRY_RUN: ${{ inputs.dryRun }}
+          PUBLISHED: ${{ steps.publish.outcome }}
+        run: |
+          set -euo pipefail
+          if [ "$DRY_RUN" = "true" ]; then
+            state="dry run — nothing published"
+            published_at="n/a"
+          elif [ "$PUBLISHED" = "success" ]; then
+            state="published"
+            # `--prefer-online` because the preflight above cached this packument,
+            # and the registry serves it `max-age=300`.
+            published_at="$(npm view "$PACKAGE" time --json --prefer-online 2>/dev/null \
+              | jq -r --arg v "$VERSION" '.[$v] // "unknown"' || echo unknown)"
+          else
+            state="NOT published (publish step: ${PUBLISHED:-did not run})"
+            published_at="n/a"
+          fi
+          {
+            echo "## $PACKAGE@$VERSION — $state"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| dist-tag | \`$DIST_TAG\` |"
+            echo "| published (UTC) | \`$published_at\` |"
+            echo "| published from | \`$COMMIT\` |"
+            echo
+            echo "Consumers pin exact: \`npm add $PACKAGE@$VERSION\` / \`pnpm add $PACKAGE@$VERSION\`."
+          } >>"$GITHUB_STEP_SUMMARY"

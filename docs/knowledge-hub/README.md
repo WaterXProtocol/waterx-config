@@ -30,7 +30,7 @@ tags: [mainnet, withdrawal-queue]
 roles: [Backend]                   # Backend | Frontend | DevOps | DataEngineer | Contracts | Product
 error_type: config                 # config | deploy | build | runtime | data (error entries)
 severity: high                     # low | medium | high | critical
-verification_command: "jq .packages.withdrawal_queue.queues.USD mainnet.json"
+verification_command: "jq .objects.withdrawal_queue mainnet.json"
 affected_files: ["mainnet.json"]
 related_errors: []                 # slugs of other entries
 ---
