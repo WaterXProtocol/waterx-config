@@ -721,6 +721,7 @@
     "waterx": {
       "package": "waterx_rule",
       "rule_config_object": "0x67ee3a737b6dc489a6077698d2ff2c2b5d9a20a14e5d0a38e72818c61ccaa2cd",
+      "feeds": { "DOGEUSD": {} },
       "enclave": {
         "object": "0x7c301232fbbabd37db4df7fba843d3ef1914a427afd11d30f3e8135e0e7b28a0",
         "cap": "0x3202c262a2d22d8de874ab4884a8c3aa35ec5d126ac6aefb3112fc57d0584c53",
@@ -733,6 +734,7 @@
       "lazer_state_object": "0xd0db9c1e9212a98120384bf78d8b8c985d87b9ee6921dffcf9d1394062911573",
       "lazer_config_object": "0x923443623006b448f7820197e19463c63ae5d05ab3b7955041c778340bc43cbd",
       "lazer_feed_ids": {
+        "DOGEUSD": 13,
         "SUIUSD": 11,
         "BTCUSD": 1,
         "ETHUSD": 2,
