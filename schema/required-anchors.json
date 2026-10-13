@@ -1,0 +1,12 @@
+{
+  "_comment": "Load-bearing fields that MUST exist (and be required) in the generated schema. Cross-network merging already fails on undeclared one-sided field loss, but a subtree present on only ONE network (the declared-optional containers: pyth_lazer, supra) is inferred from that single instance — deleting a child there would silently shrink the schema (review finding). Anchors close that gap: the generator fails if any listed path is missing or optional. Removing a field deliberately means removing its anchor in the same PR. '*' matches one map key, '[]' array items.",
+  "anchors": [
+    "oracle_rules/pyth_lazer/package",
+    "oracle_rules/pyth_lazer/lazer_config_object",
+    "oracle_rules/pyth_lazer/lazer_state_object",
+    "oracle_rules/pyth_lazer/lazer_feed_ids",
+    "oracle_rules/supra/package",
+    "oracle_rules/supra/rule_config_object",
+    "oracle_rules/supra/pair_ids"
+  ]
+}

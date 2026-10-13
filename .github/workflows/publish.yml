@@ -100,7 +100,7 @@ jobs:
 
       # A prerelease is meant to be cut off a branch; an official release is not —
       # it publishes to `latest` and pushes the bump back to whatever ref ran it.
-      # The v2 lineage's release branch is main-v2 (main once v2 is promoted there).
+      # v2 is promoted to main; main is the only release branch (main-v2 is retired).
       - name: Check an official release is cut from a release branch
         if: ${{ inputs.releaseType != 'prerelease' }}
         env:
@@ -109,9 +109,9 @@ jobs:
         run: |
           set -euo pipefail
           case "$REF" in
-            refs/heads/main | refs/heads/main-v2) ;;
+            refs/heads/main) ;;
             *)
-              echo "::error::a '$RELEASE_TYPE' release must be dispatched from main-v2 (or main), not $REF (prereleases may come from any branch)"
+              echo "::error::a '$RELEASE_TYPE' release must be dispatched from main, not $REF (prereleases may come from any branch)"
               exit 1
               ;;
           esac

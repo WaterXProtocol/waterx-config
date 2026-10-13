@@ -1,0 +1,22 @@
+name: Agent harness
+
+# The agent guards: the publish ask hook against sample JSON (never pushes) and
+# the shared harness lint (waterx-commons check-harness.sh: AGENTS.md only
+# with no CLAUDE.md, root size, Codex twins of every hook and ask rule).
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  agent-harness:
+    name: 'Agent harness: hooks + lint'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hook tests (sample JSON)
+        run: bash scripts/agent-hooks/test-agent-hooks.sh
+      - name: Harness lint
+        run: bash scripts/agent-hooks/check-harness.sh
