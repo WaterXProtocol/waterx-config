@@ -5,7 +5,7 @@
 #   ask-before-publish.sh --codex    Codex (.codex/hooks.json)
 #
 # A push to `main` deploys config.waterx.app; `staging` serves the staging CDN
-# alias; `main-v2` / `staging-v2` are the v2 lineage; `publish.yml` publishes
+# alias; `staging-v2` is the former v2 staging lineage; `publish.yml` publishes
 # the npm package; `gh pr merge` does any of those. Splits `tool_input.command`
 # into simple commands with the shared quote-aware segmenter
 # (lib/shell-segments.sh, vendored from waterx-commons): separators and newlines
@@ -51,7 +51,7 @@ cmd=$(printf '%s' "$input" | shseg_json_get tool_input.command); rc=$?
 cwd=$(printf '%s' "$input" | shseg_json_get cwd 2>/dev/null)
 [ -n "${cmd:-}" ] || exit 0
 
-served='(main|staging|main-v2|staging-v2)'
+served='(main|staging|staging-v2)'
 
 # Is this one parsed command a publish? $1 tool, $2 its global options, then its
 # arguments. Prints what it matched, or nothing.
@@ -146,7 +146,7 @@ $(shseg_segments --long --guard "git gh" "$cmd")
 EOF
 [ -n "$matched" ] || exit 0
 
-reason="'$matched' publishes: a push to main deploys config.waterx.app, staging serves the staging CDN alias, main-v2 / staging-v2 are the v2 lineage, and publish.yml publishes @waterx/config. Only proceed with an explicit same-turn go-ahead from the user; otherwise open a PR against staging and stop."
+reason="'$matched' publishes: a push to main deploys config.waterx.app, staging serves the staging CDN alias, staging-v2 is the former v2 staging lineage, and publish.yml publishes @waterx/config. Only proceed with an explicit same-turn go-ahead from the user; otherwise open a PR against staging and stop."
 
 if [ "$mode" = codex ]; then
   [ -z "$uncovered" ] && exit 0 # .codex/rules/publish.rules prompts for it

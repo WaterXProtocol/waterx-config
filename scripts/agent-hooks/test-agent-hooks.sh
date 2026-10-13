@@ -48,7 +48,7 @@ expect_ask 'gh workflow run publish.yml -f releaseType=patch'
 expect_ask 'gh api -X PUT repos/WaterXProtocol/waterx-config/pulls/96/merge'
 expect_ask 'git push origin main'
 expect_ask 'git push origin HEAD:staging'
-expect_ask 'git push -u origin main-v2'
+expect_ask 'git push -u origin main'
 expect_ask 'git push origin staging-v2'
 expect_ask 'git push --force-with-lease origin chore/x'
 expect_ask 'git push -f origin chore/x'
@@ -66,7 +66,7 @@ expect_ask 'git --no-pager push origin staging'
 expect_ask '/usr/bin/git push origin main'
 expect_ask 'env GIT_TRACE=1 git push origin main'
 expect_ask 'command git push origin staging'
-expect_ask 'time git push origin main-v2'
+expect_ask 'time git push origin main'
 expect_ask "sh -c 'git push origin HEAD:main'"
 expect_ask 'gh --repo WaterXProtocol/waterx-config pr merge 96'
 expect_ask "git status
@@ -118,7 +118,7 @@ for c in \
   'find . -name "*.json" -execdir gh workflow run publish.yml {} +' \
   'echo main | xargs git push origin' \
   'echo 96 | xargs gh pr merge' \
-  'timeout 30 git push origin main-v2' \
+  'timeout 30 git push origin main' \
   'nice git push origin staging-v2' \
   'nice -n 5 gh pr merge 96' \
   'eval "git push origin main"' \
@@ -153,7 +153,7 @@ for c in \
   'ssh build-host "git push origin main"' \
   "ssh build-host 'git push --force origin staging'" \
   "ssh build-host 'gh pr merge 96 --squash'" \
-  "ssh build-host sh -c 'git push origin main-v2'" \
+  "ssh build-host sh -c 'git push origin main'" \
   'ssh -t build-host "sudo git push origin staging-v2"' \
   'ssh build-host -- git push origin main' \
   "ssh build-host 'git p''ush origin main'" \
@@ -179,7 +179,7 @@ for c in \
   'runuser -ubob -- git push origin main' \
   "script -q -c'gh pr merge 96 --squash' /dev/null" \
   'sudo -uroot git -c k=v push origin staging' \
-  'timeout -s9 60 git push --force origin main-v2' \
+  'timeout -s9 60 git push --force origin main' \
   "su -c'git push origin staging-v2'" \
   'env -uGIT_DIR gh workflow run publish.yml'; do
   expect_ask "$c"

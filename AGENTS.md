@@ -9,14 +9,14 @@ Both Claude Code (v2.1.281+) and Codex read this file. Do not add a CLAUDE.md an
 publish** — Pages deploys and purges the edge on merge, so a change to `mainnet.json` is a live
 config change for the backend, SDK, frontend, keeper and quote-center at once.
 
-Branches: `main` / `staging` serve the v1 lineage today; this branch (`main-v2`, with
-`staging-v2`) carries the consolidated `schema_version: 2` shape and reaches production through
-the v2 flip PR (`main-v2` → `main`; `docs/FLIP-PLAN.md` is the record and the per-consumer blast
-radius). `.github/workflows/guard-main-merges.yml` fails any PR into `main` whose source is not
-`staging`. A data change on the v1 pair usually needs a twin here, resolved to the v2 shape (the
-merge commits "Merge branch 'main' into main-v2 — resolved to the v2 shape" are the pattern).
+Branches: `main` / `staging` carry the consolidated `schema_version: 2` shape; the `main-v2`
+lineage that carried it in parallel was promoted into `main` and deleted (2026-10-13), and
+`staging-v2` is only its former staging twin (`docs/FLIP-PLAN.md` is the record and the
+per-consumer blast radius). `.github/workflows/guard-main-merges.yml` fails any PR into `main`
+whose source is not `staging`, so a data change lands on `staging` and reaches `main` through the
+staging→main promotion PR.
 `publish.yml` publishes npm `@waterx/config` from `packages/ts`: a `prerelease` from any branch,
-an official release from `main-v2` (or `main`), gated by the `RELEASE_PUBLISHERS` /
+an official release from `main`, gated by the `RELEASE_PUBLISHERS` /
 `PRERELEASE_PUBLISHERS` repo variables.
 
 Content rules (`README.md` and `docs/FIELDS.md` are the reference):
@@ -43,12 +43,12 @@ Content rules (`README.md` and `docs/FIELDS.md` are the reference):
 The request sets the scope: change the ids the task names, report anything else you notice as a
 suggestion, and don't merge into a served branch or dispatch `publish.yml` yourself.
 `.claude/settings.json` and `.codex/rules/publish.rules` make `gh pr merge`, `gh workflow run` and
-a push to `main` / `staging` / `main-v2` / `staging-v2` prompt (the same plain forms in both). The
+a push to `main` / `staging` / `staging-v2` prompt (the same plain forms in both). The
 hook splits the line with the shared quote-aware segmenter (`scripts/agent-hooks/lib/`), so global
 options (`git -c …`, `gh -R …`), wrappers and newlines are seen, comments are not commands, and a line it cannot parse or whose text names
 git or gh inside another command (`ssh host 'git push …'`) asks. Codex's rules see only leading
 words, so its hook (`.codex/hooks.json`) blocks a publish that does not name its branch (`git push`
-on `main-v2`, `HEAD:main-v2`) and asks for the plain form.
+on `main`, `HEAD:main`) and asks for the plain form.
 `.github/workflows/agent-harness.yml` runs `scripts/agent-hooks/test-agent-hooks.sh` and the
 shared harness lint `scripts/agent-hooks/check-harness.sh` (vendored from `waterx-commons`; keep
 its version line). Report only what a tool result from this session backs — the diff, the validate

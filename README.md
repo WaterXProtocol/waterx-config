@@ -36,7 +36,7 @@ changed and the old→new path map).
   Published as `@waterx/config` by dispatching `publish.yml` (Actions ->
   Publish package): `prerelease` from any branch numbers the version by the
   run (`X.Y.Z-<tag>.<run>`, dist-tag `<tag>`, default `staging`); an official
-  release is dispatched from `main-v2` and pushes the bump back. Who may
+  release is dispatched from `main` and pushes the bump back. Who may
   publish is the repo variables `RELEASE_PUBLISHERS` / `PRERELEASE_PUBLISHERS`
   (space-separated GitHub user ids). Consumers pin exact versions.
 - Rust: [`packages/rust`](./packages/rust) — `waterx-config` crate, consumed
@@ -77,9 +77,9 @@ drift); edit the schema, never the generated files.
 - Pyth Core is **removed** (2026-09-30): no `oracle_rules.pyth` block and no
   `packages.pyth_rule` identity. No SDK rule module has fed it since 5.0.0
   (`ORACLE_SOURCES` is `[pyth_lazer_rule, waterx_rule]`). Both paths are in
-  `check-flip-state.mjs`'s removed-path ledger, so they cannot resurface. The
-  v1 `main` branch alone keeps its `pyth_rule` block until the production v2
-  rollout (#79). Pyth **Lazer** (`oracle_rules.pyth_lazer`) is unaffected.
+  `check-flip-state.mjs`'s removed-path ledger, so they cannot resurface. `main`
+  dropped its `pyth_rule` block with the v2 promotion (the former `main-v2`
+  lineage, 2026-10-13). Pyth **Lazer** (`oracle_rules.pyth_lazer`) is unaffected.
 - The end-to-end listing runbook (create aggregator → wire the rule → create
   market) lives in
   [`waterx-contract/.claude/skills/list-perp-asset/SKILL.md`](https://github.com/WaterXProtocol/waterx-contract/blob/main/.claude/skills/list-perp-asset/SKILL.md).
