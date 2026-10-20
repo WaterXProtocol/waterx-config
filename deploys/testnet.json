@@ -455,6 +455,20 @@
       "digest": "GCZRQkqv8FzE16A63TTWjWShGR9PND6eZxrktJ1FFeFn",
       "checkpoint": "397052068",
       "timestamp": "2026-10-20T07:49:28.659Z"
+    },
+    {
+      "phase": "waterx_rule.feeds",
+      "action": "waterx_rule::set_bbo_feed (v7 0x039e68d8…) for 10 bare-ticker Ratio markets ETHBTC, SUIBTC, LITHYPE, SUISOL, HYPEBTC, SOLETH, SUIAPT, SUIETH, SUIWAL, SUIDEEP — ticker = symbol, sources [], max_age_ms 6000 (QC bbo-config ratio + leg budgets), zero quality placeholders (set-feeds.ts)",
+      "digest": "5CpdFszEEB8hzioxPeioxReeAmENQh4keVy7emKy27Bu",
+      "checkpoint": "397065975",
+      "timestamp": "2026-10-20T08:40:46.197Z"
+    },
+    {
+      "phase": "markets.list",
+      "action": "list the 10 Ratio markets in one PTB: oracle::add_aggregator (threshold 1, outlier 50bps) + set_rule_weight<WaterxRule>(1) + trading::create_market<WLP> + add_market<WLP> + update_market_config<WLP>; params from the riskier leg's market_summary.csv row, OI ≈ $50k notional per side, tick ≈ 1bp",
+      "digest": "7eyvyKrjXMLQxbAFk9xTEpkBabPNni5deaZuGamuHopr",
+      "checkpoint": "397069334",
+      "timestamp": "2026-10-20T08:53:25.046Z"
     }
   ],
   "package_publish": {
