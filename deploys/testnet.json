@@ -448,6 +448,13 @@
       "digest": "7WVMP9QonxFZxMVNa9bK8aghsCEVVAgrivjsa9oKrZwC",
       "checkpoint": "389356061",
       "timestamp": "2026-09-30T05:52:40.915Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_rule",
+      "action": "upgrade waterx_rule v6→v7 (BBO-only: sources/method kept as signed metadata, legacy set_feed / set_perp_feed and source/method helpers abort EDeprecated — waterx-contract#158; on-chain confidence / deviation / contributor thresholds removed, quality policy owned by QC/TEE — waterx-contract#164; no enclave rotation or feed registration yet) → 0x039e68d8ca680245669d338226e76109efe93253737ac8b70ff11f120512ca53",
+      "digest": "GCZRQkqv8FzE16A63TTWjWShGR9PND6eZxrktJ1FFeFn",
+      "checkpoint": "397052068",
+      "timestamp": "2026-10-20T07:49:28.659Z"
     }
   ],
   "package_publish": {
