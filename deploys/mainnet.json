@@ -280,6 +280,20 @@
       "digest": "88w5BfJwG3SnS7qPbzTiTRRW2X1ynxmGrLh3iwBcci3a",
       "checkpoint": "331046783",
       "timestamp": "2026-10-06T19:34:08.790Z"
+    },
+    {
+      "phase": "1.upgrade:pyth_lazer_rule",
+      "action": "upgrade pyth_lazer_rule v2→v3 → 0x0f2d4bfec8bf04896dd315f5f6c6db0511051cac619cc20f5bff16993da4028d — M1 (recorded late: found by UpgradeCap audit 2026-10-22)",
+      "digest": "Y99KgtoVVYTBDEu6hfbq8zuHwdr8HEziWDe9QQwKL76",
+      "checkpoint": "325202208",
+      "timestamp": "2026-09-21T11:21:47.493Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_referral",
+      "action": "upgrade waterx_referral →v4 → 0x875848fcddcf7d05f607c59d211f30ff0b1f536cfb99f0e19629cbaa09474760 — S1 0x0a6b8059… (recorded late: found by UpgradeCap audit 2026-10-22; v2/v3 also unrecorded)",
+      "digest": "672ExoaNkoYwLAz2UGFvV4dR6tq88uuG4infFKqQkL15",
+      "checkpoint": "282767769",
+      "timestamp": "2026-06-03T19:40:40.710Z"
     }
   ],
   "package_publish": {
