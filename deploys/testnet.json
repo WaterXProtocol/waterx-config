@@ -469,6 +469,13 @@
       "digest": "7eyvyKrjXMLQxbAFk9xTEpkBabPNni5deaZuGamuHopr",
       "checkpoint": "397069334",
       "timestamp": "2026-10-20T08:53:25.046Z"
+    },
+    {
+      "phase": "prediction.gates+credit.gates",
+      "action": "remove stale version-gate entries in one PTB: prediction global_config::disallow_version 4/5/6 (gate {7}); custody_vault::remove_version 3 on the USD / SUI / DEEP / WAL CustodyVault (gate {4}); credit_registry::remove_version<CREDIT, NativeCustody> 3 on the USD / SUI / DEEP / WAL CreditRegistry (entry {4}). Keep values = PACKAGE_VERSION in the live prediction v6 / native_custody v4 bytecode; the only linked consumers (waterx_prediction_gift v3 → prediction v6, withdrawal_queue v6 → native_custody v4) check 7 / 4 — waterx-admin",
+      "digest": "9ZJdLDyQQ1Vt5QYRMsuCkikXCwKjoHdwVTBpp54gw3hS",
+      "checkpoint": "397855713",
+      "timestamp": "2026-10-22T10:17:22.202Z"
     }
   ],
   "package_publish": {
