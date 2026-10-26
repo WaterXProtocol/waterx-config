@@ -3,36 +3,6 @@
   "network": "testnet",
   "chain_id": "4c78adac",
   "symbols": {
-    "ETHBTC": {
-      "kind": "perp"
-    },
-    "SUIBTC": {
-      "kind": "perp"
-    },
-    "LITHYPE": {
-      "kind": "perp"
-    },
-    "SUISOL": {
-      "kind": "perp"
-    },
-    "HYPEBTC": {
-      "kind": "perp"
-    },
-    "SOLETH": {
-      "kind": "perp"
-    },
-    "SUIAPT": {
-      "kind": "perp"
-    },
-    "SUIETH": {
-      "kind": "perp"
-    },
-    "SUIWAL": {
-      "kind": "perp"
-    },
-    "SUIDEEP": {
-      "kind": "perp"
-    },
     "BTCUSD": {
       "kind": "perp"
     },
@@ -319,16 +289,6 @@
       "oracle": "0xee05061d8d990ca91eab65cd94498adac654a8eed31af7ef8a95b6664c844f43",
       "listing_cap": "0xcb9bddae4c0e228fb1f63ec89904c4d471f6adb47e3e1158e550d4b067ac8ca4",
       "aggregators": {
-        "ETHBTC": "0x5f5731271e55c7e126399935082c00e969f482cbacab80126db445bc73e5b3f9",
-        "SUIBTC": "0xb0eaabebc87127283b796cdaa242fac6d4a7e4e2a21d42aab078dc62d6cf7237",
-        "LITHYPE": "0x1d03980c4884533a671f0a8cce1c64d6929717a51d1b337aef004e8b717f3e18",
-        "SUISOL": "0x3ee37dee39d9b51ce8146e8068a7f4d5925e0cc325d7b8458df22e8ad336fa1d",
-        "HYPEBTC": "0x828e44a676923d110a709270b1cd7af603fb517f6ae4af34c2f9ed1526499e67",
-        "SOLETH": "0x2672647521612dd4bd82a8cc7cc61771e8357a328b82283a4cf63225f71d7c8f",
-        "SUIAPT": "0xc87717ec9f1e81a8de4480447dbcf58ab927e3c15bdb6f684af97522e96a231c",
-        "SUIETH": "0x6e2ab616b8a8aeb41f75e3845c87c9a205350ad81d5042c0b40f1d20f7be522b",
-        "SUIWAL": "0xedab8726c4b546e08bd54e92cb39ecbf54e74013bad5c4df36e4829c6cb3baed",
-        "SUIDEEP": "0xbfbe0dab21ff7c435c8b36bbada23a350a9592949ef38b3ecd925a7b390ae1df",
         "SUIUSD": "0xa97bc774cc3d9f5e66ef799f96dc660d636e91f6391f8993a2f23e07fe41026f",
         "BTCUSD": "0x5bbc030f51b8028e12292d593b53b1edbf1fa86b38362b308fdf09713562844d",
         "ETHUSD": "0x0349719f876b00b43b8df1180436abdf4d16bb0664486b4e907c94f21494c5a7",
@@ -378,46 +338,6 @@
       "admin_cap": "0x6085c9f59548ee08b6d83915ea2db5efce8ad3803b697ec70473946816b8d931",
       "market_registry_wlp": "0xb7545561564995e99a840bff1c2bbffdd41b3826a1c60a7264ee49cac9916e85",
       "markets": {
-        "ETHBTC": {
-          "market": "0x032dda7e48b8a93ee952a2710642ea5b81a32e97e411bec61c42f678e434eeb4",
-          "config": "0x03d822fca3bca01cf05bec675171530aa903cd6e42125c3f31292cb28f5d404e"
-        },
-        "SUIBTC": {
-          "market": "0x0d9d648ad001c1f35820b0597d1af585e79b9e34bb895f86dba8fee493ca4452",
-          "config": "0x22c716be6f10049ff7a35aeebc0515cc98ee72e7f21430a5f0ef484addb0770c"
-        },
-        "LITHYPE": {
-          "market": "0x404a2a677a27a71294a50afbcd48da46b6e2a32351bfe158146d3d746515cd1e",
-          "config": "0x51c9591089b25d3a12b289baeaab50b68307a0e3f0472dbb7e21f6b04d4b8dee"
-        },
-        "SUISOL": {
-          "market": "0xd93174b0ecc848780ddd53c2e33fd6522d71f0dead82e4ad89d64fb76dfe6b5f",
-          "config": "0x5d29554ae76a6874499871b2bf6768e6120154e682400ad68523172fa1f5770f"
-        },
-        "HYPEBTC": {
-          "market": "0x9f88dca55946d427cf2aad3666d2ab442ec6e3fe44a7fa747068896d7ddfd01d",
-          "config": "0xc50e68ed7b1fad38b54f36f7a10beccaeea8932e51fb57e42faca90e376bd144"
-        },
-        "SOLETH": {
-          "market": "0xe980e2e0e464a97aa7658343dc8a329370870da6213d8efa978a7a269c62f278",
-          "config": "0x9c6b7982abc07ffeb1a75f16288d4ee0430a2c0af60083e801cedb42a5d27838"
-        },
-        "SUIAPT": {
-          "market": "0xb72af3e80e5afda5566ef9b88ba9778b51c1964243c2138fa926fa77bb6263e4",
-          "config": "0xcb580fef4237bec7e7879d3cbee2fb44b8bd40f9c788a4c79c7e8012bb845816"
-        },
-        "SUIETH": {
-          "market": "0xb012ba3ac849fa557004259ff5160928cf6b15f53a29a7f63724d33ca08e8ed7",
-          "config": "0x84e66b1646fa699f0c376048e27a45795771a8917f835a677fca9ccab73ec6e5"
-        },
-        "SUIWAL": {
-          "market": "0xd8c404017033d31328fcca81cdf97cd3260c6ab3ba5d3525a238a7043c85829a",
-          "config": "0xc4f172512fb27b8963b18c198e719306c8cf144fcedaffec8c3253800e51ef3a"
-        },
-        "SUIDEEP": {
-          "market": "0x79ecb2b2150e879ad0392c0de7ffd53ec46cdc81e07aa98895565633e968bb79",
-          "config": "0xab32b40f08e5ee005c412d4e92ff6b6596455b09a2ff803c7a15a8b390a46e49"
-        },
         "SUIUSD": {
           "market": "0x11fd3d89e46ed96782bd016568b396cd78326c6c382db152e1ba3b7f6115c47b",
           "config": "0xe6c7b04f78eaa4d2e512a1f76dff4740b1e65936592dd2454fbbbd25e7340a64"
@@ -820,16 +740,6 @@
         "pubkey": "03baaa84a2a1d05b3a3563223b114ea62cfd6141b86ab71f1d54de3f88cf90a6"
       },
       "feeds": {
-        "ETHBTC": {},
-        "SUIBTC": {},
-        "LITHYPE": {},
-        "SUISOL": {},
-        "HYPEBTC": {},
-        "SOLETH": {},
-        "SUIAPT": {},
-        "SUIETH": {},
-        "SUIWAL": {},
-        "SUIDEEP": {},
         "BTCUSD": {},
         "ETHUSD": {},
         "SOLUSD": {},
