@@ -22,6 +22,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm, cache-dependency-path: packages/ts/package-lock.json }
+      - name: Raw JSON members are unique
+        run: |
+          node scripts/check-duplicate-keys.mjs
+          node --test scripts/test_check_duplicate_keys.mjs
       - run: cd packages/ts && npm ci
       - name: Instances match the canonical schema
         run: |
