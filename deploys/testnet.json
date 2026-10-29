@@ -469,6 +469,27 @@
       "digest": "7eyvyKrjXMLQxbAFk9xTEpkBabPNni5deaZuGamuHopr",
       "checkpoint": "397069334",
       "timestamp": "2026-10-20T08:53:25.046Z"
+    },
+    {
+      "phase": "1.publish:testnet_faucet",
+      "action": "republish testnet_faucet from unchanged source against the current waterx_account (0xff4a…) / waterx_credit (0x91af…) stack — the 2026-05-19 package 0x26ae2013… linked the superseded 0x2d9b… / 0xf675… packages and could not touch the current credit registries (waterx-contract#169) → 0x28f8e751d978fa3db61a41a31e9e7d8f5180fd6b6e81c01dcd3a955a8fb77b52",
+      "digest": "8njJbAEuuR67tHsBdsYZBR4owAfMBu25zBBPbfh83X77",
+      "checkpoint": "400396974",
+      "timestamp": "2026-10-29T03:55:31.881Z"
+    },
+    {
+      "phase": "faucet.create",
+      "action": "testnet_faucet::create_test_faucet (waterx_account AdminCap) → shared TestFaucet 0xfba2d9dc30439479f9b6a30c1dbf6f9e9ec2a4c1a6a53240eddf486e915d6b44",
+      "digest": "9HMDyRFdz799wLVpRC217xmN48j9Z2MUbAnoVrT61vXb",
+      "checkpoint": "400397054",
+      "timestamp": "2026-10-29T03:55:50.846Z"
+    },
+    {
+      "phase": "prediction.settlement_fund",
+      "action": "one PTB from waterx-admin: credit_registry::add_version<CREDIT, TestnetFaucet>(1) + set_supply_limit (= mint amount) on the SUI / DEEP / WAL credit registries, testnet_faucet::add_to_whitelist(waterx-admin), then faucet_mint_coin → waterx_prediction::deposit_settlement for 11,100 SUI / 613,400 DEEP / 311,400 WAL credit (~$10k each at spot; unbacked by the custody vaults)",
+      "digest": "GrMkcthm3ay3L8gtrZbqjYdeQBS7MxaEKCbqF6saxq2a",
+      "checkpoint": "400397320",
+      "timestamp": "2026-10-29T03:56:54.620Z"
     }
   ],
   "package_publish": {
@@ -553,8 +574,8 @@
       "publish_checkpoint": "358192682"
     },
     "testnet_faucet": {
-      "publish_digest": "5ioVM4hEZzxVqV43tKg9VPxAqwYEgs7cfiCs5wUHnVSd",
-      "publish_checkpoint": "338586209"
+      "publish_digest": "8njJbAEuuR67tHsBdsYZBR4owAfMBu25zBBPbfh83X77",
+      "publish_checkpoint": "400396974"
     },
     "supra_rule": {
       "publish_digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
