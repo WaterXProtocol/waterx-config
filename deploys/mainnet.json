@@ -287,6 +287,13 @@
       "digest": "AhrPAGND8sZL9VnQLQGPeDyaprvXz7GXX5SL6u9HqUuN",
       "checkpoint": "336077936",
       "timestamp": "2026-10-20T09:58:39.718Z"
+    },
+    {
+      "phase": "markets.list",
+      "action": "list the 10 bare-ticker Ratio markets ETHBTC, SUIBTC, LITHYPE, SUISOL, HYPEBTC, SOLETH, SUIAPT, SUIETH, SUIWAL, SUIDEEP in one PTB: waterx_rule::set_bbo_feed ×10 (ticker = symbol, sources [], max_age_ms 6000, zero quality placeholders) + oracle::add_aggregator (threshold 1, outlier 50bps) + set_rule_weight<WaterxRule>(1) + trading::create_market<WLP> + add_market<WLP> + update_market_config<WLP>; params from the 2026-11-03 risk sheet — M2",
+      "digest": "8P1AH8cYXpsax3HYQgUX8ExnsvdN8aYnvqMM68fAKXUc",
+      "checkpoint": "341110339",
+      "timestamp": "2026-11-03T06:13:12.910Z"
     }
   ],
   "package_publish": {
