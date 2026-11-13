@@ -469,6 +469,27 @@
       "digest": "7eyvyKrjXMLQxbAFk9xTEpkBabPNni5deaZuGamuHopr",
       "checkpoint": "397069334",
       "timestamp": "2026-10-20T08:53:25.046Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v6→v7 (PACKAGE_VERSION 8: non-cash betting vouchers, voucher-granter allowlist with a per-registry grant budget — waterx-contract#171; gate {7, 8}, v7 not yet disallowed) → 0x842257f800decb84668282b372c4eecbee2a39da23a61e9e02a9af74f441f0fe",
+      "digest": "EzvJ8HEaQ1oA3smSgbMUPhMSFdwDS1x6KxyAoHcpN3b7",
+      "checkpoint": "405963719",
+      "timestamp": "2026-11-13T08:45:03.155Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction_gift",
+      "action": "upgrade waterx_prediction_gift v3→v4 (PACKAGE_VERSION 4: create_gift rejects voucher-funded source positions, relinked onto waterx_prediction v7 0x842257f8… — waterx-contract#171; gate {3, 4}) → 0xf69b74f73c0ce36c58533f1d043db80167c026f05e4e6f0f6730a85a78fc0b40",
+      "digest": "7i1wQAXfuuDpwkQuxTJ7SJV4m6efxSHRFk7GuBctjow8",
+      "checkpoint": "405963840",
+      "timestamp": "2026-11-13T08:45:30.701Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_perp",
+      "action": "upgrade waterx_perp v3→v4 (PACKAGE_VERSION 4: Keeper-only execution for all user trades, oracle-free order submission, per-operation market-order permissions — waterx-contract#167 / #172; gates {3, 4} on GlobalConfig, WLP pool and market registry, v3 not yet disallowed) → 0x5f460c71b39b109c51186a739d22693fed973f80a2a492c2ccf3ef3a297b0043",
+      "digest": "FVDvJFvisFPKmzo59uNjVaa8quo4efpfVvqNoG9gMTET",
+      "checkpoint": "406066169",
+      "timestamp": "2026-11-13T15:11:21.061Z"
     }
   ],
   "package_publish": {
