@@ -176,21 +176,21 @@
       "upgrade_capability": "0xe76949d5cf3a377ccdee61b24cd107fc5b249ad68a2fb304bcca2d16330c6ba7"
     },
     "waterx_perp": {
-      "published_at": "0x069cd6e59eb3f700a38a42e09b35d092bcd1fbc5d1d23774962238d2f45a8a07",
+      "published_at": "0x5f460c71b39b109c51186a739d22693fed973f80a2a492c2ccf3ef3a297b0043",
       "original_id": "0x505622c7f91372446d9bb5e0b874f3a0746e4abaafdaf8209962bcdb44af2b35",
-      "version": 3,
+      "version": 4,
       "upgrade_capability": "0x8faf7b3b3af5e53d940ea2f9efb6a8aa843a0bf43bb68fd61e4a424356c27872"
     },
     "waterx_prediction": {
-      "published_at": "0xe47d2416e8e6584589963578acd7a042a4208c8eef5f3b826bbf3a85f37fe08f",
+      "published_at": "0x842257f800decb84668282b372c4eecbee2a39da23a61e9e02a9af74f441f0fe",
       "original_id": "0x99be07b27dbbd846eec72213f0ec221b3e7d38c8bfdee3cbf578b9bfa5df3481",
-      "version": 6,
+      "version": 7,
       "upgrade_capability": "0x4455efe909425bf55247b18c8ca744f2c84d79a1e36b82cdf3cd5d20c96702b9"
     },
     "waterx_prediction_gift": {
-      "published_at": "0x53f8ed8b1e3013714dddf4e62f7c459b1e7b0fbc6b5e26270853338a56f1bd68",
+      "published_at": "0xf69b74f73c0ce36c58533f1d043db80167c026f05e4e6f0f6730a85a78fc0b40",
       "original_id": "0x2cf6f6b047b4e0b97f33a77a75d6fa39175600894fe8615ef45caec2e59f023f",
-      "version": 3,
+      "version": 4,
       "upgrade_capability": "0x067fc22608d0fb12a703beb955f1b7ef3dec771a361ef907e40bb3322ef9b3c6"
     },
     "waterx_perp_view": {
