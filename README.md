@@ -25,6 +25,11 @@ between networks or symbol maps must be declared in
 [`schema/coverage-exceptions.json`](./schema/coverage-exceptions.json) — new,
 undeclared drift fails CI.
 
+Duplicate object keys are rejected on the raw network JSON before schema/parser
+validation, including escaped aliases of the same name. Locally, run
+`node scripts/check-duplicate-keys.mjs` and `node --test scripts/test_check_duplicate_keys.mjs`.
+Parsing alone is insufficient because standard JSON parsers silently keep the last duplicate.
+
 **The served format is the consolidated shape (`schema_version: 2`)** — there
 is no legacy format (see [`docs/FLIP-PLAN.md`](./docs/FLIP-PLAN.md) for what
 changed and the old→new path map).

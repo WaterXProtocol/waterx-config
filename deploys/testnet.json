@@ -476,6 +476,48 @@
       "digest": "9ZJdLDyQQ1Vt5QYRMsuCkikXCwKjoHdwVTBpp54gw3hS",
       "checkpoint": "397855713",
       "timestamp": "2026-10-22T10:17:22.202Z"
+    },
+    {
+      "phase": "1.publish:testnet_faucet",
+      "action": "republish testnet_faucet from unchanged source against the current waterx_account (0xff4a…) / waterx_credit (0x91af…) stack — the 2026-05-19 package 0x26ae2013… linked the superseded 0x2d9b… / 0xf675… packages and could not touch the current credit registries (waterx-contract#169) → 0x28f8e751d978fa3db61a41a31e9e7d8f5180fd6b6e81c01dcd3a955a8fb77b52",
+      "digest": "8njJbAEuuR67tHsBdsYZBR4owAfMBu25zBBPbfh83X77",
+      "checkpoint": "400396974",
+      "timestamp": "2026-10-29T03:55:31.881Z"
+    },
+    {
+      "phase": "faucet.create",
+      "action": "testnet_faucet::create_test_faucet (waterx_account AdminCap) → shared TestFaucet 0xfba2d9dc30439479f9b6a30c1dbf6f9e9ec2a4c1a6a53240eddf486e915d6b44",
+      "digest": "9HMDyRFdz799wLVpRC217xmN48j9Z2MUbAnoVrT61vXb",
+      "checkpoint": "400397054",
+      "timestamp": "2026-10-29T03:55:50.846Z"
+    },
+    {
+      "phase": "prediction.settlement_fund",
+      "action": "one PTB from waterx-admin: credit_registry::add_version<CREDIT, TestnetFaucet>(1) + set_supply_limit (= mint amount) on the SUI / DEEP / WAL credit registries, testnet_faucet::add_to_whitelist(waterx-admin), then faucet_mint_coin → waterx_prediction::deposit_settlement for 11,100 SUI / 613,400 DEEP / 311,400 WAL credit (~$10k each at spot; unbacked by the custody vaults)",
+      "digest": "GrMkcthm3ay3L8gtrZbqjYdeQBS7MxaEKCbqF6saxq2a",
+      "checkpoint": "400397320",
+      "timestamp": "2026-10-29T03:56:54.620Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v6→v7 (PACKAGE_VERSION 8: non-cash betting vouchers, voucher-granter allowlist with a per-registry grant budget — waterx-contract#171; gate {7, 8}, v7 not yet disallowed) → 0x842257f800decb84668282b372c4eecbee2a39da23a61e9e02a9af74f441f0fe",
+      "digest": "EzvJ8HEaQ1oA3smSgbMUPhMSFdwDS1x6KxyAoHcpN3b7",
+      "checkpoint": "405963719",
+      "timestamp": "2026-11-13T08:45:03.155Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction_gift",
+      "action": "upgrade waterx_prediction_gift v3→v4 (PACKAGE_VERSION 4: create_gift rejects voucher-funded source positions, relinked onto waterx_prediction v7 0x842257f8… — waterx-contract#171; gate {3, 4}) → 0xf69b74f73c0ce36c58533f1d043db80167c026f05e4e6f0f6730a85a78fc0b40",
+      "digest": "7i1wQAXfuuDpwkQuxTJ7SJV4m6efxSHRFk7GuBctjow8",
+      "checkpoint": "405963840",
+      "timestamp": "2026-11-13T08:45:30.701Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_perp",
+      "action": "upgrade waterx_perp v3→v4 (PACKAGE_VERSION 4: Keeper-only execution for all user trades, oracle-free order submission, per-operation market-order permissions — waterx-contract#167 / #172; gates {3, 4} on GlobalConfig, WLP pool and market registry, v3 not yet disallowed) → 0x5f460c71b39b109c51186a739d22693fed973f80a2a492c2ccf3ef3a297b0043",
+      "digest": "FVDvJFvisFPKmzo59uNjVaa8quo4efpfVvqNoG9gMTET",
+      "checkpoint": "406066169",
+      "timestamp": "2026-11-13T15:11:21.061Z"
     }
   ],
   "package_publish": {
@@ -560,8 +602,8 @@
       "publish_checkpoint": "358192682"
     },
     "testnet_faucet": {
-      "publish_digest": "5ioVM4hEZzxVqV43tKg9VPxAqwYEgs7cfiCs5wUHnVSd",
-      "publish_checkpoint": "338586209"
+      "publish_digest": "8njJbAEuuR67tHsBdsYZBR4owAfMBu25zBBPbfh83X77",
+      "publish_checkpoint": "400396974"
     },
     "supra_rule": {
       "publish_digest": "E7qQQurbFHCHRoWXwdpkuYmdCH7fjy5cn7p8FTXyHKX3",
