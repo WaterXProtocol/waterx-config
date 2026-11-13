@@ -242,10 +242,10 @@
       "upgrade_capability": "0x49337f0f96bb4850ad21ed3bd56e7ff6e1373ad71e51518bd181e82c74b386ac"
     },
     "testnet_faucet": {
-      "published_at": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
-      "original_id": "0x26ae20135e44ac79d75fa34f0425812fc148417225d5f4c451060fc7cc9b36dd",
+      "published_at": "0x28f8e751d978fa3db61a41a31e9e7d8f5180fd6b6e81c01dcd3a955a8fb77b52",
+      "original_id": "0x28f8e751d978fa3db61a41a31e9e7d8f5180fd6b6e81c01dcd3a955a8fb77b52",
       "version": 1,
-      "upgrade_capability": "0x4e76d649d94152393b4e326ee1a3bd561a6de3e43f335c70f3076621d450356b"
+      "upgrade_capability": "0x2b7dedaf705dc5cd3b8a117f4d8fdce9051a1c23516db5dfd67bcea549e75b1a"
     },
     "constant_rule": {
       "published_at": "0xb623f1243a990d892f6f5c9b3e336d86f27b3d6c1491e93a0e6cc4a55976caed",
@@ -718,9 +718,9 @@
       "metadata_cap": "0xb650df8765c5735e478df589961494d90aef70eca805b4591e0483d513d82c69"
     },
     "faucet": {
-      "faucet": "0xa6b694d68a1807277bf2f7f304284442311c8cd4d2fe0b52b93f26abb95c290f",
+      "faucet": "0xfba2d9dc30439479f9b6a30c1dbf6f9e9ec2a4c1a6a53240eddf486e915d6b44",
       "whitelist": [
-        "0x26266b1381bcf03ab3acc37c1e87beffb52d49f345248bc3efb9114176990ae4"
+        "0x0a6b8059ca0a53e2cb2d37fdcc336b3debb3aae18389a94b825371b1195f161f"
       ]
     },
     "mock_usdsui": {
