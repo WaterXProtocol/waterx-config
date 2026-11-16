@@ -226,6 +226,42 @@ mod tests {
         }
     }
 
+    /// Type origins are distinct from transaction-call targets and are absent
+    /// on networks where Voucher has not been deployed.
+    #[test]
+    fn voucher_type_origins_round_trip_and_remain_optional() {
+        let cfg = parse_waterx_config(&fixture("testnet.json"), Some("testnet")).unwrap();
+        let expected = vec![
+            "0x842257f800decb84668282b372c4eecbee2a39da23a61e9e02a9af74f441f0fe".to_owned(),
+        ];
+        assert_eq!(cfg.objects.prediction.voucher_type_origins.as_ref(), Some(&expected));
+        let out = serde_json::to_string(&cfg).unwrap();
+        let reparsed = parse_waterx_config(&out, Some("testnet")).unwrap();
+        assert_eq!(reparsed.objects.prediction.voucher_type_origins, Some(expected));
+
+        let mainnet = parse_waterx_config(&fixture("mainnet.json"), Some("mainnet")).unwrap();
+        assert!(mainnet.objects.prediction.voucher_type_origins.is_none());
+        let serialized = serde_json::to_value(mainnet).unwrap();
+        assert!(serialized["objects"]["prediction"].get("voucher_type_origins").is_none());
+
+        let mut old: serde_json::Value = serde_json::from_str(&fixture("testnet.json")).unwrap();
+        old["objects"]["prediction"].as_object_mut().unwrap().remove("voucher_type_origins");
+        assert!(parse_waterx_config(&old.to_string(), None)
+            .unwrap().objects.prediction.voucher_type_origins.is_none());
+    }
+
+    /// Runtime serde validates the array shape; semantic package-id and
+    /// non-empty checks remain in the canonical AJV validation gate.
+    #[test]
+    fn voucher_type_origins_reject_non_arrays_and_non_string_items() {
+        let base: serde_json::Value = serde_json::from_str(&fixture("testnet.json")).unwrap();
+        for value in [serde_json::json!("0xdead"), serde_json::json!({}), serde_json::json!([1])] {
+            let mut doc = base.clone();
+            doc["objects"]["prediction"]["voucher_type_origins"] = value;
+            assert!(matches!(parse_waterx_config(&doc.to_string(), None), Err(ConfigError::Parse(_))));
+        }
+    }
+
     /// Forward-compat: unknown fields and NEW packages are tolerated/visible.
     #[test]
     fn unknown_fields_tolerated_and_new_packages_visible() {
