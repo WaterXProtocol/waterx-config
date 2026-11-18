@@ -18,6 +18,7 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
+    "ajv": "^8.20.0",
     "ajv-cli": "5.0.0",
     "typescript": "^5.7.0"
   },

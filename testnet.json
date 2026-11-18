@@ -711,6 +711,9 @@
         "DEEP": "0xf6cd7dfe0f1838a58676991f25e3d76768437f68fe31b0fba628f1a4e381b1f1::deep::DEEP",
         "WAL": "0x7e8e28d8f3951984b7bb109961216a5b0e156ab6309f6b3a9a4d78b565726576::wal::WAL"
       },
+      "voucher_type_origins": [
+        "0x842257f800decb84668282b372c4eecbee2a39da23a61e9e02a9af74f441f0fe"
+      ],
       "claimable_link_config": "0x39e9b1fa73e5a544acbe94409f6784c737ff5f64aab9094bbfa1043abc848eb2",
       "gift_admin_cap": "0xaf093dcf28e2f09efdc821d7f9837a0c0fa5e01943d88d116d899c65afbd4baa"
     },

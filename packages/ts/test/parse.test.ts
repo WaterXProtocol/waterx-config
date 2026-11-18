@@ -3,6 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import Ajv2020 from "ajv/dist/2020.js";
 import { loadWaterxConfig, parseWaterxConfig, WaterxConfigError } from "../src/index.ts";
 
 const FIXTURES = new Map<string, unknown>();
@@ -12,6 +13,7 @@ const load = (rel: string): any => {
   }
   return structuredClone(FIXTURES.get(rel));
 };
+const validateCanonical = new Ajv2020().compile(load("schema/waterx-config.schema.json"));
 
 for (const net of ["mainnet", "testnet"] as const) {
   test(`${net}.json parses`, () => {
@@ -22,6 +24,48 @@ for (const net of ["mainnet", "testnet"] as const) {
     assert.ok(cfg.objects.oracle.aggregators["BTCUSD"], "the flagship symbol must have an on-chain aggregator");
     assert.ok(cfg.packages.waterx_rule, "waterx_rule identity block");
     assert.match(cfg.packages.waterx_rule.published_at, /^0x[0-9a-fA-F]{64}$/);
+  });
+}
+
+test("Voucher type origins survive parsing only on the deployed network", () => {
+  const origins = ["0x842257f800decb84668282b372c4eecbee2a39da23a61e9e02a9af74f441f0fe"];
+  const testnet = parseWaterxConfig(load("testnet.json"), "testnet");
+  assert.equal(validateCanonical(load("testnet.json")), true);
+  assert.deepEqual(testnet.objects.prediction.voucher_type_origins, origins);
+  assert.deepEqual(parseWaterxConfig(JSON.parse(JSON.stringify(testnet))).objects.prediction.voucher_type_origins, origins);
+  assert.equal(parseWaterxConfig(load("mainnet.json"), "mainnet").objects.prediction.voucher_type_origins, undefined);
+  assert.equal(validateCanonical(load("mainnet.json")), true);
+});
+
+test("configs predating Voucher remain compatible when origins are absent", () => {
+  const doc = load("testnet.json");
+  delete doc.objects.prediction.voucher_type_origins;
+  assert.equal(validateCanonical(doc), true);
+  assert.equal(parseWaterxConfig(doc).objects.prediction.voucher_type_origins, undefined);
+});
+
+test("duplicate Voucher origins agree between canonical schema and generated parser", () => {
+  const doc = load("testnet.json");
+  const origin = doc.objects.prediction.voucher_type_origins[0];
+  doc.objects.prediction.voucher_type_origins = [origin, origin];
+  assert.equal(validateCanonical(doc), true);
+  assert.deepEqual(parseWaterxConfig(doc).objects.prediction.voucher_type_origins, [origin, origin]);
+});
+
+for (const [label, value] of [
+  ["empty array", []],
+  ["null", null],
+  ["single string", "0x" + "a".repeat(64)],
+  ["object", { package: "0x" + "a".repeat(64) }],
+  ["short address", ["0xdead"]],
+  ["non-hex address", ["0x" + "g".repeat(64)]],
+  ["non-string item", [1]],
+] as const) {
+  test(`Voucher origins reject ${label}`, () => {
+    const doc = load("testnet.json");
+    doc.objects.prediction.voucher_type_origins = value;
+    assert.equal(validateCanonical(doc), false, "canonical schema must reject the same malformed origins");
+    assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
   });
 }
 
