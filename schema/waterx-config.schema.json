@@ -580,27 +580,28 @@
             "claimable_link_config": {
               "$ref": "#/$defs/suiId"
             },
-            "gift_admin_cap": {
-              "$ref": "#/$defs/suiId"
-            },
             "voucher_type_origins": {
               "type": "array",
               "items": {
                 "$ref": "#/$defs/suiId"
               },
-              "description": "Defining package ids of Predict Voucher event types, used by event indexers. These are immutable type origins, not necessarily the first package original_id or the latest published_at. Omit until Voucher is deployed on this network; when present, the list must be non-empty. Publication checkpoints belong in the deployment ledger, not this runtime field.",
+              "description": "Defining package ids of Predict Voucher event types, used by event indexers. These are immutable type origins, not necessarily the first package original_id or the latest published_at. Required on both networks now that Voucher is deployed on both; the list must be non-empty. Publication checkpoints belong in the deployment ledger, not this runtime field.",
               "minItems": 1
+            },
+            "gift_admin_cap": {
+              "$ref": "#/$defs/suiId"
             }
           },
-          "additionalProperties": false,
           "required": [
             "admin_cap",
             "claimable_link_config",
             "gift_admin_cap",
             "global_config",
             "market_registries",
-            "settlement_coin_types"
-          ]
+            "settlement_coin_types",
+            "voucher_type_origins"
+          ],
+          "additionalProperties": false
         },
         "usd": {
           "type": "object",

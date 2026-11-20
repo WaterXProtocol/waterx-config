@@ -91,15 +91,16 @@ del m2["oracle_rules"]["pyth_lazer"]["lazer_state_object"]
 expect_exit("anchored child deletion fails", m2, copy.deepcopy(T),
             "anchored field oracle_rules/pyth_lazer/lazer_state_object is missing")
 
-# 10. Voucher deployment metadata stays optional without weakening its shape.
+# 10. Voucher deployment metadata is required now that both networks have it.
 schema10 = build(copy.deepcopy(M), copy.deepcopy(T))
 prediction = schema10["properties"]["objects"]["properties"]["prediction"]
 origins = prediction["properties"]["voucher_type_origins"]
-assert "voucher_type_origins" not in prediction["required"]
+assert "voucher_type_origins" in prediction["required"]
 assert origins["type"] == "array" and origins["minItems"] == 1
 assert origins["items"] == {"$ref": "#/$defs/suiId"}
 assert schema10["$defs"]["suiId"]["pattern"] == "^0x[0-9a-fA-F]{64}$"
-assert "voucher_type_origins" not in M["objects"]["prediction"]
-print("  ok voucher type origins are optional, non-empty arrays of full package ids")
+assert "voucher_type_origins" in M["objects"]["prediction"]
+assert "voucher_type_origins" in T["objects"]["prediction"]
+print("  ok voucher type origins are required, non-empty arrays of full package ids")
 
 print("test_gen_schema: all guarantees hold")

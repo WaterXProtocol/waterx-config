@@ -149,8 +149,8 @@ Every package carries the same identity block (the map is uniform — new packag
 | `market_registries` | map<string, suiId> | ✓ |  |
 | `settlement_coin_types` | map<string, suiType> | ✓ |  |
 | `claimable_link_config` | suiId | ✓ |  |
+| `voucher_type_origins` | array<suiId> | ✓ | Defining package ids of Predict Voucher event types, used by event indexers. These are immutable type origins, not necessarily the first package original_id or the latest published_at. Required on both networks now that Voucher is deployed on both; the list must be non-empty. Publication checkpoints belong in the deployment ledger, not this runtime field. |
 | `gift_admin_cap` | suiId | ✓ |  |
-| `voucher_type_origins` | array<suiId> |  | Defining package ids of Predict Voucher event types, used by event indexers. These are immutable type origins, not necessarily the first package original_id or the latest published_at. Omit until Voucher is deployed on this network; when present, the list must be non-empty. Publication checkpoints belong in the deployment ledger, not this runtime field. |
 
 ### `objects.usd`
 
