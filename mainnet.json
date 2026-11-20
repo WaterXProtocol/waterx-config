@@ -314,9 +314,9 @@
       }
     },
     "waterx_prediction": {
-      "published_at": "0x024195702f3f4ea69d93dc3fadd60394b7d9de2247b539e8aee82266ca878ae8",
+      "published_at": "0x9c455caf234cbb8ddba6ed87762e5e3fcc6f0ff84711a08331ab8ebccb5e0344",
       "original_id": "0xa5cfafe6660a8bf37eedf1a09dba633048da374c30b835668473689668f9ef57",
-      "version": 8,
+      "version": 9,
       "upgrade_capability": "0x168e6d530c04a595736b4269d5100cb2d2df893b8ec629a6603b369992f5ae4a",
       "mvr": {
         "name": "@waterx-protocol/prediction",
@@ -792,6 +792,9 @@
         "WAL": "0x9b4bad4ee9207945724b2531d24a4b7f2d33224430351e8d88ba2d70eafc1bca::wal::WAL"
       },
       "claimable_link_config": "0x97e49c1f0abe8a09867698d99dd8cde18b75f085bd6615644f74f9165cbc9cd9",
+      "voucher_type_origins": [
+        "0x9c455caf234cbb8ddba6ed87762e5e3fcc6f0ff84711a08331ab8ebccb5e0344"
+      ],
       "gift_admin_cap": "0x5493191ef3a5cfaa859f1a07b9ef277e75aa3d41edfcc9569aba8eae02c6655c"
     },
     "usd": {

@@ -3,7 +3,6 @@
   "optional": [
     "objects/faucet",
     "objects/mock_usdsui",
-    "objects/prediction/voucher_type_origins",
     "oracle_rules/pyth_lazer",
     "oracle_rules/supra"
   ]

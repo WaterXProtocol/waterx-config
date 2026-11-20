@@ -27,21 +27,22 @@ for (const net of ["mainnet", "testnet"] as const) {
   });
 }
 
-test("Voucher type origins survive parsing only on the deployed network", () => {
+test("Voucher type origins survive parsing on both deployed networks", () => {
   const origins = ["0x842257f800decb84668282b372c4eecbee2a39da23a61e9e02a9af74f441f0fe"];
+  const mainnetOrigins = ["0x9c455caf234cbb8ddba6ed87762e5e3fcc6f0ff84711a08331ab8ebccb5e0344"];
   const testnet = parseWaterxConfig(load("testnet.json"), "testnet");
   assert.equal(validateCanonical(load("testnet.json")), true);
   assert.deepEqual(testnet.objects.prediction.voucher_type_origins, origins);
   assert.deepEqual(parseWaterxConfig(JSON.parse(JSON.stringify(testnet))).objects.prediction.voucher_type_origins, origins);
-  assert.equal(parseWaterxConfig(load("mainnet.json"), "mainnet").objects.prediction.voucher_type_origins, undefined);
+  assert.deepEqual(parseWaterxConfig(load("mainnet.json"), "mainnet").objects.prediction.voucher_type_origins, mainnetOrigins);
   assert.equal(validateCanonical(load("mainnet.json")), true);
 });
 
-test("configs predating Voucher remain compatible when origins are absent", () => {
+test("Voucher origins are required now that both networks are deployed", () => {
   const doc = load("testnet.json");
   delete doc.objects.prediction.voucher_type_origins;
-  assert.equal(validateCanonical(doc), true);
-  assert.equal(parseWaterxConfig(doc).objects.prediction.voucher_type_origins, undefined);
+  assert.equal(validateCanonical(doc), false);
+  assert.throws(() => parseWaterxConfig(doc), WaterxConfigError);
 });
 
 test("duplicate Voucher origins agree between canonical schema and generated parser", () => {

@@ -226,28 +226,28 @@ mod tests {
         }
     }
 
-    /// Type origins are distinct from transaction-call targets and are absent
-    /// on networks where Voucher has not been deployed.
+    /// Type origins are distinct from transaction-call targets and required
+    /// now that Voucher has been deployed on both networks.
     #[test]
-    fn voucher_type_origins_round_trip_and_remain_optional() {
+    fn voucher_type_origins_round_trip_on_both_networks() {
         let cfg = parse_waterx_config(&fixture("testnet.json"), Some("testnet")).unwrap();
         let expected = vec![
             "0x842257f800decb84668282b372c4eecbee2a39da23a61e9e02a9af74f441f0fe".to_owned(),
         ];
-        assert_eq!(cfg.objects.prediction.voucher_type_origins.as_ref(), Some(&expected));
+        assert_eq!(cfg.objects.prediction.voucher_type_origins, expected);
         let out = serde_json::to_string(&cfg).unwrap();
         let reparsed = parse_waterx_config(&out, Some("testnet")).unwrap();
-        assert_eq!(reparsed.objects.prediction.voucher_type_origins, Some(expected));
+        assert_eq!(reparsed.objects.prediction.voucher_type_origins, expected);
 
         let mainnet = parse_waterx_config(&fixture("mainnet.json"), Some("mainnet")).unwrap();
-        assert!(mainnet.objects.prediction.voucher_type_origins.is_none());
+        assert_eq!(mainnet.objects.prediction.voucher_type_origins,
+            vec!["0x9c455caf234cbb8ddba6ed87762e5e3fcc6f0ff84711a08331ab8ebccb5e0344".to_owned()]);
         let serialized = serde_json::to_value(mainnet).unwrap();
-        assert!(serialized["objects"]["prediction"].get("voucher_type_origins").is_none());
+        assert!(serialized["objects"]["prediction"].get("voucher_type_origins").is_some());
 
         let mut old: serde_json::Value = serde_json::from_str(&fixture("testnet.json")).unwrap();
         old["objects"]["prediction"].as_object_mut().unwrap().remove("voucher_type_origins");
-        assert!(parse_waterx_config(&old.to_string(), None)
-            .unwrap().objects.prediction.voucher_type_origins.is_none());
+        assert!(parse_waterx_config(&old.to_string(), None).is_err());
     }
 
     /// Runtime serde validates the array shape; semantic package-id and
