@@ -308,6 +308,13 @@
       "digest": "672ExoaNkoYwLAz2UGFvV4dR6tq88uuG4infFKqQkL15",
       "checkpoint": "282767769",
       "timestamp": "2026-06-03T19:40:40.710Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction",
+      "action": "upgrade waterx_prediction v8→v9 (PACKAGE_VERSION 8: non-cash betting vouchers, waterx-contract#171) → 0x9c455caf234cbb8ddba6ed87762e5e3fcc6f0ff84711a08331ab8ebccb5e0344; 13 Voucher event type origins are this package; GlobalConfig still allows only version 7 at verification time",
+      "digest": "3mQhtLm3YkYKq64C73m4pHEAjU5A9vA2hfPUfmrufbyB",
+      "checkpoint": "346897022",
+      "timestamp": "2026-11-19T10:47:30.310Z"
     }
   ],
   "package_publish": {
