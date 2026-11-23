@@ -315,6 +315,13 @@
       "digest": "3mQhtLm3YkYKq64C73m4pHEAjU5A9vA2hfPUfmrufbyB",
       "checkpoint": "346897022",
       "timestamp": "2026-11-19T10:47:30.310Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_perp",
+      "action": "upgrade waterx_perp v3→v4 (PACKAGE_VERSION 4: Keeper-only execution for all user trades, oracle-free order submission, per-operation market-order permissions — waterx-contract#167 / #170 / #172) → 0x6b70e6f2d759ea93c73702ef51d218a51515a04073504447ae33df562e9c8321 — M2 0x17feaf03…; GlobalConfig, WLP pool and market registry still allow only version 3 at verification time",
+      "digest": "66CdBXApMj5GnTk3RgFuFjeTFi6mJo8rf7qgDyYL9K5R",
+      "checkpoint": "348305596",
+      "timestamp": "2026-11-23T09:46:37.684Z"
     }
   ],
   "package_publish": {
