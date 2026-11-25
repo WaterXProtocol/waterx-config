@@ -463,6 +463,17 @@ export default z
           .string()
           .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
           .describe("32-byte Sui object/package id."),
+        voucher_type_origins: z
+          .array(
+            z
+              .string()
+              .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))
+              .describe("32-byte Sui object/package id."),
+          )
+          .min(1)
+          .describe(
+            "Defining package ids of Predict Voucher event types, used by event indexers. These are immutable type origins, not necessarily the first package original_id or the latest published_at. Required on both networks now that Voucher is deployed on both; the list must be non-empty. Publication checkpoints belong in the deployment ledger, not this runtime field.",
+          ),
         gift_admin_cap: z
           .string()
           .regex(new RegExp("^0x[0-9a-fA-F]{64}$"))

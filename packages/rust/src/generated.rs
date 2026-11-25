@@ -308,6 +308,13 @@ pub struct Prediction {
     pub market_registries: HashMap<String, String>,
 
     pub settlement_coin_types: HashMap<String, String>,
+
+    /// Defining package ids of Predict Voucher event types, used by event indexers. These are
+    /// immutable type origins, not necessarily the first package original_id or the latest
+    /// published_at. Required on both networks now that Voucher is deployed on both; the list
+    /// must be non-empty. Publication checkpoints belong in the deployment ledger, not this
+    /// runtime field.
+    pub voucher_type_origins: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

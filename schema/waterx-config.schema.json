@@ -580,6 +580,14 @@
             "claimable_link_config": {
               "$ref": "#/$defs/suiId"
             },
+            "voucher_type_origins": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/suiId"
+              },
+              "description": "Defining package ids of Predict Voucher event types, used by event indexers. These are immutable type origins, not necessarily the first package original_id or the latest published_at. Required on both networks now that Voucher is deployed on both; the list must be non-empty. Publication checkpoints belong in the deployment ledger, not this runtime field.",
+              "minItems": 1
+            },
             "gift_admin_cap": {
               "$ref": "#/$defs/suiId"
             }
@@ -590,7 +598,8 @@
             "gift_admin_cap",
             "global_config",
             "market_registries",
-            "settlement_coin_types"
+            "settlement_coin_types",
+            "voucher_type_origins"
           ],
           "additionalProperties": false
         },

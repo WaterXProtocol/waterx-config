@@ -40,7 +40,7 @@ TOP = {
 }
 
 # Hand-written constraints overlaid on inferred nodes of the CANONICAL schema.
-# Pattern-class only: an exact-vocabulary ENUM must never go here — every
+# Shape/pattern constraints only: an exact-vocabulary ENUM must never go here — every
 # future addition to it would break pinned parsers (the old closed-packages
 # failure class). When a repo-only growable vocabulary next needs pinning,
 # restore the gate-schema layer from git (`git show 99a11ab:scripts/gen_schema.py`
@@ -49,6 +49,7 @@ CONSTRAINTS = {
     # Prose stays in schema/descriptions.json (the one prose channel;
     # annotate() gives it precedence).
     "oracle_rules/waterx/enclave/pubkey": {"pattern": "^[0-9a-fA-F]{64}$"},
+    "objects/prediction/voucher_type_origins": {"minItems": 1},
 }
 
 
