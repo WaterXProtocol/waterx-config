@@ -322,6 +322,13 @@
       "digest": "66CdBXApMj5GnTk3RgFuFjeTFi6mJo8rf7qgDyYL9K5R",
       "checkpoint": "348305596",
       "timestamp": "2026-11-23T09:46:37.684Z"
+    },
+    {
+      "phase": "1.upgrade:waterx_prediction_gift",
+      "action": "upgrade waterx_prediction_gift v4→v5 (PACKAGE_VERSION 4: relink onto waterx_prediction v9 0x9c455caf…, create_gift rejects voucher-funded positions — waterx-contract#171) → 0x033677bf5721dcd37b9656ae5bd149ee71d38a44a6ce0eee9db4a83810aceaad — M2 0x17feaf03…; same PTB closes the old versions: gift ClaimableLinkConfig allow 4 / disallow 3 → {4}, prediction GlobalConfig disallow 7 → {8}, perp GlobalConfig, WLP pool and market registry disallow 3 → {4}",
+      "digest": "HTpLgosTEWPqy3TS5aRrmsvmjPPBDM8JUguLoj8TSns7",
+      "checkpoint": "349300526",
+      "timestamp": "2026-11-26T04:54:46.345Z"
     }
   ],
   "package_publish": {
